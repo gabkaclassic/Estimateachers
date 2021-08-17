@@ -22,11 +22,11 @@ public class User implements UserDetails {
     private Long id;
     
     @Column(
-            name = "login",
+            name = "username",
             unique = true,
             nullable = false
     )
-    private String login;
+    private String username;
     
     @Column(
             name = "password",
@@ -80,7 +80,7 @@ public class User implements UserDetails {
     
     public User(String name, String email, String password) {
         
-        login = name;
+        username = name;
         this.email = email;
         this.password = password;
         active = true;
@@ -94,7 +94,7 @@ public class User implements UserDetails {
     
     public String getUsername() {
         
-        return getLogin();
+        return username;
     }
     
     public boolean isAccountNonExpired() {

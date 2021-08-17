@@ -32,7 +32,7 @@ public class UsersController {
     
     @PostMapping("/registry")
     public String signUp(
-            @RequestParam(name = "login") String login,
+            @RequestParam(name = "login") String username,
             @RequestParam(name = "email") String email,
             @RequestParam(name = "password") String password,
             Map<String, Object> model
@@ -42,9 +42,9 @@ public class UsersController {
         
         List<String> remarks = new ArrayList<>();
         
-        UsersUtilities.checkUserData(login, password, email, remarks);
+        UsersUtilities.checkUserData(username, password, email, remarks);
         
-        if(userRepository.existsByLogin(login))
+        if(userRepository.existsByUsername(username))
             remarks.add("Entered login is already in use");
         if(Objects.nonNull(email) && userRepository.existsByEmail(email))
             remarks.add("Entered email is already in use");
@@ -58,7 +58,7 @@ public class UsersController {
             return "/users/registry";
         }
         
-        User user = new User(login, email, password);
+        User user = new User(username, email, password);
         
         userRepository.save(user);
         
@@ -92,6 +92,7 @@ public class UsersController {
 //        return HOME_DIRECTORY_TEMPLATE.concat("login");
 //    }
     
+    @PostMapping("/allUsers")
     @GetMapping("/allUsers")
     public String showAllUsers(Map<String, Object> model) {
     

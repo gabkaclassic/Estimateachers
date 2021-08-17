@@ -16,12 +16,12 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
-        if(Objects.isNull(login))
+        if(Objects.isNull(username))
             throw new NullPointerException("Login is null");
         
-        User user = userRepository.findByLogin(login);
+        User user = userRepository.findByUsername(username);
         
         if(Objects.isNull(user))
             throw new NullPointerException("User not found");

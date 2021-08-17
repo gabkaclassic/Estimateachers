@@ -1,0 +1,18 @@
+<html>
+    <head>
+
+    </head>
+
+    <body>
+
+    <a href = "/users/registry">Sign up</a>
+    <a href = "/users/login">Sign in</a>
+    <a href = "/users/allUsers">List of all users</a>
+
+    <form action = "/users/logout" method = "post">
+        <input type = "submit" value = "Sign out" />
+        <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+    </form>
+
+    </body>
+</html>

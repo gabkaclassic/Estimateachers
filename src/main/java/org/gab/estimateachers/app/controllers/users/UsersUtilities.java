@@ -69,7 +69,7 @@ public class UsersUtilities {
     
     private static boolean checkEmail(String email, List<String> remarks) {
         
-        boolean isCorrectEmailAddress = Objects.isNull(email) || EMAIL_PATTERN.matcher(email).find();
+        boolean isCorrectEmailAddress = Objects.isNull(email) || email.isEmpty() || EMAIL_PATTERN.matcher(email).find();
         
         if(!isCorrectEmailAddress)
             remarks.add("Invalid email address");
