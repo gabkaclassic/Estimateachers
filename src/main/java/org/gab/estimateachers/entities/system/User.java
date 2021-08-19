@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -81,7 +82,7 @@ public class User implements UserDetails {
     public User(String name, String email, String password) {
         
         username = name;
-        this.email = email;
+        this.email = (Objects.nonNull(email) && email.isEmpty()) ? null : email;
         this.password = password;
         active = true;
         roles.add(Roles.USER);

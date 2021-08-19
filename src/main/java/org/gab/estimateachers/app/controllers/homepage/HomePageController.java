@@ -15,12 +15,10 @@ import java.util.Map;
 @RequestMapping("/")
 public class HomePageController {
     
-    private static final String HOME_DIRECTORY_TEMPLATE = "/home/";
-    
     @GetMapping("/")
     public String homepage() {
         
-        return HOME_DIRECTORY_TEMPLATE.concat("homepage");
+        return "/homepage";
     }
     
 }
