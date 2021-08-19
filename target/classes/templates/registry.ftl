@@ -4,14 +4,11 @@
 <@main.page>
 
     <@ul.form>
+        <input type = "email" id = "email" name = "email" placeholder = "Your email address" />
         <button type = "submit">Sign up</button>
     </@ul.form>
 
-    <#if remarks??>
-        <#list remarks as remark>
-            <li>${remark}</li>
-        </list>
-    </#if>
+    <@ul.foreach collection = remarks![] />
 
     <@ul.logout />
 

@@ -42,7 +42,7 @@ public class UsersUtilities {
        
        
        if(!isCorrectPassword)
-           remarks.add("The password must contain from 8 to 32 characters, of which 1 digit");
+           remarks.add("The password must contain from 8 to 32 characters, of which 1 digit and 1 specified character");
        
        return isCorrectPassword;
     }

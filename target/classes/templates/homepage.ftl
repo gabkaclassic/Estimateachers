@@ -1,4 +1,4 @@
-<#import "classpath:/templates/parts/main.ftl" as main>
+<#import "/parts/main.ftl" as main>
 <#import "parts/users_logic.ftl" as ul>
 
 <@main.page>

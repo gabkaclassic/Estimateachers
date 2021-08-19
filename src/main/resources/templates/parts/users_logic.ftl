@@ -19,3 +19,13 @@
     </form>
 
 </#macro>
+
+<#macro foreach collection>
+
+    <#if collection??>
+        <#list collection as row>
+            <li>${row}</li>
+        </#list>
+    </#if>
+
+</#macro>
