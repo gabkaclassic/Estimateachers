@@ -36,8 +36,7 @@ public class Teacher {
     private int age;
     
     @Column(name = "photo")
-    @Type(type = "org.hibernate.type.BlobType")
-    private BufferedImage photo;
+    private String filename;
     
     @Column(name = "total_rating")
     private double totalRating;
@@ -55,22 +54,13 @@ public class Teacher {
             targetClass = String.class,
             fetch = FetchType.LAZY
     )
-    private Set<String> excuses = new HashSet<>();;
+    private Set<String> excuses = new HashSet<>();
     
     @ManyToMany(
-            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            targetEntity = Student.class
+            fetch = FetchType.LAZY
     )
-    private Set<Student> students = new HashSet<>();
-    
-    @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            targetEntity = Faculty.class,
-            mappedBy = "teachers"
-    )
-    private Set<Faculty> faculties = new HashSet<>();;
+    private Set<Faculty> faculties = new HashSet<>();
     
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -78,6 +68,6 @@ public class Teacher {
             targetEntity = University.class,
             mappedBy = "teachers"
     )
-    private Set<University> universities = new HashSet<>();;
+    private Set<University> universities = new HashSet<>();
     
 }

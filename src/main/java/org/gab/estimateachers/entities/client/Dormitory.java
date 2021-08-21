@@ -40,24 +40,21 @@ public class Dormitory {
     @Column(name = "capacity_rating")
     private double capacityRating;
     
-    // TO DO
-    @Column(name = "photos")
-    @Type(type = "org.hibernate.type.BlobType")
-    private Set<BufferedImage> photos = new HashSet<>();;
-    
+    @ElementCollection(
+            targetClass = String.class,
+            fetch = FetchType.LAZY
+    )
+    private Set<String> photos;
     
     @ManyToOne(
             cascade = CascadeType.ALL,
-            targetEntity = University.class,
             fetch = FetchType.LAZY
     )
     private University university;
     
     @OneToMany(
-            targetEntity = Student.class,
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "dormitory"
+            fetch = FetchType.LAZY
     )
-    private Set<Student> students = new HashSet<>();;
+    private Set<Student> students = new HashSet<>();
 }

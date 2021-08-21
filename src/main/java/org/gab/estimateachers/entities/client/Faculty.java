@@ -18,28 +18,24 @@ public class Faculty {
     @Column(name = "id")
     private Long id;
     
+    @Column(name = "title")
+    private String title;
+    
     @ManyToOne(
-            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            targetEntity = University.class
-    )
-    @JoinColumn(
-            name = "university_id",
-            nullable = false
+            fetch = FetchType.LAZY
     )
     private University university;
     
     @ManyToMany(
             cascade = CascadeType.ALL,
-            targetEntity = Teacher.class
+            fetch = FetchType.LAZY
     )
     private Set<Teacher> teachers;
     
     @OneToMany(
-            orphanRemoval = false,
             cascade = CascadeType.ALL,
-            targetEntity = Student.class,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     private Set<Student> students = new HashSet<>();
     

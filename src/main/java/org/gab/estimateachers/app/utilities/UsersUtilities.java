@@ -1,5 +1,8 @@
 package org.gab.estimateachers.app.controllers.users;
 
+import org.gab.estimateachers.app.repositories.system.UserRepository;
+import org.gab.estimateachers.entities.system.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -19,9 +22,12 @@ public class UsersUtilities {
     private static final int MIN_LENGTH_LOGIN = 2;
     private static final int MAX_LENGTH_LOGIN = 30;
     
-    public static boolean checkUserData(String login, String password, String email, List<String> remarks) {
+//    @Autowired
+//    private UserRepository userRepository;
+    
+    public static boolean checkUserData(String login, String password, String email, List<String> remarks, UserRepository userRepository) {
 
-        return checkLogin(login, remarks) & checkPassword(password, remarks) & checkEmail(email, remarks);
+        return checkLogin(login, remarks, userRepository) & checkPassword(password, remarks) & checkEmail(email, remarks, userRepository);
     }
     
     private static boolean checkPassword(String password, List<String> remarks) {
@@ -47,7 +53,7 @@ public class UsersUtilities {
        return isCorrectPassword;
     }
     
-    private static boolean checkLogin(String login, List<String> remarks) {
+    private static boolean checkLogin(String login, List<String> remarks, UserRepository userRepository) {
         
         if(Objects.isNull(login)
                 || (login = StringUtils.trimAllWhitespace(login)).isEmpty()) {
@@ -56,6 +62,9 @@ public class UsersUtilities {
             
             return false;
         }
+    
+        if(userRepository.existsByUsername(login))
+            remarks.add("Entered login is already in use");
         
             boolean isCorrectLogin = (login.length() >= MIN_LENGTH_LOGIN)
                     && (login.length() <= MAX_LENGTH_LOGIN)
@@ -67,12 +76,19 @@ public class UsersUtilities {
             return isCorrectLogin;
         }
     
-    private static boolean checkEmail(String email, List<String> remarks) {
+    private static boolean checkEmail(String email, List<String> remarks, UserRepository userRepository) {
         
-        boolean isCorrectEmailAddress = Objects.isNull(email) || email.isEmpty() || EMAIL_PATTERN.matcher(email).find();
+        boolean isCorrectEmailAddress = Objects.isNull(email)
+                || email.isEmpty()
+                || EMAIL_PATTERN.matcher(email).find();
         
         if(!isCorrectEmailAddress)
             remarks.add("Invalid email address");
+        if(userRepository.existsByEmail(email)) {
+            
+            isCorrectEmailAddress = false;
+            remarks.add("Entered email is already in use");
+        }
         
         return isCorrectEmailAddress;
     }

@@ -2,11 +2,13 @@ package org.gab.estimateachers.entities.client;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CollectionType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -29,15 +31,16 @@ public class University {
     @Column(name = "rating")
     private double rating;
     
-    @Column(name = "photos")
-    @Type(type = "org.hibernate.type.BlobType")
-    private Set<BufferedImage> photos = new HashSet<>();
+    @ElementCollection(
+            targetClass = String.class,
+            fetch = FetchType.LAZY
+    )
+    private Set<String> photos;
     
     @OneToMany(
             orphanRemoval = true,
             targetEntity = Faculty.class,
-            cascade = CascadeType.ALL,
-            mappedBy = "university"
+            cascade = CascadeType.ALL
     )
     private Set<Faculty> faculties = new HashSet<>();
     
@@ -50,7 +53,6 @@ public class University {
     @OneToMany(
             targetEntity = Student.class,
             cascade = CascadeType.ALL,
-            mappedBy = "university",
             fetch = FetchType.LAZY
     )
     private Set<Student> students = new HashSet<>();
@@ -58,9 +60,19 @@ public class University {
     @OneToMany(
             targetEntity = Dormitory.class,
             cascade = CascadeType.ALL,
-            mappedBy = "university",
             fetch = FetchType.LAZY
     )
     private Set<Dormitory> dormitories = new HashSet<>();
+    
+    public University(String title) {
+        
+        StringBuilder builder = new StringBuilder();
+        
+        for(String word: title.split(" "))
+            builder.append(word.substring(0, 1).toUpperCase());
+    
+        this.title = title;
+        abbreviation = builder.toString();
+    }
     
 }

@@ -20,17 +20,9 @@ public class Comment {
     private int rating;
     
     @ManyToOne(
-            targetEntity = User.class,
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
     private User author;
-    
-    @ManyToOne(
-            targetEntity = TeacherCard.class,
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
-    )
-    private TeacherCard card;
     
 }

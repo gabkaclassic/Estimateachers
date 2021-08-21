@@ -18,15 +18,13 @@ public class Message {
     
     @ManyToOne(
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
-            targetEntity = User.class
+            fetch = FetchType.EAGER
     )
     private User author;
     
     @ManyToOne(
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
-            targetEntity = Chat.class
+            fetch = FetchType.EAGER
     )
     private Chat chat;
 

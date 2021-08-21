@@ -19,18 +19,15 @@ public class Chat {
     private Long id;
     
     @ManyToMany(
-            targetEntity = User.class,
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
-    private Set<User> participants = new HashSet<>();;
+    private Set<User> participants = new HashSet<>();
     
     @OneToMany(
-            mappedBy = "chat",
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
-            targetEntity = Message.class
+            fetch = FetchType.EAGER
     )
-    private Set<Message> messages = new HashSet<>();;
+    private Set<Message> messages = new HashSet<>();
     
 }

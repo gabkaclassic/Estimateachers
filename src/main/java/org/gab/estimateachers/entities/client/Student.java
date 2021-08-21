@@ -1,7 +1,9 @@
 package org.gab.estimateachers.entities.client;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.User;
 import org.hibernate.annotations.Type;
 
@@ -37,48 +39,59 @@ public class Student {
     private int age;
     
     @Column(
+            name = "gender",
+            nullable = false
+    )
+    
+    @Enumerated(EnumType.STRING)
+    private Genders gender;
+    
+    @Column(
             name = "course",
             nullable = false
     )
-    private int course;
+    private Integer course = 1;
     
     @Column(name = "photo")
-    @Type(type = "org.hibernate.type.BlobType")
-    private BufferedImage photo;
-    
-    @ManyToOne(
-            targetEntity = University.class,
-            cascade = CascadeType.ALL
-    )
-    private University university;
-    
-    @ManyToOne(
-            targetEntity = Faculty.class,
-            cascade = CascadeType.ALL
-    )
-    private Faculty faculty;
-    
-    @ManyToMany(
-            targetEntity = Teacher.class,
-            cascade = CascadeType.ALL,
-            mappedBy = "students",
-            fetch = FetchType.LAZY
-    )
-    private Set<Teacher> teachers = new HashSet<>();;
+    private String filename;
     
     @OneToOne(
             cascade = CascadeType.ALL,
-            targetEntity = User.class,
-            fetch = FetchType.EAGER,
-            orphanRemoval = true
+            fetch = FetchType.EAGER
     )
     private User account;
     
     @ManyToOne(
-            targetEntity = Dormitory.class,
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private University university;
+    
+    @ManyToOne(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private Faculty faculty;
+    
+    @ManyToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private Set<Teacher> teachers = new HashSet<>();
+    
+    @ManyToOne(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     private Dormitory dormitory;
     
+    public Student(String firstName, String lastName, int age, Genders gender, String filename, User account) {
+        
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.account = account;
+        this.filename = filename;
+        this.gender = gender;
+    }
 }

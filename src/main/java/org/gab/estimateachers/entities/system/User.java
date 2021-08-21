@@ -2,6 +2,7 @@ package org.gab.estimateachers.entities.system;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.gab.estimateachers.entities.client.Student;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -21,7 +22,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    
+
     @Column(
             name = "username",
             unique = true,
@@ -54,28 +55,23 @@ public class User implements UserDetails {
     )
     @Enumerated(EnumType.STRING)
     private Set<Roles> roles = new HashSet<>();
-
+    
     @ManyToMany(
-          mappedBy = "participants",
           cascade = CascadeType.ALL,
           fetch = FetchType.LAZY,
-          targetEntity = Chat.class
+          mappedBy = "participants"
     )
     private Set<Chat> chats = new HashSet<>();
 
     @OneToMany(
             fetch = FetchType.LAZY,
-            targetEntity = Message.class,
-            cascade = CascadeType.ALL,
-            mappedBy = "author"
+            cascade = CascadeType.ALL
     )
     private Set<Message> messages = new HashSet<>();
 
     @OneToMany(
             fetch = FetchType.LAZY,
-            targetEntity = Comment.class,
-            cascade = CascadeType.ALL,
-            mappedBy = "author"
+            cascade = CascadeType.ALL
     )
     private Set<Comment> comments = new HashSet<>();
     
