@@ -1,4 +1,4 @@
-package org.gab.estimateachers.app.controllers.users;
+package org.gab.estimateachers.app.utilities;
 
 import org.gab.estimateachers.app.repositories.client.UniversityRepository;
 import org.gab.estimateachers.app.repositories.system.UserRepository;
@@ -15,34 +15,34 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@Component("listsUtilities")
 public class ListsUtilities {
     
-//    @Autowired
-//    @Qualifier("universityRepository")
-//    private UniversityRepository universityRepository;
-//
-//    @Autowired
-//    @Qualifier("userRepository")
-//    private UserRepository userRepository;
+    @Autowired
+    @Qualifier("universityRepository")
+    private UniversityRepository universityRepository;
     
-    List<User> getUsersList(UserRepository userRepository) {
+    @Autowired
+    @Qualifier("userRepository")
+    private UserRepository userRepository;
     
-        return userRepository.findAll();
+    public List<User> getUsersList() {
+    
+        return this.userRepository.findAll();
     }
     
-    List<String> getGendersList() {
+    public List<String> getGendersList() {
     
         return Arrays.stream(Genders.values())
                 .map(Genders::toString)
                 .collect(Collectors.toList());
     }
     
-     List<String> getUniversitiesAbbreviationsList(UniversityRepository universityRepository) {
+     public List<String> getUniversitiesAbbreviationsList() {
     
         List<String> universities = new ArrayList<>();
     
-        for(University university: universityRepository.findAll())
+        for(University university: this.universityRepository.findAll())
             universities.add(university.getAbbreviation());
     
         universities = universities.stream()

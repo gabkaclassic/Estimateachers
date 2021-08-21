@@ -1,73 +1,101 @@
 package org.gab.estimateachers.app.controllers.users;
 
+import org.gab.estimateachers.app.repositories.client.UniversityRepository;
 import org.gab.estimateachers.app.repositories.system.UserRepository;
+import org.gab.estimateachers.app.services.StudentService;
+import org.gab.estimateachers.app.services.UserService;
+import org.gab.estimateachers.app.utilities.FilesUtilities;
+import org.gab.estimateachers.app.utilities.ListsUtilities;
+import org.gab.estimateachers.app.utilities.UsersUtilities;
+import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/users")
 public class UsersController {
     
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
+    
+    @Autowired
+    private StudentService studentService;
+    
+    @Autowired
+    @Qualifier("listsUtilities")
+    private ListsUtilities listUtilities;
+    
+    @Autowired
+    @Qualifier("usersUtilities")
+    private UsersUtilities usersUtilities;
+    
+    @Autowired
+    @Qualifier("filesUtilities")
+    private FilesUtilities filesUtilities;
     
     @GetMapping("/registry")
-    public String registryPage() {
+    public String registryPage(Model model) {
         
+        model.addAttribute("genders", listUtilities.getGendersList());
+     
         return "/registry";
     }
     
     @PostMapping("/registry")
     public String signUp(
             @RequestParam(name = "username") String username,
+            @RequestParam(name = "firstName") String firstName,
+            @RequestParam(name = "lastName") String lastName,
             @RequestParam(name = "email") String email,
             @RequestParam(name = "password") String password,
+            @RequestParam(name = "genders") String genderName,
+            @RequestParam(name = "age") Integer age,
+            @RequestParam(name = "file") MultipartFile file,
             Model model
     ) {
-    
-    
+        
         List<String> remarks = new ArrayList<>();
-        
-        UsersUtilities.checkUserData(username, password, email, remarks);
-        
-        if(Objects.nonNull(username)
-                && (!username.isEmpty())
-                && userRepository.existsByUsername(username))
-            remarks.add("Entered login is already in use");
-        
-        if(Objects.nonNull(email)
-                && (!email.isEmpty())
-                && userRepository.existsByEmail(email))
-            remarks.add("Entered email is already in use");
-    
+        boolean isCorrectData = usersUtilities.checkUserData(
+                firstName,
+                lastName,
+                username,
+                password,
+                email,
+                remarks
+        );
         model.addAttribute("remarks", remarks);
         
-        if(!remarks.isEmpty()) {
-            
-            return "/registry";
-        }
+        if(!isCorrectData)
+            return registryPage(model);
         
-        User user = new User(username, email, password);
+        studentService.createStudent(
+                firstName,
+                lastName,
+                age,
+                Genders.valueOf(genderName.toUpperCase()),
+                file,
+                new User(username, email, password)
+        );
         
-        userRepository.save(user);
-        
-        return "redirect:/users/registry";
+        return "redirect:/users/login";
     }
     
     @GetMapping("/login")
     public String loginPage() {
-        
         
         return "/login";
     }
@@ -75,10 +103,8 @@ public class UsersController {
     @PostMapping("/allUsers")
     @GetMapping("/allUsers")
     public String showAllUsers(Model model) {
-    
-        Iterable<User> users = userRepository.findAll();
-    
-        model.addAttribute("users", users);
+        
+        model.addAttribute("users", listUtilities.getUsersList());
         
         return "/listOfAllUsers";
     }
