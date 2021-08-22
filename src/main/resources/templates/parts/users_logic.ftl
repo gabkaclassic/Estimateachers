@@ -1,13 +1,14 @@
 <#import "security.ftl" as security>
 
-<#macro form_login>
+<#macro data_form textButton = "Submit">
 
 <div>
     <form method = "post" enctype = "multipart/form-data">
-        <input type = "text" name = "username" id = "username" placeholder = "Your login" />
-        <input type = "password" name = "password" id = "password"  placeholder = "Password" />
-        <@security.token />
+        <input type = "text" name = "username" id = "username" placeholder = "Your login" /> <br>
+        <input type = "password" name = "password" id = "password"  placeholder = "Password" /> <br>
         <#nested>
+        <@security.token />
+        <button type = "submit">${textButton}</button>
     </form>
 </div>
 
@@ -27,7 +28,7 @@
 <div>
     <form method = "post" enctype = "multipart/form-data">
         <input type = "text" name = "text" placeholder = "Your message" />
-        <@file type = "file" />
+        <@file type = "file" name = "file" id = "file" text = "Add file" />
         <@security.token />
         <#nested>
     </form>
@@ -35,9 +36,10 @@
 
 </#macro>
 
-<#macro file type>
+<#macro file type name id text = "" >
 
-    <input type = "${type}" name = "${type}" />
+    <label for = "${id}" class = "btn">${text}</label> <br>
+    <input id = "${id}"  type = "${type}" name = "${name}" /> <br>
 
 </#macro>
 

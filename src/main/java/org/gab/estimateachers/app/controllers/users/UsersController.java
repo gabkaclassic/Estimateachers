@@ -49,7 +49,7 @@ public class UsersController {
     
     @GetMapping("/registry")
     public String registryPage(Model model) {
-        
+
         model.addAttribute("genders", listUtilities.getGendersList());
      
         return "/registry";
@@ -64,10 +64,11 @@ public class UsersController {
             @RequestParam(name = "password") String password,
             @RequestParam(name = "genders") String genderName,
             @RequestParam(name = "age") Integer age,
-            @RequestParam(name = "file") MultipartFile file,
+            @RequestParam(name = "profilePhoto") MultipartFile profilePhoto,
+            @RequestParam(name = "cardPhoto") MultipartFile cardPhoto,
             Model model
     ) {
-        
+    
         List<String> remarks = new ArrayList<>();
         boolean isCorrectData = usersUtilities.checkUserData(
                 firstName,
@@ -75,6 +76,7 @@ public class UsersController {
                 username,
                 password,
                 email,
+                cardPhoto,
                 remarks
         );
         model.addAttribute("remarks", remarks);
@@ -82,12 +84,13 @@ public class UsersController {
         if(!isCorrectData)
             return registryPage(model);
         
-        studentService.createStudent(
+        studentService.sendApplication(
                 firstName,
                 lastName,
                 age,
                 Genders.valueOf(genderName.toUpperCase()),
-                file,
+                profilePhoto,
+                cardPhoto,
                 new User(username, email, password)
         );
         

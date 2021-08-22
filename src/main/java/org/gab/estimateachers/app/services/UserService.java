@@ -25,7 +25,13 @@ public class UserService implements UserDetailsService {
         
         if(Objects.isNull(user))
             throw new NullPointerException("User not found");
-        
+        System.out.println(user);
         return user;
     }
+    
+    public void save(User user) {
+        
+        userRepository.save(user);
+    }
 }
+

@@ -15,7 +15,10 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "students")
+@Table(
+        name = "students",
+        uniqueConstraints = @UniqueConstraint(name = "unique_account", columnNames = "account_id")
+)
 public class Student {
 
     @Id
@@ -52,9 +55,6 @@ public class Student {
     )
     private Integer course = 1;
     
-    @Column(name = "photo")
-    private String filename;
-    
     @OneToOne(
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
@@ -85,13 +85,12 @@ public class Student {
     )
     private Dormitory dormitory;
     
-    public Student(String firstName, String lastName, int age, Genders gender, String filename, User account) {
+    public Student(String firstName, String lastName, int age, Genders gender, User account) {
         
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.account = account;
-        this.filename = filename;
         this.gender = gender;
     }
 }

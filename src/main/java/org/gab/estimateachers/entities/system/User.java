@@ -2,7 +2,6 @@ package org.gab.estimateachers.entities.system;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.gab.estimateachers.entities.client.Student;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -42,6 +41,9 @@ public class User implements UserDetails {
     )
     private String email;
     
+    @Column(name = "photo")
+    private String filename;
+    
     @Column(name = "active")
     private boolean active;
     
@@ -58,19 +60,19 @@ public class User implements UserDetails {
     
     @ManyToMany(
           cascade = CascadeType.ALL,
-          fetch = FetchType.LAZY,
+          fetch = FetchType.EAGER,
           mappedBy = "participants"
     )
     private Set<Chat> chats = new HashSet<>();
 
     @OneToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
     private Set<Message> messages = new HashSet<>();
 
     @OneToMany(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
     private Set<Comment> comments = new HashSet<>();
@@ -81,7 +83,18 @@ public class User implements UserDetails {
         this.email = (Objects.nonNull(email) && email.isEmpty()) ? null : email;
         this.password = password;
         active = true;
+        roles.add(Roles.LOCKED);
+    }
+    
+    public void apply() {
+        
+        roles.remove(Roles.LOCKED);
         roles.add(Roles.USER);
+    }
+    
+    public void appointmentAdmin() {
+        
+        roles.add(Roles.ADMIN);
     }
     
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -112,5 +125,10 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         
         return isActive();
+    }
+    
+    public boolean isAdmin() {
+        
+        return roles.contains(Roles.ADMIN);
     }
 }

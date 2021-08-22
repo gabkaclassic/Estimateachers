@@ -3,9 +3,9 @@
 
 <@main.page>
 
-    <@ul.form_login>
-        <button type = "submit">Sign in</button>
-    </@ul.form_login>
+    <@ul.data_form textButton = "Sign in">
+
+    </@ul.data_form>
 
     <@ul.foreach collection = remarks![] />
 

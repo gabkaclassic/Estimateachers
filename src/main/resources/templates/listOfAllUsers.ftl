@@ -7,7 +7,7 @@
         <#if users??>
             <#list users as user>
                 <p>${user.username}</p>
-                <#if user.<img></img>
+
             </#list>
         </#if>
 

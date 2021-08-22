@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,12 +34,14 @@ public class UsersUtilities {
                                  String login,
                                  String password,
                                  String email,
+                                 MultipartFile cardPhoto,
                                  List<String> remarks) {
 
         return checkNames(firstName, lastName, remarks)
                 & checkLogin(login, remarks)
                 & checkPassword(password, remarks)
-                & checkEmail(email, remarks);
+                & checkEmail(email, remarks)
+                & checkFile(cardPhoto, remarks);
     }
     
     private static boolean checkNames(String firstName, String lastName, List<String> remarks) {
@@ -117,5 +120,15 @@ public class UsersUtilities {
         }
         
         return isCorrectEmailAddress;
+    }
+    
+    private static boolean checkFile(MultipartFile file, List<String> remarks) {
+        
+        boolean isCorrectFile = Objects.nonNull(file) && !file.isEmpty();
+        
+        if(!isCorrectFile)
+            remarks.add("A photo of your student card is required");
+        
+        return isCorrectFile;
     }
 }

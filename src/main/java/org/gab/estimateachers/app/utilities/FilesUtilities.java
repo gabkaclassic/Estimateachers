@@ -12,31 +12,43 @@ import java.util.*;
 @Component("filesUtilities")
 public class FilesUtilities {
     
-    @Value("${upload.path.student}")
-    private String studentUploadPath;
+    @Value("${upload.filename.default}")
+    private String defaultFilename;
+    
+    @Value("${upload.path.user}")
+    private String userUploadPath;
+    @Value("${upload.path.application}")
+    private String applicationUploadPath;
+    @Value("${upload.path.message}")
+    private String messageUploadPath;
     @Value("${upload.path.university}")
     private String universityUploadPath;
     @Value("${upload.path.dormitory}")
     private String dormitoryUploadPath;
     @Value("${upload.path.teacher}")
     private String teacherUploadPath;
-    @Value("${upload.path.default}")
-    private String defaultUploadPath;
     
     @PostConstruct
     public void method() {
-    
-        createDirectory(defaultUploadPath);
-        createDirectory(studentUploadPath);
+        
+        createDirectory(userUploadPath);
         createDirectory(dormitoryUploadPath);
         createDirectory(universityUploadPath);
         createDirectory(teacherUploadPath);
+        createDirectory(applicationUploadPath);
+        createDirectory(messageUploadPath);
     }
     
-    public String studentRegistrationFile(MultipartFile file) {
+    public String registrationFile(MultipartFile file, RegistrationType type) {
         
-        String filename = getFilename(file, studentUploadPath);
-    
+        String uploadPath = switch (type) {
+            case USER -> userUploadPath;
+            case MESSAGE -> messageUploadPath;
+            case APPLICATION -> applicationUploadPath;
+        };
+        
+        String filename = getFilename(file, uploadPath);
+        
         try {  //TO DO logging
             file.transferTo(new File(filename));
         } catch (IOException e) {
@@ -58,8 +70,9 @@ public class FilesUtilities {
         
         boolean fileIsNull = Objects.isNull(file);
         
-        String result = (fileIsNull ? defaultUploadPath : uploadPath)
-                .concat(UUID.randomUUID().toString());
+        String result = uploadPath
+                .concat(fileIsNull && !uploadPath.equals(applicationUploadPath) && !uploadPath.equals(messageUploadPath) ?
+                        defaultFilename : UUID.randomUUID().toString());
         
         if(fileIsNull)
             return result;

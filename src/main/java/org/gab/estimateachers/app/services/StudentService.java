@@ -1,8 +1,11 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.StudentRepository;
+import org.gab.estimateachers.app.repositories.system.ApplicationRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
+import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Student;
+import org.gab.estimateachers.entities.system.Application;
 import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +21,38 @@ public class StudentService {
     private StudentRepository studentRepository;
     
     @Autowired
+    @Qualifier("applicationRepository")
+    private ApplicationRepository applicationRepository;
+    
+    @Autowired
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
     
-    public void createStudent(String firstName,
+    public void sendApplication(String firstName,
                               String lastName,
                               Integer age,
                               Genders gender,
-                              MultipartFile file,
-                              User user
-                              ) {
+                              MultipartFile profilePhoto,
+                              MultipartFile cardPhoto,
+                              User user) {
     
+        user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.USER));
+        
         Student student = new Student(
                 firstName,
                 lastName,
                 age,
                 gender,
-                filesUtilities.studentRegistrationFile(file),
                 user
         );
-        System.out.println(student.getFilename());
-        studentRepository.save(student);
+    
+        Application application = new Application(
+                filesUtilities.registrationFile(cardPhoto, RegistrationType.APPLICATION),
+                student
+        );
+        
+        applicationRepository.save(application);
+        
+//        studentRepository.save(student);
     }
 }
