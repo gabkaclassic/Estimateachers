@@ -1,9 +1,6 @@
 package org.gab.estimateachers;
 
 import lombok.extern.log4j.Log4j;
-import org.gab.estimateachers.app.utilities.FilesUtilities;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -12,7 +9,7 @@ import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
+import org.springframework.stereotype.Component;
 
 @Log4j
 @SpringBootApplication

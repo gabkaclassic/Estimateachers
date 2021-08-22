@@ -12,44 +12,32 @@ import java.util.*;
 @Component("filesUtilities")
 public class FilesUtilities {
     
-    @Value("${upload.filename.default}")
-    private String defaultFilename;
+    @Value("${upload.filename.default.people}")
+    private String defaultFilenamePeople;
     
-    @Value("${upload.path.user}")
-    private String userUploadPath;
-    @Value("${upload.path.application}")
-    private String applicationUploadPath;
-    @Value("${upload.path.message}")
-    private String messageUploadPath;
-    @Value("${upload.path.university}")
-    private String universityUploadPath;
-    @Value("${upload.path.dormitory}")
-    private String dormitoryUploadPath;
-    @Value("${upload.path.teacher}")
-    private String teacherUploadPath;
+    @Value("${upload.filename.default.buildings}")
+    private String defaultFilenameBuildings;
+    
+    @Value("${upload.path}")
+    private String uploadPath;
     
     @PostConstruct
     public void method() {
         
-        createDirectory(userUploadPath);
-        createDirectory(dormitoryUploadPath);
-        createDirectory(universityUploadPath);
-        createDirectory(teacherUploadPath);
-        createDirectory(applicationUploadPath);
-        createDirectory(messageUploadPath);
+        createDirectory("classpath:".concat(uploadPath));
     }
     
     public String registrationFile(MultipartFile file, RegistrationType type) {
         
-        String uploadPath = switch (type) {
-            case USER -> userUploadPath;
-            case MESSAGE -> messageUploadPath;
-            case APPLICATION -> applicationUploadPath;
+        String defaultFilename = switch (type) {
+            case PEOPLE -> defaultFilenamePeople;
+            case BUILDING -> defaultFilenameBuildings;
+            case OTHER -> "";
         };
         
-        String filename = getFilename(file, uploadPath);
+        String filename = getFilename(file, defaultFilename);
         
-        try {  //TO DO logging
+        try {
             file.transferTo(new File(filename));
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,17 +54,20 @@ public class FilesUtilities {
             directory.mkdir();
     }
     
-    private String getFilename(MultipartFile file, String uploadPath) {
+    private String getFilename(MultipartFile file, String defaultFilename) {
         
-        boolean fileIsNull = Objects.isNull(file);
-        
-        String result = uploadPath
-                .concat(fileIsNull && !uploadPath.equals(applicationUploadPath) && !uploadPath.equals(messageUploadPath) ?
-                        defaultFilename : UUID.randomUUID().toString());
-        
-        if(fileIsNull)
-            return result;
-        
-        return result.concat(file.getOriginalFilename());
+        if(defaultFilename.isEmpty())
+            return uploadPath
+                    .concat(UUID.randomUUID().toString());
+        else {
+            
+            if(Objects.isNull(file))
+                return uploadPath
+                        .concat(defaultFilename);
+            else
+                return uploadPath
+                        .concat(UUID.randomUUID().toString())
+                        .concat(file.getOriginalFilename());
+        }
     }
 }

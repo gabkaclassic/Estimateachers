@@ -103,12 +103,9 @@ public class UsersController {
         return "/login";
     }
     
-    @PostMapping("/allUsers")
-    @GetMapping("/allUsers")
-    public String showAllUsers(Model model) {
+    @GetMapping("/users/edit/{id}")
+    public String edit(Model model) {
         
-        model.addAttribute("users", listUtilities.getUsersList());
-        
-        return "/listOfAllUsers";
+        return "/user_edit";
     }
 }

@@ -36,7 +36,7 @@ public class StudentService {
                               MultipartFile cardPhoto,
                               User user) {
     
-        user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.USER));
+        user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
         
         Student student = new Student(
                 firstName,
@@ -47,7 +47,7 @@ public class StudentService {
         );
     
         Application application = new Application(
-                filesUtilities.registrationFile(cardPhoto, RegistrationType.APPLICATION),
+                filesUtilities.registrationFile(cardPhoto, RegistrationType.OTHER),
                 student
         );
         
