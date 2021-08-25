@@ -5,6 +5,8 @@
 
 <@main.user_menu />
 
+<a href = "/admin">I am admin</a>
+
 <@ul.logout />
 
 </@main.page>

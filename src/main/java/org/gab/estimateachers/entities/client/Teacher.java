@@ -70,4 +70,9 @@ public class Teacher {
     )
     private Set<University> universities = new HashSet<>();
     
+    public Teacher(String firstName, String lastName) {
+        
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }

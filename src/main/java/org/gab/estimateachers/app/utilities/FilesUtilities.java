@@ -22,7 +22,7 @@ public class FilesUtilities {
     private String uploadPath;
     
     @PostConstruct
-    public void method() {
+    public void createDirectories() {
         
         createDirectory("classpath:".concat(uploadPath));
     }

@@ -35,7 +35,6 @@ public class StudentService {
     
     public void sendApplication(String firstName,
                               String lastName,
-                              Integer age,
                               Genders gender,
                               MultipartFile profilePhoto,
                               MultipartFile cardPhoto,
@@ -46,7 +45,6 @@ public class StudentService {
         Student student = new Student(
                 firstName,
                 lastName,
-                age,
                 gender,
                 user
         );

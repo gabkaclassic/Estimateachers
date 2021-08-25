@@ -12,6 +12,7 @@ import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -73,5 +74,10 @@ public class ListsUtilities {
         
         return universityRepository.findByAbbreviation(abbreviationUniversity).getFaculties()
                 .stream().map(Faculty::getTitle).collect(Collectors.toList());
+    }
+    
+    public List<User> getFilteredUsersList(String login) {
+        
+        return userService.findByLogin(login);
     }
 }

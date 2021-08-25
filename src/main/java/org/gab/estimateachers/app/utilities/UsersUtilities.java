@@ -20,6 +20,7 @@ public class UsersUtilities {
     private static final Pattern PASSWORD_PATTERN_SECOND = Pattern.compile("[0-9]+");
     private static final Pattern PASSWORD_PATTERN_THREE = Pattern.compile("[^0-9a-zA-Z]+");
     private static final Pattern LOGIN_PATTERN = Pattern.compile("[a-zA-z]+");
+    private static final Pattern NAME_PATTERN = Pattern.compile("[a-zA-zА-Яа-я]+");
     
     private static final int MIN_LENGTH_PASSWORD = 8;
     private static final int MAX_LENGTH_PASSWORD = 32;
@@ -47,10 +48,10 @@ public class UsersUtilities {
     private static boolean checkNames(String firstName, String lastName, List<String> remarks) {
         
         boolean isCorrectNames = (Objects.nonNull(firstName)
-                && LOGIN_PATTERN.matcher(firstName).matches()
+                && NAME_PATTERN.matcher(firstName).matches()
                 && firstName.length() >= MIN_LENGTH_LOGIN && firstName.length() <= MAX_LENGTH_LOGIN)
                 && (Objects.nonNull(lastName)
-                && LOGIN_PATTERN.matcher(lastName).matches()
+                && NAME_PATTERN.matcher(lastName).matches()
                 && lastName.length() >= MIN_LENGTH_LOGIN && lastName.length() <= MAX_LENGTH_LOGIN);
         
         if(!isCorrectNames)

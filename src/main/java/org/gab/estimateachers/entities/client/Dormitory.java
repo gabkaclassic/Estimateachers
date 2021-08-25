@@ -57,4 +57,15 @@ public class Dormitory {
             fetch = FetchType.LAZY
     )
     private Set<Student> students = new HashSet<>();
+    
+    public Dormitory(String title, University university) {
+        
+        this.title = title;
+        this.university = university;
+    }
+    
+    public void addPhoto(String filename) {
+        
+        photos.add(filename);
+    }
 }

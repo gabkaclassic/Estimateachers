@@ -39,5 +39,10 @@ public class UserService implements UserDetailsService {
         
         userRepository.save(user);
     }
+    
+    public List<User> findByLogin(String login) {
+        
+        return List.of(userRepository.findByUsername(login));
+    }
 }
 

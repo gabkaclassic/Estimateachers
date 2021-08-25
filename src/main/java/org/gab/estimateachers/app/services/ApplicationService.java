@@ -40,22 +40,7 @@ public class ApplicationService {
     
     public Application findById(Long id) {
         
-        if(Objects.isNull(id))
-            throw new NullPointerException("Id is null");
-        
-        Optional<Application> result = applicationRepository.findById(id);
-        Application application = new Application();
-                ;
-        try {
-            
-            application = result.get();
-            
-        } catch (NoSuchElementException exception) {
-    
-            System.out.println("No such application with ID: ".concat(id.toString()));
-        }
-        
-        return application;
+        return applicationRepository.getOne(id);
     }
     
     public void apply(Long applicationId, String facultyTitle, String dormitoryTitle, Integer course) {

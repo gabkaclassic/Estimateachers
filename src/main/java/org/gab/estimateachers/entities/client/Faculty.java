@@ -23,7 +23,10 @@ public class Faculty {
     
     @Getter
     @Setter
-    @Column(name = "title")
+    @Column(
+            name = "title",
+            nullable = false
+    )
     private String title;
     
     @Getter
@@ -50,4 +53,10 @@ public class Faculty {
     )
     private Set<Student> students = new HashSet<>();
 
+    public Faculty(String title, University university){
+        
+        this.title = title;
+        this.university = university;
+    }
+    
 }

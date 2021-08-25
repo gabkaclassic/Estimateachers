@@ -62,7 +62,6 @@ public class UsersController {
             @RequestParam(name = "email") String email,
             @RequestParam(name = "password") String password,
             @RequestParam(name = "genders") String genderName,
-            @RequestParam(name = "age") Integer age,
             @RequestParam(name = "profilePhoto") MultipartFile profilePhoto,
             @RequestParam(name = "cardPhoto") MultipartFile cardPhoto,
             Model model
@@ -86,7 +85,6 @@ public class UsersController {
         studentService.sendApplication(
                 firstName,
                 lastName,
-                age,
                 Genders.valueOf(genderName.toUpperCase()),
                 profilePhoto,
                 cardPhoto,
@@ -102,7 +100,7 @@ public class UsersController {
         return "/login";
     }
     
-    @GetMapping("/users/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String edit(Model model) {
         
         return "/user_edit";

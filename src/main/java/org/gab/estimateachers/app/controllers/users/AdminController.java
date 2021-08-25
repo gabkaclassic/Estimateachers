@@ -40,19 +40,19 @@ public class AdminController {
     @Qualifier("universityService")
     private UniversityService universityService;
     
-    @GetMapping("/")
-    public String adminPanel(@AuthenticationPrincipal User admin,
-                             Model model) {
-        
-        model.addAttribute("admin", admin);
-        
-        return "/adminPanel";
-    }
-    
     @GetMapping("/allUsers")
     public String showAllUsers(Model model) {
         
         model.addAttribute("users", listUtilities.getUsersList());
+        
+        return "/users_list";
+    }
+    
+    @PostMapping("/allUsers")
+    public String findUserByLogin(@RequestParam("filter") String login,
+                                  Model model) {
+        
+        model.addAttribute("users", listUtilities.getFilteredUsersList(login));
         
         return "/users_list";
     }
@@ -120,6 +120,7 @@ public class AdminController {
         
         applicationService.deleteById(applicationId);
         
-        return "redirect:/applications";
+        return "redirect:/admin/applications";
     }
+    
 }

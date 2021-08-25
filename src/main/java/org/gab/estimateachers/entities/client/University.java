@@ -27,7 +27,11 @@ public class University {
     
     @Getter
     @Setter
-    @Column(name = "title")
+    @Column(
+            name = "title",
+            nullable = false,
+            unique = true
+    )
     private String title;
     
     @Getter
@@ -95,4 +99,18 @@ public class University {
         abbreviation = builder.toString();
     }
     
+    public void addDormitory(Dormitory dormitory) {
+        
+        dormitories.add(dormitory);
+    }
+    
+    public void addFaculty(Faculty faculty) {
+        
+        faculties.add(faculty);
+    }
+    
+    public void addPhoto(String filename) {
+        
+        photos.add(filename);
+    }
 }

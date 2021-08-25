@@ -38,9 +38,6 @@ public class Student {
     )
     private String lastName;
     
-    @Column(name = "age")
-    private Integer age;
-    
     @Column(
             name = "gender",
             nullable = false
@@ -85,11 +82,10 @@ public class Student {
     )
     private Dormitory dormitory;
     
-    public Student(String firstName, String lastName, int age, Genders gender, User account) {
+    public Student(String firstName, String lastName, Genders gender, User account) {
         
         this.firstName = firstName;
         this.lastName = lastName;
-        this.age = age;
         this.account = account;
         this.gender = gender;
     }
