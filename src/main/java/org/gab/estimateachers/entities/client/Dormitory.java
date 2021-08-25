@@ -29,16 +29,16 @@ public class Dormitory {
     private String title;
     
     @Column(name = "total_rating")
-    private double totalRating;
+    private Double totalRating;
     
     @Column(name = "cleaning_rating")
-    private double cleaningRating;
+    private Double cleaningRating;
     
     @Column(name = "roommates_rating")
-    private double roommatesRating;
+    private Double roommatesRating;
     
     @Column(name = "capacity_rating")
-    private double capacityRating;
+    private Double capacityRating;
     
     @ElementCollection(
             targetClass = String.class,

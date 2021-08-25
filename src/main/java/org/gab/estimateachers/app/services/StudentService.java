@@ -28,6 +28,11 @@ public class StudentService {
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
     
+    public void save(Student student) {
+        
+        studentRepository.save(student);
+    }
+    
     public void sendApplication(String firstName,
                               String lastName,
                               Integer age,
@@ -52,7 +57,5 @@ public class StudentService {
         );
         
         applicationRepository.save(application);
-        
-//        studentRepository.save(student);
     }
 }

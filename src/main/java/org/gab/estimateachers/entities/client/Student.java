@@ -39,7 +39,7 @@ public class Student {
     private String lastName;
     
     @Column(name = "age")
-    private int age;
+    private Integer age;
     
     @Column(
             name = "gender",

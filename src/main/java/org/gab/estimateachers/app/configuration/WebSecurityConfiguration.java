@@ -1,20 +1,19 @@
 package org.gab.estimateachers.app.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.firewall.HttpFirewall;
-import org.springframework.security.web.firewall.HttpStatusRequestRejectedHandler;
-import org.springframework.security.web.firewall.RequestRejectedHandler;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 @Configuration
@@ -23,18 +22,20 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     
     @Autowired
-    private UserDetailsService userDetailsService;
+    @Qualifier("userService")
+    private UserDetailsService userService;
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.
         authorizeRequests()
-                .antMatchers("/", "/users/registry", "/users/login", "/static/**", "/img/**").permitAll()
+                .antMatchers("/", "/users/registry", "/static/**", "/img/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/users/login")
-                .successForwardUrl("/users/allUsers")
+                .defaultSuccessUrl("/")
+                .successForwardUrl("/")
                 .permitAll()
                 .and()
                 .logout()
@@ -63,8 +64,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(userDetailsService)
+                .userDetailsService(userService)
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
+    
+    
     
 }

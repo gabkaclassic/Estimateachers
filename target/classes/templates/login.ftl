@@ -3,9 +3,10 @@
 
 <@main.page>
 
-    <@ul.form>
-        <button type = "submit">Sign in</button>
-    </@ul.form>
+    <@ul.data_form textButton = "Sign in" />
+
+
+    <@ul.foreach collection = remarks![] />
 
     <@ul.logout />
 

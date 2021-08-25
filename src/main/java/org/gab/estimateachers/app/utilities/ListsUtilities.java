@@ -1,18 +1,19 @@
 package org.gab.estimateachers.app.utilities;
 
+import org.gab.estimateachers.app.repositories.client.DormitoryRepository;
+import org.gab.estimateachers.app.repositories.client.FacultyRepository;
 import org.gab.estimateachers.app.repositories.client.UniversityRepository;
-import org.gab.estimateachers.app.repositories.system.ApplicationRepository;
-import org.gab.estimateachers.app.repositories.system.UserRepository;
-import org.gab.estimateachers.entities.client.University;
+import org.gab.estimateachers.app.services.ApplicationService;
+import org.gab.estimateachers.app.services.UserService;
+import org.gab.estimateachers.entities.client.Dormitory;
+import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.system.Application;
 import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,16 +26,24 @@ public class ListsUtilities {
     private UniversityRepository universityRepository;
     
     @Autowired
-    @Qualifier("applicationRepository")
-    private ApplicationRepository applicationRepository;
+    @Qualifier("dormitoryRepository")
+    private DormitoryRepository dormitoryRepository;
     
     @Autowired
-    @Qualifier("userRepository")
-    private UserRepository userRepository;
+    @Qualifier("facultyRepository")
+    private FacultyRepository facultyRepository;
+    
+    @Autowired
+    @Qualifier("applicationService")
+    private ApplicationService applicationService;
+    
+    @Autowired
+    @Qualifier("userService")
+    private UserService userService;
     
     public List<User> getUsersList() {
     
-        return this.userRepository.findAll();
+        return userService.findALl();
     }
     
     public List<String> getGendersList() {
@@ -46,20 +55,23 @@ public class ListsUtilities {
     
      public List<String> getUniversitiesAbbreviationsList() {
     
-        List<String> universities = new ArrayList<>();
-    
-        for(University university: this.universityRepository.findAll())
-            universities.add(university.getAbbreviation());
-    
-        universities = universities.stream()
-                .sorted()
-                .collect(Collectors.toList());
-        
-        return universities;
+        return universityRepository.findAllAbbreviation();
     }
     
     public List<Application> getApplicationList() {
         
-        return applicationRepository.findAll();
+        return applicationService.findAll();
+    }
+    
+    public List<String> getDormitoriesTitlesList(String abbreviationUniversity) {
+        
+        return universityRepository.findByAbbreviation(abbreviationUniversity).getDormitories()
+                .stream().map(Dormitory::getTitle).collect(Collectors.toList());
+    }
+    
+    public List<String> getFacultiesTitlesList(String abbreviationUniversity) {
+        
+        return universityRepository.findByAbbreviation(abbreviationUniversity).getFaculties()
+                .stream().map(Faculty::getTitle).collect(Collectors.toList());
     }
 }

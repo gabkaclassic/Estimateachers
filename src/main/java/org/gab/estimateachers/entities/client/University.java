@@ -1,7 +1,9 @@
 package org.gab.estimateachers.entities.client;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CollectionType;
 import org.hibernate.annotations.Type;
 
@@ -11,45 +13,61 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "universities")
 public class University {
-
+    
+    @Getter
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     
+    @Getter
+    @Setter
     @Column(name = "title")
     private String title;
     
+    @Getter
+    @Setter
     @Column(name = "abbreviation")
     private String abbreviation;
     
+    @Getter
+    @Setter
     @Column(name = "rating")
-    private double rating;
+    private Double rating;
     
+    @Getter
+    @Setter
     @ElementCollection(
             targetClass = String.class,
             fetch = FetchType.LAZY
     )
     private Set<String> photos;
     
+    @Getter
+    @Setter
     @OneToMany(
             orphanRemoval = true,
             targetEntity = Faculty.class,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
     )
     private Set<Faculty> faculties = new HashSet<>();
     
+    @Getter
+    @Setter
     @ManyToMany(
             targetEntity = Teacher.class,
             cascade = CascadeType.ALL
     )
     private Set<Teacher> teachers = new HashSet<>();
     
+    @Getter
+    @Setter
     @OneToMany(
             targetEntity = Student.class,
             cascade = CascadeType.ALL,
@@ -57,10 +75,12 @@ public class University {
     )
     private Set<Student> students = new HashSet<>();
     
+    @Getter
+    @Setter
     @OneToMany(
             targetEntity = Dormitory.class,
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     private Set<Dormitory> dormitories = new HashSet<>();
     

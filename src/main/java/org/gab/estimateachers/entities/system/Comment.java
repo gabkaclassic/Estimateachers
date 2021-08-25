@@ -17,7 +17,7 @@ public class Comment {
     private Long id;
     
     @Column(name = "rating")
-    private int rating;
+    private Double rating;
     
     @ManyToOne(
             fetch = FetchType.EAGER,
