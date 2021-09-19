@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Objects;
+
 @Controller
 @RequestMapping("/")
 public class HomePageController {
@@ -15,6 +17,7 @@ public class HomePageController {
     public String homepage(@AuthenticationPrincipal User user, Model model) {
         
         model.addAttribute("user", user);
+        model.addAttribute("isAdmin", (!Objects.isNull(user) && user.isAdmin()));
         
         return "/homepage";
     }

@@ -8,6 +8,6 @@
 
     <@ul.foreach collection = remarks![] />
 
-    <@ul.logout />
+    <a href = "/users/registry">Sign up</a>
 
 </@main.page>

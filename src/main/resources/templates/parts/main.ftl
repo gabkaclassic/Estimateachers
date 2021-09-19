@@ -1,4 +1,4 @@
-<#import "parts/users_logic.ftl" as ul>
+<#import "users_logic.ftl" as ul>
 
 <#macro page>
 <html lang = "en">
@@ -20,12 +20,10 @@
 </html>
 </#macro>
 
+<#macro menu user="NULL">
 
-
-<#macro menu user>
-
-    <#if user??>
-        <#if user.isAdmin>
+    <#if user?? && user != "NULL">
+        <#if isAdmin>
             <a href = "/admin/allUsers">All users</a>
             <a href = "/admin/applications">Applications</a>
         </#if>
@@ -37,4 +35,5 @@
     </#if>
 
     <@ul.logout />
+
 </#macro>

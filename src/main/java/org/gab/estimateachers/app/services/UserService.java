@@ -44,5 +44,16 @@ public class UserService implements UserDetailsService {
         
         return List.of(userRepository.findByUsername(login));
     }
+    
+    public void update(Long id, String username, String password, String email) {
+        
+        User user = userRepository.getOne(id);
+        user.setUsername(username);
+        user.setPassword(password);
+        
+        user.setEmail(email); //TO DO
+        
+        userRepository.save(user);
+    }
 }
 

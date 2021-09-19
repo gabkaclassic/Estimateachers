@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,5 +105,18 @@ public class UsersController {
     public String edit(Model model) {
         
         return "/user_edit";
+    }
+    
+    @PostMapping("/edit/{id}")
+    public String egitProcess(@PathVariable("id") Long id,
+                              @RequestParam("username") String username,
+                              @RequestParam("password") String password,
+                              @RequestParam("email") String email,
+                              Model model,
+                              HttpServletRequest request) {
+        
+        userService.update(id, username, password, email);
+        
+        return "redirect:".concat(request.getHeader("referer"));
     }
 }

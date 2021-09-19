@@ -3,7 +3,7 @@
 
 <@main.page>
 
-    <@main.menu user=user />
+    <@main.menu user = user />
 
     <h2><span>Applications:</span></h2>
 

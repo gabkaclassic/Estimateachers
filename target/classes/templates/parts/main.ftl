@@ -1,34 +1,39 @@
+<#import "users_logic.ftl" as ul>
+
 <#macro page>
-    <html lang = "en">
+<html lang = "en">
 
-        <head>
+<head>
 
-            <meta charset="UTF-8">
-            <title>Esimateachers</title>
-            <link href = "/main_style.css">
-        </head>
+    <meta charset="UTF-8">
+    <title>Esimateachers</title>
+    <link href = "/main_style.css">
+</head>
 
-        <body>
+<body>
 
-        <#nested>
+<#nested>
 
 
-        </body>
+</body>
 
-    </html>
+</html>
 </#macro>
 
-<#macro admin_menu>
+<#macro menu user="NULL">
 
-    <a href = "/admin/allUsers">All users</a>
-    <a href = "/admin/applications">Applications</a>
+    <#if user?? && user != "NULL">
+        <#if isAdmin>
+            <a href = "/admin/allUsers">All users</a>
+            <a href = "/admin/applications">Applications</a>
+        </#if>
+        <a href = "/users/chats">Chats</a>
+        <a href = "/users/cards">Cards</a>
+    <#else>
+        <a href = "/users/login">Sign in</a>
+        <a href = "/users/registry">Sign up</a>
+    </#if>
 
-</#macro>
-
-<#macro user_menu>
-
-    <a href = "/users/registry">Sign up</a>
-    <a href = "/users/login">Sign in</a>
-
+    <@ul.logout />
 
 </#macro>

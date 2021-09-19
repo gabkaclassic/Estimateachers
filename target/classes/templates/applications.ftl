@@ -3,7 +3,9 @@
 
 <@main.page>
 
-<h2><span>Applications:</span></h2>
+    <@main.menu user = user />
+
+    <h2><span>Applications:</span></h2>
 
     <#if applications??>
 
