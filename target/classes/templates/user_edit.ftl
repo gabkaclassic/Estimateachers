@@ -1,14 +1,17 @@
 <#import "/parts/main.ftl" as main>
+<#import "parts/users_logic.ftl" as ul>
 
 <@main.page>
 
-    <@main.user_menu user=user />
+    <@ul.data_form registry = false textButton = "Edit">
 
-    <form method = "post" enctype = "multipart/form-data">
-        <input type = "text" name = "username" value = "Login: ${user.username}" />
-        <input type = "text" name = "password" value = "Password: ${user.password}" />
-        <input type = "email" name = "email" value = "Email: ${user.email}" />
-        <@ul.file type = "file" name = "profilePhoto" id = "profilePhoto" text = "Change profile photo" />
-    </form>
+    Login: <input type = "text" name = "username" value = "${user.username}" />
+    Password: <input type = "text" name = "password" value = "${user.password}" />
+    Email: <input type = "email" name = "email" value = "${(user.email!' ')}" />
+    <@ul.file type = "file" name = "profilePhoto" id = "profilePhoto" text = "Change profile photo" />
+
+    </@ul.data_form>
+
+    <@ul.foreach collection = remarks![] />
 
 </@main.page>

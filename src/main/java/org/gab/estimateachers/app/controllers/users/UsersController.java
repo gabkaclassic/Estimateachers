@@ -1,7 +1,5 @@
 package org.gab.estimateachers.app.controllers.users;
 
-import org.gab.estimateachers.app.repositories.client.UniversityRepository;
-import org.gab.estimateachers.app.repositories.system.UserRepository;
 import org.gab.estimateachers.app.services.StudentService;
 import org.gab.estimateachers.app.services.UserService;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
@@ -11,17 +9,16 @@ import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/users")
@@ -69,7 +66,7 @@ public class UsersController {
     ) {
     
         List<String> remarks = new ArrayList<>();
-        boolean isCorrectData = usersUtilities.checkUserData(
+        boolean isCorrectData = usersUtilities.checkUserDataFromRegistration(
                 firstName,
                 lastName,
                 username,
@@ -102,21 +99,45 @@ public class UsersController {
     }
     
     @GetMapping("/edit/{id}")
-    public String edit(Model model) {
+    public String edit(@AuthenticationPrincipal User currentUser,
+                       @PathVariable(value = "id") Long userId,
+                       Model model) {
+        
+        if(Objects.isNull(currentUser)
+                || (!currentUser.isAdmin() && !currentUser.getId().equals(userId)))
+            return "/error_forbidden";
+        
+        model.addAttribute("user", (currentUser.getId().equals(userId)) ?
+                currentUser : userService.findById(userId));
+        model.addAttribute("isAdmin", currentUser.isAdmin());
         
         return "/user_edit";
     }
     
     @PostMapping("/edit/{id}")
-    public String egitProcess(@PathVariable("id") Long id,
+    public String egitProcess(@PathVariable("id") Long userId,
                               @RequestParam("username") String username,
                               @RequestParam("password") String password,
                               @RequestParam("email") String email,
-                              Model model,
-                              HttpServletRequest request) {
+                              Model model) {
         
-        userService.update(id, username, password, email);
+        List<String> remarks = new ArrayList<>();
+        User user = userService.findById(userId);
         
-        return "redirect:".concat(request.getHeader("referer"));
+        usersUtilities.checkLoginWithoutUnique(username, remarks);
+        usersUtilities.checkPassword(password, remarks);
+        if(Objects.nonNull(user.getEmail())
+                && !user.getEmail().equals(email))
+            usersUtilities.checkEmail(email, remarks);
+        
+        if(!remarks.isEmpty()) {
+            
+            model.addAttribute("remarks", remarks);
+            return edit(user, userId, model);
+        }
+        
+        userService.update(userId, username, password, email);
+        
+        return "/homepage";
     }
 }

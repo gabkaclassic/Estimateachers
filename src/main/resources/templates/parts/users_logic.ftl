@@ -1,16 +1,24 @@
 <#import "security.ftl" as security>
 
-<#macro data_form textButton = "Submit">
+<#macro data_form registry textButton = "Submit">
 
 <div>
     <form method = "post" enctype = "multipart/form-data">
-        <input type = "text" name = "username" id = "username" placeholder = "Your login" /> <br>
-        <input type = "password" name = "password" id = "password"  placeholder = "Password" /> <br>
+        <#if registry>
+            <@from_registry_or_login />
+        </#if>
         <#nested>
         <@security.token />
         <button type = "submit">${textButton}</button>
     </form>
 </div>
+
+</#macro>
+
+<#macro from_registry_or_login>
+
+<input type = "text" name = "username" id = "username" placeholder = "Your login" /> <br>
+<input type = "password" name = "password" id = "password"  placeholder = "Password" /> <br>
 
 </#macro>
 

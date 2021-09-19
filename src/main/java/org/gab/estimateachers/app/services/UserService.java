@@ -17,8 +17,8 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
     
-    public List<User> findALl() {
-        
+    public List<User> findAll() {
+       
         return userRepository.findAll();
     }
     
@@ -35,9 +35,14 @@ public class UserService implements UserDetailsService {
         return user;
     }
     
+    public User findById(Long id) {
+        
+        return userRepository.findById(id).orElseThrow(NullPointerException::new); //TO DO
+    }
+    
     public void save(User user) {
         
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
     
     public List<User> findByLogin(String login) {

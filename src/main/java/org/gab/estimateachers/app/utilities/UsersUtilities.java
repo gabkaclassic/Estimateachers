@@ -30,7 +30,7 @@ public class UsersUtilities {
     @Autowired
     @Qualifier("userRepository")
     private UserRepository userRepository;
-    public boolean checkUserData(String firstName,
+    public boolean checkUserDataFromRegistration(String firstName,
                                  String lastName,
                                  String login,
                                  String password,
@@ -45,7 +45,7 @@ public class UsersUtilities {
                 & checkFile(cardPhoto, remarks);
     }
     
-    private static boolean checkNames(String firstName, String lastName, List<String> remarks) {
+    public static boolean checkNames(String firstName, String lastName, List<String> remarks) {
         
         boolean isCorrectNames = (Objects.nonNull(firstName)
                 && NAME_PATTERN.matcher(firstName).matches()
@@ -60,7 +60,7 @@ public class UsersUtilities {
         return isCorrectNames;
     }
     
-    private static boolean checkPassword(String password, List<String> remarks) {
+    public boolean checkPassword(String password, List<String> remarks) {
         
        if(Objects.isNull(password)
                || (password = StringUtils.trimAllWhitespace(password)).isEmpty()) {
@@ -83,30 +83,23 @@ public class UsersUtilities {
        return isCorrectPassword;
     }
     
-    private boolean checkLogin(String login, List<String> remarks) {
+    public boolean checkLogin(String login, List<String> remarks) {
         
-        if(Objects.isNull(login)
-                || (login = StringUtils.trimAllWhitespace(login)).isEmpty()) {
+       boolean isCorrectLogin = checkLoginWithoutUnique(login, remarks);
     
-            remarks.add("Enter your login");
+        if(!isCorrectLogin)
+            remarks.add("The login can contain from 2 to 30 characters and 1 letter");
+        
+        if(userRepository.existsByUsername(login)) {
             
-            return false;
-        }
-    
-        if(userRepository.existsByUsername(login))
             remarks.add("Entered login is already in use");
-        
-            boolean isCorrectLogin = (login.length() >= MIN_LENGTH_LOGIN)
-                    && (login.length() <= MAX_LENGTH_LOGIN)
-                    && LOGIN_PATTERN.matcher(login).find();
-        
-            if(!isCorrectLogin)
-                remarks.add("The login can contain from 2 to 30 characters and 1 letter");
+            isCorrectLogin = false;
+        }
             
             return isCorrectLogin;
         }
     
-    private boolean checkEmail(String email, List<String> remarks) {
+    public boolean checkEmail(String email, List<String> remarks) {
         
         boolean isCorrectEmailAddress = Objects.isNull(email)
                 || email.isEmpty()
@@ -123,7 +116,7 @@ public class UsersUtilities {
         return isCorrectEmailAddress;
     }
     
-    private static boolean checkFile(MultipartFile file, List<String> remarks) {
+    public static boolean checkFile(MultipartFile file, List<String> remarks) {
         
         boolean isCorrectFile = Objects.nonNull(file) && !file.isEmpty();
         
@@ -131,5 +124,25 @@ public class UsersUtilities {
             remarks.add("A photo of your student card is required");
         
         return isCorrectFile;
+    }
+    
+    public boolean checkLoginWithoutUnique(String login, List<String> remarks) {
+    
+        if(Objects.isNull(login)
+                || (login = StringUtils.trimAllWhitespace(login)).isEmpty()) {
+        
+            remarks.add("Enter your login");
+        
+            return false;
+        }
+    
+        boolean isCorrectLogin = (login.length() >= MIN_LENGTH_LOGIN)
+                && (login.length() <= MAX_LENGTH_LOGIN)
+                && LOGIN_PATTERN.matcher(login).find();
+    
+        if(!isCorrectLogin)
+            remarks.add("The login can contain from 2 to 30 characters and 1 letter");
+        
+        return isCorrectLogin;
     }
 }

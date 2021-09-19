@@ -3,7 +3,7 @@
 
 <@main.page>
 
-    <@ul.data_form textButton = "Sign in" />
+    <@ul.data_form registry = true textButton = "Sign in" />
 
 
     <@ul.foreach collection = remarks![] />

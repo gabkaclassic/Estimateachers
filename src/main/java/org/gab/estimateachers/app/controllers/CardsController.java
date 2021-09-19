@@ -1,4 +1,4 @@
-package org.gab.estimateachers.app.controllers.users;
+package org.gab.estimateachers.app.controllers;
 
 import org.gab.estimateachers.app.services.DormitoryService;
 import org.gab.estimateachers.app.services.FacultyService;

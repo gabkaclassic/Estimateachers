@@ -3,7 +3,7 @@
 
 <@main.page>
 
-    <@ul.data_form textButton = "Sign up">
+    <@ul.data_form registry = true textButton = "Sign up">
 
         <input type = "text" id = "firstName" name = "firstName" placeholder = "Your first name" /> <br>
         <input type = "text" id = "lastName" name = "lastName" placeholder = "Your last name" /> <br>
@@ -14,7 +14,7 @@
 
     </@ul.data_form>
 
-    <@ul.foreach collection = remarks />
+    <@ul.foreach collection = remarks![] />
 
     <a href = "/users/login">Sign in </a>
 

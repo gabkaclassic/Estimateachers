@@ -44,7 +44,7 @@ public class ListsUtilities {
     
     public List<User> getUsersList() {
     
-        return userService.findALl();
+        return userService.findAll();
     }
     
     public List<String> getGendersList() {

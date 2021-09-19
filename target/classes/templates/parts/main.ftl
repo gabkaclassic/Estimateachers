@@ -27,6 +27,7 @@
             <a href = "/admin/allUsers">All users</a>
             <a href = "/admin/applications">Applications</a>
         </#if>
+        <a href = "/users/edit/${user.id}">Edit profile</a>
         <a href = "/users/chats">Chats</a>
         <a href = "/users/cards">Cards</a>
     <#else>
