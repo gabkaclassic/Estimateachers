@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service("universityService")
-public class UniversityService {
+public class UniversityService implements org.gab.estimateachers.app.services.Service<University> {
     
     @Autowired
     @Qualifier("universityRepository")
@@ -31,6 +33,16 @@ public class UniversityService {
         save(university);
     }
     
+    public List<University> findAll() {
+        
+        return universityRepository.findAll();
+    }
+    
+    public void deleteById(Long id) {
+        
+        universityRepository.deleteById(id);
+    }
+    
     public University findByAbbreviation(String abbreviation) {
         
         return universityRepository.findByAbbreviation(abbreviation);
@@ -38,6 +50,6 @@ public class UniversityService {
     
     public University findById(Long id) {
         
-        return universityRepository.findById(id).get();
+        return universityRepository.getOne(id);
     }
 }

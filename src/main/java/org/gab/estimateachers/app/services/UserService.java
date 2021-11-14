@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service("userService")
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService, org.gab.estimateachers.app.services.Service<User>  {
     
     @Autowired
     private UserRepository userRepository;
@@ -20,6 +20,11 @@ public class UserService implements UserDetailsService {
     public List<User> findAll() {
        
         return userRepository.findAll();
+    }
+    
+    public void deleteById(Long id) {
+        
+        userRepository.deleteById(id);
     }
     
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

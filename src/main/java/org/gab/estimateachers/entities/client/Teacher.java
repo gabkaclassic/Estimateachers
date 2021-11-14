@@ -56,6 +56,12 @@ public class Teacher {
     )
     private Set<String> excuses = new HashSet<>();
     
+    @ElementCollection(
+            targetClass = String.class,
+            fetch = FetchType.LAZY
+    )
+    private Set<String> photos;
+    
     @ManyToMany(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
@@ -74,5 +80,10 @@ public class Teacher {
         
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+    
+    public String getTitle() {
+        
+        return lastName.concat(" ").concat(firstName);
     }
 }

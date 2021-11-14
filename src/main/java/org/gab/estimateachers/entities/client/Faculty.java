@@ -30,6 +30,18 @@ public class Faculty {
     private String title;
     
     @Getter
+    @Column(name = "total_rating")
+    private Double totalRating;
+    
+    @Getter
+    @Column(name = "price_rating")
+    private Double priceRating;
+    
+    @Getter
+    @Column(name = "education_rating")
+    private Double educationRating;
+    
+    @Getter
     @Setter
     @ManyToOne(
             cascade = CascadeType.ALL,

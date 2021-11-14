@@ -2,6 +2,6 @@
 
 <@main.page>
 
-   <@main.menu user=user />
+   <@main.menu user=user isAdmin=isAdmin />
 
 </@main.page>

@@ -10,12 +10,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
 
-@Service
-public class ApplicationService {
+@Service("applicationService")
+public class ApplicationService implements org.gab.estimateachers.app.services.Service<Application> {
     
     @Autowired
     @Qualifier("applicationRepository")
@@ -41,6 +38,11 @@ public class ApplicationService {
     public Application findById(Long id) {
         
         return applicationRepository.getOne(id);
+    }
+    
+    public void save(Application object) {
+        
+        applicationRepository.save(object);
     }
     
     public void apply(Long applicationId, String facultyTitle, String dormitoryTitle, Integer course) {

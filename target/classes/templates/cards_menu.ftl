@@ -2,6 +2,7 @@
 
 <@main.page>
 
-   <@main.menu user=user isAdmin=isAdmin />
+    <@main.menu user=user />
+    <@main.cards_menu />
 
 </@main.page>

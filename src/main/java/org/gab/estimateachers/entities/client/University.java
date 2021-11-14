@@ -41,8 +41,8 @@ public class University {
     
     @Getter
     @Setter
-    @Column(name = "rating")
-    private Double rating;
+    @Column(name = "total_rating")
+    private Double totalRating;
     
     @Getter
     @Setter

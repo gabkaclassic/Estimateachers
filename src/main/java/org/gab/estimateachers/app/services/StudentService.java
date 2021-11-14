@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service("studentService")
-public class StudentService {
+public class StudentService implements org.gab.estimateachers.app.services.Service<Student> {
     
     @Autowired
     @Qualifier("studentRepository")
@@ -28,9 +30,24 @@ public class StudentService {
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
     
+    public Student findById(Long id) {
+        
+        return studentRepository.getOne(id);
+    }
+    
     public void save(Student student) {
         
         studentRepository.save(student);
+    }
+    
+    public List<Student> findAll() {
+        
+        return studentRepository.findAll();
+    }
+    
+    public void deleteById(Long id) {
+        
+        studentRepository.deleteById(id);
     }
     
     public void sendApplication(String firstName,

@@ -2,11 +2,8 @@ package org.gab.estimateachers.entities.client;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 
