@@ -1,7 +1,6 @@
 package org.gab.estimateachers.app.utilities;
 
 import org.gab.estimateachers.app.repositories.system.UserRepository;
-import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -9,6 +8,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -32,30 +32,40 @@ public class UsersUtilities {
     private UserRepository userRepository;
     public boolean checkUserDataFromRegistration(String firstName,
                                  String lastName,
+                                 String patronymic,
                                  String login,
                                  String password,
                                  String email,
                                  MultipartFile cardPhoto,
                                  List<String> remarks) {
 
-        return checkNames(firstName, lastName, remarks)
+        return checkNames(firstName, lastName, patronymic, remarks)
                 & checkLogin(login, remarks)
                 & checkPassword(password, remarks)
                 & checkEmail(email, remarks)
                 & checkFile(cardPhoto, remarks);
     }
     
-    public static boolean checkNames(String firstName, String lastName, List<String> remarks) {
+    public boolean checkNames(String firstName, String lastName, String patronymic, List<String> remarks) {
         
         boolean isCorrectNames = (Objects.nonNull(firstName)
-                && NAME_PATTERN.matcher(firstName).matches()
+                && NAME_PATTERN.matcher(
+                        (firstName = firstName.substring(0, 1).toUpperCase(Locale.ROOT).concat(firstName.substring(1)).trim())
+                ).matches()
                 && firstName.length() >= MIN_LENGTH_LOGIN && firstName.length() <= MAX_LENGTH_LOGIN)
                 && (Objects.nonNull(lastName)
-                && NAME_PATTERN.matcher(lastName).matches()
-                && lastName.length() >= MIN_LENGTH_LOGIN && lastName.length() <= MAX_LENGTH_LOGIN);
-        
+                && NAME_PATTERN.matcher(
+                         (lastName = lastName.substring(0, 1).toUpperCase(Locale.ROOT).concat(lastName.substring(1)).trim())
+                ).matches()
+                && lastName.length() >= MIN_LENGTH_LOGIN && lastName.length() <= MAX_LENGTH_LOGIN)
+                && (Objects.nonNull(patronymic)
+                && NAME_PATTERN.matcher(
+                         (patronymic = patronymic.substring(0, 1).toUpperCase(Locale.ROOT).concat(patronymic.substring(1)).trim())
+                ).matches()
+                && patronymic.length() >= MIN_LENGTH_LOGIN && patronymic.length() <= MAX_LENGTH_LOGIN);
+                
         if(!isCorrectNames)
-            remarks.add("Еhe first and last name must consist of 2-30 letters");
+            remarks.add(String.format("The first, last name and patronymic must consist of %d-%d letters", MIN_LENGTH_LOGIN, MAX_LENGTH_LOGIN));
         
         return isCorrectNames;
     }
@@ -76,9 +86,8 @@ public class UsersUtilities {
                && PASSWORD_PATTERN_SECOND.matcher(password).find()
                && PASSWORD_PATTERN_THREE.matcher(password).find();
        
-       
        if(!isCorrectPassword)
-           remarks.add("The password must contain from 8 to 32 characters, of which 1 digit and 1 specified character");
+           remarks.add(String.format("The password must contain %d-%d characters, of which 1 digit and 1 specified character", MIN_LENGTH_PASSWORD, MAX_LENGTH_PASSWORD));
        
        return isCorrectPassword;
     }
@@ -88,7 +97,7 @@ public class UsersUtilities {
        boolean isCorrectLogin = checkLoginWithoutUnique(login, remarks);
     
         if(!isCorrectLogin)
-            remarks.add("The login can contain from 2 to 30 characters and 1 letter");
+            remarks.add(String.format("The login can contain %d-%d characters and 1 letter", MIN_LENGTH_LOGIN, MAX_LENGTH_LOGIN));
         
         if(userRepository.existsByUsername(login)) {
             
@@ -107,6 +116,7 @@ public class UsersUtilities {
         
         if(!isCorrectEmailAddress)
             remarks.add("Invalid email address");
+        
         if(userRepository.existsByEmail(email)) {
             
             isCorrectEmailAddress = false;
@@ -128,20 +138,13 @@ public class UsersUtilities {
     
     public boolean checkLoginWithoutUnique(String login, List<String> remarks) {
     
-        if(Objects.isNull(login)
-                || (login = StringUtils.trimAllWhitespace(login)).isEmpty()) {
-        
-            remarks.add("Enter your login");
-        
-            return false;
-        }
-    
-        boolean isCorrectLogin = (login.length() >= MIN_LENGTH_LOGIN)
-                && (login.length() <= MAX_LENGTH_LOGIN)
-                && LOGIN_PATTERN.matcher(login).find();
+        boolean isCorrectLogin = Objects.nonNull(login)
+                && LOGIN_PATTERN.matcher((login = login.trim())).find()
+                && (login.length() >= MIN_LENGTH_LOGIN)
+                && (login.length() <= MAX_LENGTH_LOGIN);
     
         if(!isCorrectLogin)
-            remarks.add("The login can contain from 2 to 30 characters and 1 letter");
+            remarks.add(String.format("The login can contain %d-%d characters and 1 letter", MIN_LENGTH_LOGIN, MAX_LENGTH_LOGIN));
         
         return isCorrectLogin;
     }

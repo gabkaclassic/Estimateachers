@@ -4,11 +4,10 @@ import org.gab.estimateachers.app.services.DormitoryService;
 import org.gab.estimateachers.app.services.FacultyService;
 import org.gab.estimateachers.app.services.TeacherService;
 import org.gab.estimateachers.app.services.UniversityService;
+import org.gab.estimateachers.app.utilities.CardsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
-import org.gab.estimateachers.entities.client.Dormitory;
-import org.gab.estimateachers.entities.client.Faculty;
-import org.gab.estimateachers.entities.client.Teacher;
-import org.gab.estimateachers.entities.client.University;
+import org.gab.estimateachers.app.utilities.UsersUtilities;
+import org.gab.estimateachers.entities.client.*;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -40,11 +41,19 @@ public class CardsController {
     private FacultyService facultyService;
     
     @Autowired
+    @Qualifier("usersUtilities")
+    private UsersUtilities usersUtilities;
+    
+    @Autowired
     @Qualifier("listsUtilities")
     private ListsUtilities listUtilities;
+    
+    @Autowired
+    @Qualifier("cardsUtilities")
+    private CardsUtilities cardsUtilities;
 
     @GetMapping("/")
-    public String cards(@AuthenticationPrincipal User user, Model model) {
+    public String cardsMenu(@AuthenticationPrincipal User user, Model model) {
         
         model.addAttribute("user", user);
         model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
@@ -53,11 +62,9 @@ public class CardsController {
     }
     
     @GetMapping("/{cardsType}")
-    public String listUniversities(@AuthenticationPrincipal User user,
+    public String cardsList(@AuthenticationPrincipal User user,
                                    @PathVariable("cardsType") String cardsType,
                                    Model model) {
-        
-        
         
         model.addAttribute("listName", cardsType.substring(0, 1).toUpperCase().concat(cardsType.substring(1)));
         model.addAttribute("user", user);
@@ -104,7 +111,17 @@ public class CardsController {
     }
     
     @PostMapping("/add/university")
-    public String addUniversity(@RequestParam("title") String universityTitle) {
+    public String addUniversity(@RequestParam("title") String universityTitle,
+                                Model model) {
+    
+        List<String> remarks = new ArrayList<>();
+        cardsUtilities.checkTitle(universityTitle, remarks);
+    
+        if(!remarks.isEmpty()) {
+        
+            model.addAttribute("remarks", remarks);
+            return "";
+        }
         
         universityService.create(new University(universityTitle));
         
@@ -113,8 +130,17 @@ public class CardsController {
     
     @PostMapping("/add/dormitory")
     public String addDormitory(@RequestParam("title") String dormitoryTitle,
-                               @RequestParam("universityId") Long universityId) {
+                               @RequestParam("universityId") Long universityId,
+                               Model model) {
+    
+        List<String> remarks = new ArrayList<>();
+        cardsUtilities.checkTitle(dormitoryTitle, remarks);
+    
+        if(!remarks.isEmpty()) {
         
+            model.addAttribute("remarks", remarks);
+            return "";
+        }
         
         dormitoryService.create(new Dormitory(dormitoryTitle, universityService.findById(universityId)));
         
@@ -123,7 +149,17 @@ public class CardsController {
     
     @PostMapping("/add/faculty")
     public String addFaculty(@RequestParam("title") String facultyTitle,
-                             @RequestParam("universityId") Long universityId) {
+                             @RequestParam("universityId") Long universityId,
+                             Model model) {
+    
+        List<String> remarks = new ArrayList<>();
+        cardsUtilities.checkTitle(facultyTitle, remarks);
+    
+        if(!remarks.isEmpty()) {
+        
+            model.addAttribute("remarks", remarks);
+            return "";
+        }
         
         facultyService.save(new Faculty(facultyTitle, universityService.findById(universityId)));
         
@@ -132,15 +168,36 @@ public class CardsController {
     
     @PostMapping("/add/teacher")
     public String addTeacher(@RequestParam("firstname") String firstname,
-                             @RequestParam("lastname") String lastname) {
+                             @RequestParam("lastname") String lastname,
+                             @RequestParam("patronymic") String patronymic,
+                             Model model) {
+    
+        List<String> remarks = new ArrayList<>();
+        usersUtilities.checkNames(firstname, lastname, patronymic, remarks);
         
-        teacherService.create(new Teacher(firstname, lastname));
+        if(!remarks.isEmpty()) {
+        
+            model.addAttribute("remarks", remarks);
+            return "";
+        }
+        
+        teacherService.create(new Teacher(firstname, lastname, patronymic));
         
         return "/process_application_first";
     }
     
     @PostMapping("/edit/university")
-    public String editUniversity(@RequestParam("title") String universityTitle) {
+    public String editUniversity(@RequestParam("title") String universityTitle,
+                                 Model model) {
+    
+        List<String> remarks = new ArrayList<>();
+        cardsUtilities.checkTitle(universityTitle, remarks);
+    
+        if(!remarks.isEmpty()) {
+        
+            model.addAttribute("remarks", remarks);
+            return "";
+        }
         
         universityService.create(new University(universityTitle));
         
@@ -149,17 +206,37 @@ public class CardsController {
     
     @PostMapping("/edit/dormitory")
     public String editDormitory(@RequestParam("title") String dormitoryTitle,
-                                @RequestParam("universityId") Long universityId) {
+                                @RequestParam("universityId") Long universityId,
+                                Model model) {
+    
+        List<String> remarks = new ArrayList<>();
+        cardsUtilities.checkTitle(dormitoryTitle, remarks);
+    
+        if(!remarks.isEmpty()) {
+        
+            model.addAttribute("remarks", remarks);
+            return "";
+        }
         
         
-        dormitoryService.create(new Dormitory(dormitoryTitle, universityService.findById(universityId)));
+        dormitoryService.save(new Dormitory(dormitoryTitle, universityService.findById(universityId)));
         
         return "/process_application_first";
     }
     
     @PostMapping("/edit/faculty")
     public String editFaculty(@RequestParam("title") String facultyTitle,
-                              @RequestParam("universityId") Long universityId) {
+                              @RequestParam("universityId") Long universityId,
+                              Model model) {
+    
+        List<String> remarks = new ArrayList<>();
+        cardsUtilities.checkTitle(facultyTitle, remarks);
+    
+        if(!remarks.isEmpty()) {
+        
+            model.addAttribute("remarks", remarks);
+            return "";
+        }
         
         facultyService.save(new Faculty(facultyTitle, universityService.findById(universityId)));
         
@@ -168,9 +245,20 @@ public class CardsController {
     
     @PostMapping("/edit/teacher")
     public String editTeacher(@RequestParam("firstname") String firstname,
-                              @RequestParam("lastname") String lastname) {
+                              @RequestParam("lastname") String lastname,
+                              @RequestParam("patronymic") String patronymic,
+                              Model model) {
+    
+        List<String> remarks = new ArrayList<>();
+        usersUtilities.checkNames(firstname, lastname, patronymic, remarks);
+    
+        if(!remarks.isEmpty()) {
         
-        teacherService.create(new Teacher(firstname, lastname));
+            model.addAttribute("remarks", remarks);
+            return "";
+        }
+        
+        teacherService.save(new Teacher(firstname, lastname, patronymic));
         
         return "/process_application_first";
     }

@@ -67,7 +67,7 @@ public class FilesUtilities {
             else
                 return uploadPath
                         .concat(UUID.randomUUID().toString())
-                        .concat(file.getOriginalFilename());
+                        .concat(Objects.requireNonNull(file.getOriginalFilename()));
         }
     }
 }

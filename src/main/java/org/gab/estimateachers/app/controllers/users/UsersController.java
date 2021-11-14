@@ -15,7 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -57,6 +56,7 @@ public class UsersController {
             @RequestParam(name = "username") String username,
             @RequestParam(name = "firstName") String firstName,
             @RequestParam(name = "lastName") String lastName,
+            @RequestParam(name = "patronymic") String patronymic,
             @RequestParam(name = "email") String email,
             @RequestParam(name = "password") String password,
             @RequestParam(name = "genders") String genderName,
@@ -69,6 +69,7 @@ public class UsersController {
         boolean isCorrectData = usersUtilities.checkUserDataFromRegistration(
                 firstName,
                 lastName,
+                patronymic,
                 username,
                 password,
                 email,
