@@ -9,8 +9,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 public abstract class Card {
     
     @Id
