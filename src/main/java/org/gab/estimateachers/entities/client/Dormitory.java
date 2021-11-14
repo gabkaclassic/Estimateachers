@@ -11,22 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "dormitories")
-public class Dormitory {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-    
-    @Column(
-            name = "title",
-            nullable = false,
-            unique = true
-    )
-    private String title;
-    
-    @Column(name = "total_rating")
-    private Double totalRating;
+public class Dormitory extends Card {
     
     @Column(name = "cleaning_rating")
     private Double cleaningRating;
@@ -36,12 +21,6 @@ public class Dormitory {
     
     @Column(name = "capacity_rating")
     private Double capacityRating;
-    
-    @ElementCollection(
-            targetClass = String.class,
-            fetch = FetchType.LAZY
-    )
-    private Set<String> photos;
     
     @ManyToOne(
             cascade = CascadeType.ALL,
@@ -57,12 +36,13 @@ public class Dormitory {
     
     public Dormitory(String title, University university) {
         
-        this.title = title;
-        this.university = university;
+        super(title);
+        
+        setUniversity(university);
     }
     
-    public void addPhoto(String filename) {
+    public Double getTotalRating() {
         
-        photos.add(filename);
+        return (cleaningRating + roommatesRating + capacityRating) / 3;
     }
 }

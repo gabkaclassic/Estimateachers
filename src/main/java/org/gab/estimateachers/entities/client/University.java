@@ -1,56 +1,40 @@
 package org.gab.estimateachers.entities.client;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CollectionType;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.awt.image.BufferedImage;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
 @Entity
 @Table(name = "universities")
-public class University {
-    
-    @Getter
-    @Setter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-    
-    @Getter
-    @Setter
-    @Column(
-            name = "title",
-            nullable = false,
-            unique = true
-    )
-    private String title;
+public class University extends Card {
     
     @Getter
     @Setter
     @Column(name = "abbreviation")
     private String abbreviation;
     
-    @Getter
-    @Setter
-    @Column(name = "total_rating")
-    private Double totalRating;
+    @Column(name = "price_rating")
+    private Double priceRating;
     
-    @Getter
-    @Setter
-    @ElementCollection(
-            targetClass = String.class,
-            fetch = FetchType.LAZY
-    )
-    private Set<String> photos;
+    @Column(name = "complexity_rating")
+    private Double complexityRating;
+    
+    @Column(name = "utility_rating")
+    private Double utilityRating;
+    
+    @Column(name = "bachelor")
+    private Boolean bachelor;
+    
+    @Column(name = "magistracy")
+    private Boolean magistracy;
+    
+    @Column(name = "specialty")
+    private Boolean specialty;
     
     @Getter
     @Setter
@@ -90,12 +74,13 @@ public class University {
     
     public University(String title) {
         
+        super(title);
+        
         StringBuilder builder = new StringBuilder();
         
         for(String word: title.split(" "))
             builder.append(word.substring(0, 1).toUpperCase());
     
-        this.title = title;
         abbreviation = builder.toString();
     }
     
@@ -112,5 +97,10 @@ public class University {
     public void addPhoto(String filename) {
         
         photos.add(filename);
+    }
+    
+    protected Double getTotalRating() {
+        
+        return (priceRating + utilityRating + complexityRating) / 3;
     }
 }

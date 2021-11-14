@@ -1,9 +1,8 @@
 package org.gab.estimateachers.entities.client;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,26 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "faculties")
-public class Faculty {
-    
-    @Getter
-    @Setter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-    
-    @Getter
-    @Setter
-    @Column(
-            name = "title",
-            nullable = false
-    )
-    private String title;
-    
-    @Getter
-    @Column(name = "total_rating")
-    private Double totalRating;
+public class Faculty extends Card {
     
     @Getter
     @Column(name = "price_rating")
@@ -47,6 +27,7 @@ public class Faculty {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
+    @NonNull
     private University university;
     
     @Getter
@@ -65,10 +46,15 @@ public class Faculty {
     )
     private Set<Student> students = new HashSet<>();
 
-    public Faculty(String title, University university){
+    public Faculty(String title, University university) {
         
-        this.title = title;
-        this.university = university;
+        super(title);
+        
+        setUniversity(university);
     }
     
+    public Double getTotalRating() {
+        
+        return (priceRating + educationRating) / 2;
+    }
 }
