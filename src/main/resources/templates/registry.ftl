@@ -7,6 +7,7 @@
 
         <input type = "text" id = "firstName" name = "firstName" placeholder = "Your first name" /> <br>
         <input type = "text" id = "lastName" name = "lastName" placeholder = "Your last name" /> <br>
+        <input type = "text" id = "patronymic" name = "patronymic" placeholder = "Your patronymic" /> <br>
         <input type = "email" id = "email" name = "email" placeholder = "Your email address" /> <br>
         <@ul.select enum = genders name = "genders" /> <br>
         <@ul.file type = "file" name = "profilePhoto" id = "profilePhoto" text = "Your profile photo" /> <br>

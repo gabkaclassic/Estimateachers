@@ -3,7 +3,6 @@
 <#import "parts/security.ftl" as security>
 
 <@main.page>
-    <@main.menu user=user />
     <h2>Application №${application.id}:</h2>
 
     <#if application.dateSending??>
@@ -11,7 +10,6 @@
     </#if>
     <span>First name: ${application.student.firstName}</span> <br>
     <span>Last name: ${application.student.lastName}</span> <br>
-    <span>Age: ${application.student.age}</span> <br>
     <span>Email: <#if application.student.account.email??>${application.student.account.email}<#else>None</#if></span> <br>
     <span>Student card photo:</span> <br>
     <#if application.filename??><img src = "/img/${application.filename}" height = "150" weight = "200" /><#else>None</#if> <br>
@@ -25,8 +23,8 @@
 
     </div>
 
-     <form method = "post" action = "/cards/add/university">
-         <input name = "title" type = "text" placeholder = "Title university" /> <br>
+     <form method = "get" action = "/cards/add/university">
+         <input name = "title" type = "text" placeholder = "University title" /> <br>
          <button type = "submit">Add university</button>
      </form> <br>
 

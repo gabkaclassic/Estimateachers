@@ -2,7 +2,6 @@
 <#import "parts/users_logic.ftl" as ul>
 
 <@main.page>
-    <@main.menu user=user />
       <h2><span>All users:</span></h2>
 
       <#if users??>

@@ -3,12 +3,10 @@
 
 <@main.page>
 
-    <@main.menu user=user />
-
     <@ul.data_form registry = false textButton = "Edit">
 
         Login: <input type = "text" name = "username" value = "${user.username}" />
-        Password: <input type = "text" name = "password" value = "${user.password}" />
+        Password: <input type = "text" name = "password"/>
         Email: <input type = "email" name = "email" value = "${(user.email!' ')}" />
         <@ul.file type = "file" name = "profilePhoto" id = "profilePhoto" text = "Change profile photo" />
 

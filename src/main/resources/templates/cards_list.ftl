@@ -3,7 +3,6 @@
 <#import "parts/cards_logic.ftl" as cl>
 
 <@main.page>
-    <@main.menu user=user />
     <h2><span>${listName}</span></h2>
 
     <#if cards??>

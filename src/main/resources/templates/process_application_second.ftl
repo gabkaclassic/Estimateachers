@@ -3,7 +3,6 @@
 <#import "parts/security.ftl" as security>
 
 <@main.page>
-    <@main.menu user=user />
 
     <h2>Application №${application.id}:</h2>
 

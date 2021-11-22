@@ -25,7 +25,7 @@
 <#macro logout>
 
 <form action = "/users/logout" method = "post">
-    <input type = "submit" value = "Sign out" />
+    <input type = "hidden" value = "Sign out" />
     <@security.token />
 </form>
 
