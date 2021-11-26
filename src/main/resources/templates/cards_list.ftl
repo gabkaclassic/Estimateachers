@@ -9,24 +9,7 @@
 
         <#list cards as card>
 
-        <#if isAdmin> <p>№${card.id}</p> <br> </#if>
-        <p>
-            <form method = "post" action = "/cards/get">
-                <input type="hidden" name = "cardType" value = ${cardType} />
-                <input type="hidden" name = "id" value = ${card.id} />
-                <button type = "reset"><h2>${card.title}</h2></button>
-            </form>
-        </p> <br>
-        <p>Rating: ${(card.totalRating)!'-'}</p> <br>
-        <p>Images: </p>  <br>
-        <#if card.photos??>
-            <@cl.images photos=card.photos />
-        <#else>
-            None
-        </#if> <br>
-
-        <h1>---------------------------------------------------</h1>  <br>
-
+            <@cl.card_view card=card />
         </#list>
     </#if>
 

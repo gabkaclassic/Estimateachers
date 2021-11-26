@@ -3,11 +3,11 @@
 
 <@main.page>
 
-    <@ul.data_form registry = true textButton = "Sign in" />
+    <@ul.data_form registry = false textButton = "Sign in" />
 
 
-    <@ul.foreach collection = remarks![] />
-
-    <a href = "/users/registry">Sign up</a>
+    <#if (!remarks??)>
+        <@ul.foreach collection = remarks![] status="danger"/>
+    </#if>
 
 </@main.page>

@@ -2,8 +2,6 @@
 
 <@main.page>
 
-    <@main.menu user=user isAdmin=isAdmin />
-
     <p>№${card.id}</p> <br>
     <p>Title:
         ${card.title}

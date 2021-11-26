@@ -1,5 +1,4 @@
 <#import "users_logic.ftl" as ul>
-<#import "navigation_bar.ftl" as navbar>
 
 <#macro page>
     <html lang = "en">
@@ -24,10 +23,9 @@
         </head>
 
         <body>
-            <div class="container">
-                <div class="row">
-                    <@navbar.navbar user=user isAdmin=isAdmin/>
-                </div>
+            <#include "navigation_bar.ftl">
+
+            <div class="container mt-10">
                 <div class="row">
                     <br>
                     <br>
