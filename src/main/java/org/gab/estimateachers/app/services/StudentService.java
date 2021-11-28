@@ -7,6 +7,7 @@ import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Student;
 import org.gab.estimateachers.entities.system.Application;
 import org.gab.estimateachers.entities.system.Genders;
+import org.gab.estimateachers.entities.system.RegistrationApplication;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,9 +53,11 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
     
     public void sendApplication(String firstName,
                               String lastName,
+                              String patronymic,
                               Genders gender,
                               MultipartFile profilePhoto,
                               MultipartFile cardPhoto,
+                              String date,
                               User user) {
     
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
@@ -62,13 +65,15 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
         Student student = new Student(
                 firstName,
                 lastName,
+                patronymic,
                 gender,
                 user
         );
     
-        Application application = new Application(
-                filesUtilities.registrationFile(cardPhoto, RegistrationType.OTHER),
-                student
+        Application application = new RegistrationApplication(
+                student,
+                date,
+                filesUtilities.registrationFile(cardPhoto, RegistrationType.OTHER)
         );
         
         applicationRepository.save(application);

@@ -3,16 +3,17 @@ package org.gab.estimateachers.app.utilities;
 import org.gab.estimateachers.app.repositories.client.DormitoryRepository;
 import org.gab.estimateachers.app.repositories.client.FacultyRepository;
 import org.gab.estimateachers.app.repositories.client.UniversityRepository;
-import org.gab.estimateachers.app.services.ApplicationService;
+import org.gab.estimateachers.app.services.CreatingCardApplicationService;
+import org.gab.estimateachers.app.services.RegistrationApplicationService;
 import org.gab.estimateachers.app.services.UserService;
 import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.Faculty;
-import org.gab.estimateachers.entities.system.Application;
+import org.gab.estimateachers.entities.system.CreatingCardApplication;
 import org.gab.estimateachers.entities.system.Genders;
+import org.gab.estimateachers.entities.system.RegistrationApplication;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class ListsUtilities {
     
     @Autowired
     @Qualifier("universityRepository")
-    private UniversityRepository universityRepository;
+    private UniversityRepository universityRepository;  //Заменить на сервисы
     
     @Autowired
     @Qualifier("dormitoryRepository")
@@ -35,8 +36,12 @@ public class ListsUtilities {
     private FacultyRepository facultyRepository;
     
     @Autowired
-    @Qualifier("applicationService")
-    private ApplicationService applicationService;
+    @Qualifier("creatingCardApplicationService")
+    private CreatingCardApplicationService creatingCardApplicationService;
+    
+    @Autowired
+    @Qualifier("registrationApplicationService")
+    private RegistrationApplicationService registrationApplicationService;
     
     @Autowired
     @Qualifier("userService")
@@ -59,10 +64,6 @@ public class ListsUtilities {
         return universityRepository.findAllAbbreviation();
     }
     
-    public List<Application> getApplicationList() {
-        
-        return applicationService.findAll();
-    }
     
     public List<String> getDormitoriesTitlesList(String abbreviationUniversity) {
         
@@ -79,5 +80,15 @@ public class ListsUtilities {
     public List<User> getFilteredUsersList(String login) {
         
         return userService.findByLogin(login);
+    }
+    
+    public List<CreatingCardApplication> getCreatingCardApplicationList() {
+        
+        return creatingCardApplicationService.findAll();
+    }
+    
+    public List<RegistrationApplication> getRegistrationApplicationList() {
+        
+        return registrationApplicationService.findAll();
     }
 }

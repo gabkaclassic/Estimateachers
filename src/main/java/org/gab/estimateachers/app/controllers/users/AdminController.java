@@ -1,27 +1,19 @@
 package org.gab.estimateachers.app.controllers.users;
 
-import org.gab.estimateachers.app.repositories.system.ApplicationRepository;
-import org.gab.estimateachers.app.services.ApplicationService;
-import org.gab.estimateachers.app.services.DormitoryService;
-import org.gab.estimateachers.app.services.FacultyService;
+import org.gab.estimateachers.app.services.CreatingCardApplicationService;
+import org.gab.estimateachers.app.services.RegistrationApplicationService;
 import org.gab.estimateachers.app.services.UniversityService;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
-import org.gab.estimateachers.entities.client.Dormitory;
-import org.gab.estimateachers.entities.client.Faculty;
-import org.gab.estimateachers.entities.client.Student;
 import org.gab.estimateachers.entities.client.University;
 import org.gab.estimateachers.entities.system.Application;
-import org.gab.estimateachers.entities.system.User;
+import org.gab.estimateachers.entities.system.CreatingCardApplication;
+import org.gab.estimateachers.entities.system.RegistrationApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/admin")
@@ -33,8 +25,12 @@ public class AdminController {
     private ListsUtilities listUtilities;
     
     @Autowired
-    @Qualifier("applicationService")
-    private ApplicationService applicationService;
+    @Qualifier("registrationApplicationService")
+    private RegistrationApplicationService registrationApplicationService;
+    
+    @Autowired
+    @Qualifier("creatingCardApplicationService")
+    private CreatingCardApplicationService creatingCardApplicationService;
     
     @Autowired
     @Qualifier("universityService")
@@ -57,10 +53,18 @@ public class AdminController {
         return "/users_list";
     }
     
-    @GetMapping("/applications")
-    public String applicationsPage(Model model) {
+    @GetMapping("/applications/users")
+    public String newUserApplications(Model model) {
         
-        model.addAttribute("applications", listUtilities.getApplicationList());
+        model.addAttribute("applications", listUtilities.getRegistrationApplicationList());
+        
+        return "/applications";
+    }
+    
+    @GetMapping("/applications/cards")
+    public String newCardApplications(Model model) {
+        
+        model.addAttribute("applications", listUtilities.getCreatingCardApplicationList());
         
         return "/applications";
     }
@@ -69,7 +73,7 @@ public class AdminController {
     public String processingApplicationFirstStep(@PathVariable(name = "id") Long applicationId,
                                         Model model) {
         
-        Application application = applicationService.findById(applicationId);
+        RegistrationApplication application = registrationApplicationService.findById(applicationId);
         model.addAttribute("universities", listUtilities.getUniversitiesAbbreviationsList());
         model.addAttribute("application", application);
         
@@ -95,8 +99,8 @@ public class AdminController {
     @GetMapping("/applications/processing/second/{id}")
     public String processingApplicationSecondStep(@PathVariable(name = "id") Long applicationId,
                                                  Model model) {
-        
-        Application application = applicationService.findById(applicationId);
+    
+        RegistrationApplication application = registrationApplicationService.findById(applicationId);
         
         model.addAttribute("application", application);
         
@@ -110,7 +114,7 @@ public class AdminController {
                                                      @RequestParam("course") Integer course,
                                                      Model model) {
         
-        applicationService.apply(applicationId, facultyTitle, dormitoryTitle, course);
+        registrationApplicationService.apply(applicationId, facultyTitle, dormitoryTitle, course);
         
         return "redirect:/admin/applications";
     }
@@ -118,7 +122,7 @@ public class AdminController {
     @PostMapping("/applications/reject/{id}")
     public String rejectApplication(@PathVariable(name = "id") Long applicationId) {
         
-        applicationService.deleteById(applicationId);
+        registrationApplicationService.deleteById(applicationId);
         
         return "redirect:/admin/applications";
     }

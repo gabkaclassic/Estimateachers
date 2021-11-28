@@ -1,14 +1,11 @@
 package org.gab.estimateachers.entities.client;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.User;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,10 +36,15 @@ public class Student {
     private String lastName;
     
     @Column(
+            name = "patronymic",
+            nullable = false
+    )
+    private String patronymic;
+    
+    @Column(
             name = "gender",
             nullable = false
     )
-    
     @Enumerated(EnumType.STRING)
     private Genders gender;
     
@@ -72,7 +74,8 @@ public class Student {
     
     @ManyToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            mappedBy = "students"
     )
     private Set<Teacher> teachers = new HashSet<>();
     
@@ -82,11 +85,12 @@ public class Student {
     )
     private Dormitory dormitory;
     
-    public Student(String firstName, String lastName, Genders gender, User account) {
+    public Student(String firstName, String lastName, String patronymic, Genders gender, User account) {
         
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.account = account;
-        this.gender = gender;
+        setFirstName(firstName);
+        setLastName(lastName);
+        setPatronymic(patronymic);
+        setGender(gender);
+        setAccount(account);
     }
 }

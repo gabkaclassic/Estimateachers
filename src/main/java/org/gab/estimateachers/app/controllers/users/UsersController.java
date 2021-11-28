@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.controllers.users;
 
+import lombok.extern.slf4j.Slf4j;
 import org.gab.estimateachers.app.services.StudentService;
 import org.gab.estimateachers.app.services.UserService;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 @RequestMapping("/users")
 public class UsersController {
@@ -46,6 +50,8 @@ public class UsersController {
     @GetMapping("/registry")
     public String registryPage(Model model) {
 
+        log.trace("Get query registration page");
+        
         model.addAttribute("genders", listUtilities.getGendersList());
      
         return "/registry";
@@ -58,6 +64,7 @@ public class UsersController {
             @RequestParam(name = "lastName") String lastName,
             @RequestParam(name = "patronymic") String patronymic,
             @RequestParam(name = "email") String email,
+            @RequestParam(name = "date") String date,
             @RequestParam(name = "password") String password,
             @RequestParam(name = "genders") String genderName,
             @RequestParam(name = "profilePhoto") MultipartFile profilePhoto,
@@ -65,6 +72,8 @@ public class UsersController {
             Model model
     ) {
     
+        log.trace("User registration process");
+        
         List<String> remarks = new ArrayList<>();
         boolean isCorrectData = usersUtilities.checkUserDataFromRegistration(
                 firstName,
@@ -78,23 +87,33 @@ public class UsersController {
         );
         model.addAttribute("remarks", remarks);
         
-        if(!isCorrectData)
+        if(!isCorrectData) {
+            
+            log.info("Incorrect user data: ".concat(String.join("; ", remarks)));
+            
             return registryPage(model);
+        }
         
         studentService.sendApplication(
                 firstName,
                 lastName,
+                patronymic,
                 Genders.valueOf(genderName.toUpperCase()),
                 profilePhoto,
                 cardPhoto,
+                date,
                 new User(username, email, password)
         );
+        
+        log.trace("Successful process registration");
         
         return "redirect:/users/login";
     }
     
     @GetMapping("/login")
     public String loginPage() {
+        
+        log.trace("Get query login page");
         
         return "/login";
     }
@@ -104,9 +123,15 @@ public class UsersController {
                        @PathVariable(value = "id") Long userId,
                        Model model) {
         
+        log.trace("Get query edit profile page");
+        
         if(Objects.isNull(currentUser)
-                || (!currentUser.isAdmin() && !currentUser.getId().equals(userId)))
+                || (!currentUser.isAdmin() && !currentUser.getId().equals(userId))) {
+    
+            log.info("Error forbidden or user is null");
+            
             return "/error_forbidden";
+        }
         
         model.addAttribute("user", (currentUser.getId().equals(userId)) ?
                 currentUser : userService.findById(userId));
@@ -120,24 +145,37 @@ public class UsersController {
                               @RequestParam("username") String username,
                               @RequestParam("password") String password,
                               @RequestParam("email") String email,
+                              @RequestParam("profilePhoto") MultipartFile profilePhoto,
                               Model model) {
+        
+        log.trace("User edit profile process");
         
         List<String> remarks = new ArrayList<>();
         User user = userService.findById(userId);
-        
         usersUtilities.checkLoginWithoutUnique(username, remarks);
         usersUtilities.checkPassword(password, remarks);
+        if(!(Objects.isNull(profilePhoto) || profilePhoto.isEmpty()))
+            usersUtilities.checkFile(profilePhoto, remarks);
+        
         if(Objects.nonNull(user.getEmail())
                 && !user.getEmail().equals(email))
             usersUtilities.checkEmail(email, remarks);
         
         if(!remarks.isEmpty()) {
             
+            log.info("Incorrect data: ".concat(String.join("; ", remarks)));
+            
             model.addAttribute("remarks", remarks);
+            
             return edit(user, userId, model);
         }
         
-        userService.update(userId, username, password, email);
+        if(!(Objects.isNull(profilePhoto) || profilePhoto.isEmpty()))
+            userService.update(userId, username, password, email, profilePhoto);
+        else
+            userService.update(userId, username, password, email);
+        
+        log.trace("Successful process edit profile");
         
         return "/homepage";
     }

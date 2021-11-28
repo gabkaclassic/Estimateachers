@@ -55,7 +55,6 @@ public class Teacher extends Card {
     @ManyToMany(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
-            targetEntity = Faculty.class,
             mappedBy = "teachers"
     )
     private Set<Faculty> faculties = new HashSet<>();
@@ -63,10 +62,20 @@ public class Teacher extends Card {
     @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            targetEntity = University.class,
             mappedBy = "teachers"
     )
     private Set<University> universities = new HashSet<>();
+    
+    @ManyToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @JoinTable(
+            name = "teachers_students",
+            joinColumns = {@JoinColumn(name = "teacher_id")},
+            inverseJoinColumns = {@JoinColumn(name = "student_id")}
+    )
+    private Set<Student> students = new HashSet<>();
     
     public Teacher(String firstName, String lastName, String patronymic) {
         

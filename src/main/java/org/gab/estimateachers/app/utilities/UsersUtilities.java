@@ -25,7 +25,7 @@ public class UsersUtilities {
     private static final int MIN_LENGTH_PASSWORD = 8;
     private static final int MAX_LENGTH_PASSWORD = 32;
     private static final int MIN_LENGTH_LOGIN = 2;
-    private static final int MAX_LENGTH_LOGIN = 30;
+    private static final int MAX_LENGTH_LOGIN = 32;
     
     @Autowired
     @Qualifier("userRepository")
@@ -49,20 +49,17 @@ public class UsersUtilities {
     public boolean checkNames(String firstName, String lastName, String patronymic, List<String> remarks) {
         
         boolean isCorrectNames = (Objects.nonNull(firstName)
-                && NAME_PATTERN.matcher(
-                        (firstName = firstName.substring(0, 1).toUpperCase(Locale.ROOT).concat(firstName.substring(1)).trim())
-                ).matches()
-                && firstName.length() >= MIN_LENGTH_LOGIN && firstName.length() <= MAX_LENGTH_LOGIN)
+                && ((firstName = firstName.substring(0, 1).toUpperCase(Locale.ROOT).concat(firstName.substring(1)).trim()))
+                .length() >= MIN_LENGTH_LOGIN && firstName.length() <= MAX_LENGTH_LOGIN)
+                && NAME_PATTERN.matcher(firstName).matches()
                 && (Objects.nonNull(lastName)
-                && NAME_PATTERN.matcher(
-                         (lastName = lastName.substring(0, 1).toUpperCase(Locale.ROOT).concat(lastName.substring(1)).trim())
-                ).matches()
-                && lastName.length() >= MIN_LENGTH_LOGIN && lastName.length() <= MAX_LENGTH_LOGIN)
+                && ((lastName = lastName.substring(0, 1).toUpperCase(Locale.ROOT).concat(lastName.substring(1)).trim()))
+                .length() >= MIN_LENGTH_LOGIN && lastName.length() <= MAX_LENGTH_LOGIN)
+                && NAME_PATTERN.matcher(lastName).matches()
                 && (Objects.nonNull(patronymic)
-                && NAME_PATTERN.matcher(
-                         (patronymic = patronymic.substring(0, 1).toUpperCase(Locale.ROOT).concat(patronymic.substring(1)).trim())
-                ).matches()
-                && patronymic.length() >= MIN_LENGTH_LOGIN && patronymic.length() <= MAX_LENGTH_LOGIN);
+                && ((patronymic = patronymic.substring(0, 1).toUpperCase(Locale.ROOT).concat(patronymic.substring(1)).trim()))
+                .length() >= MIN_LENGTH_LOGIN && patronymic.length() <= MAX_LENGTH_LOGIN)
+                && NAME_PATTERN.matcher(patronymic).matches();
                 
         if(!isCorrectNames)
             remarks.add(String.format("The first, last name and patronymic must consist of %d-%d letters", MIN_LENGTH_LOGIN, MAX_LENGTH_LOGIN));
@@ -126,7 +123,7 @@ public class UsersUtilities {
         return isCorrectEmailAddress;
     }
     
-    public static boolean checkFile(MultipartFile file, List<String> remarks) {
+    public boolean checkFile(MultipartFile file, List<String> remarks) {
         
         boolean isCorrectFile = Objects.nonNull(file) && !file.isEmpty();
         

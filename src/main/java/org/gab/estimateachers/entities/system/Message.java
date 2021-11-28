@@ -16,16 +16,9 @@ public class Message {
     @Column(name = "id")
     private Long id;
     
-    @ManyToOne(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
-    )
+    @ManyToOne(cascade = CascadeType.ALL)
     private User author;
     
-    @ManyToOne(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
-    )
+    @ManyToOne(cascade = CascadeType.ALL)
     private Chat chat;
-
 }

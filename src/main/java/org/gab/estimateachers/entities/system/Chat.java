@@ -22,6 +22,11 @@ public class Chat {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
+    @JoinTable(
+            name = "chats_users",
+            joinColumns = {@JoinColumn(name = "chat_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
     private Set<User> participants = new HashSet<>();
     
     @OneToMany(
@@ -29,5 +34,4 @@ public class Chat {
             fetch = FetchType.EAGER
     )
     private Set<Message> messages = new HashSet<>();
-    
 }

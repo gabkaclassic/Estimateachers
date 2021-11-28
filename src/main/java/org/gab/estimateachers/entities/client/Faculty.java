@@ -36,6 +36,11 @@ public class Faculty extends Card {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
+    @JoinTable(
+            name = "faculties_teachers",
+            joinColumns = {@JoinColumn(name = "faculty_id")},
+            inverseJoinColumns = {@JoinColumn(name = "teacher_id")}
+    )
     private Set<Teacher> teachers;
     
     @Getter

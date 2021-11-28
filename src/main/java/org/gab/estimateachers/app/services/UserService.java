@@ -1,12 +1,16 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.system.UserRepository;
+import org.gab.estimateachers.app.utilities.FilesUtilities;
+import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +20,10 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    @Qualifier("filesUtilities")
+    private FilesUtilities filesUtilities;
     
     public List<User> findAll() {
        
@@ -60,6 +68,17 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         User user = userRepository.getOne(id);
         user.setUsername(username);
         user.setPassword(password);
+        
+        user.setEmail(email); //TO DO
+        
+        userRepository.save(user);
+    }
+    public void update(Long id, String username, String password, String email, MultipartFile profilePhoto) {
+        
+        User user = userRepository.getOne(id);
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
         
         user.setEmail(email); //TO DO
         

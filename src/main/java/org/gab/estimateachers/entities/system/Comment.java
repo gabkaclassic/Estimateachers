@@ -20,9 +20,8 @@ public class Comment {
     private Double rating;
     
     @ManyToOne(
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
     )
     private User author;
-    
 }

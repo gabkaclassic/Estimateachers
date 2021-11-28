@@ -7,7 +7,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 
 @Component("filesUtilities")
 public class FilesUtilities {
@@ -38,7 +39,12 @@ public class FilesUtilities {
         String filename = getFilename(file, defaultFilename);
         
         try {
-            file.transferTo(new File(filename));
+            if(Objects.nonNull(file))
+                file.transferTo(new File(filename));
+            else {
+                File file1 = new File(filename);
+                file1.createNewFile();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

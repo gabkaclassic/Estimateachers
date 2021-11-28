@@ -7,51 +7,48 @@ import org.gab.estimateachers.entities.client.Student;
 import org.gab.estimateachers.entities.system.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service("applicationService")
-public class ApplicationService implements org.gab.estimateachers.app.services.Service<Application> {
+public class ApplicationService<T extends Application> implements org.gab.estimateachers.app.services.Service<T> {
     
-    @Autowired
-    @Qualifier("applicationRepository")
-    private ApplicationRepository applicationRepository;
+
+    protected ApplicationRepository<T> applicationRepository;
     
     @Autowired
     @Qualifier("facultyService")
-    private FacultyService facultyService;
+    protected FacultyService facultyService;
     
     @Autowired
     @Qualifier("dormitoryService")
-    private DormitoryService dormitoryService;
+    protected DormitoryService dormitoryService;
     
     @Autowired
     @Qualifier("studentService")
-    private StudentService studentService;
+    protected StudentService studentService;
     
-    public List<Application> findAll() {
+    public List<T> findAll() {
         
         return applicationRepository.findAll();
     }
     
-    public Application findById(Long id) {
+    public T findById(Long id) {
         
         return applicationRepository.getOne(id);
     }
     
-    public void save(Application object) {
+    public void save(T object) {
         
         applicationRepository.save(object);
     }
     
     public void apply(Long applicationId, String facultyTitle, String dormitoryTitle, Integer course) {
-    
-        Application application = findById(applicationId);
+        
+        T application = findById(applicationId);
         Faculty faculty = facultyService.findByTitle(facultyTitle);
         Dormitory dormitory = dormitoryService.findByTitle(dormitoryTitle);
         Student student = application.getStudent();
-    
+        
         student.setFaculty(faculty);
         student.setDormitory(dormitory);
         student.setCourse(course);
@@ -66,4 +63,10 @@ public class ApplicationService implements org.gab.estimateachers.app.services.S
         
         applicationRepository.deleteById(applicationId);
     }
+    
+    protected void setApplicationRepository(ApplicationRepository<T> repository) {
+        
+        applicationRepository = repository;
+    }
+    
 }

@@ -41,7 +41,10 @@ public class User implements UserDetails {
     )
     private String email;
     
-    @Column(name = "photo")
+    @Column(
+            name = "photo",
+            unique = true
+    )
     private String filename;
     
     @Column(name = "active")

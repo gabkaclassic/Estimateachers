@@ -49,15 +49,19 @@ public class University extends Card {
     @Getter
     @Setter
     @ManyToMany(
-            targetEntity = Teacher.class,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @JoinTable(
+            name = "universities_teachers",
+            joinColumns = {@JoinColumn(name = "university_id")},
+            inverseJoinColumns = {@JoinColumn(name = "teacher_id")}
     )
     private Set<Teacher> teachers = new HashSet<>();
     
     @Getter
     @Setter
     @OneToMany(
-            targetEntity = Student.class,
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
@@ -66,7 +70,6 @@ public class University extends Card {
     @Getter
     @Setter
     @OneToMany(
-            targetEntity = Dormitory.class,
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )

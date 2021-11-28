@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,15 +52,6 @@ public class CardsController {
     @Autowired
     @Qualifier("cardsUtilities")
     private CardsUtilities cardsUtilities;
-
-    @GetMapping("/")
-    public String cardsMenu(@AuthenticationPrincipal User user, Model model) {
-        
-        model.addAttribute("user", user);
-        model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
-        
-        return "/cards_menu";
-    }
     
     @GetMapping("/{cardsType}")
     public String cardsList(@AuthenticationPrincipal User user,
@@ -100,7 +92,7 @@ public class CardsController {
             }
             default: {
                 
-                list = null;
+                list = Collections.emptyList();
             }
         }
         
@@ -110,7 +102,7 @@ public class CardsController {
         return "/cards_list";
     }
     
-    @PostMapping("/add/university")
+    @GetMapping("/add/university")
     public String addUniversity(@RequestParam("title") String universityTitle,
                                 Model model) {
     
@@ -126,6 +118,12 @@ public class CardsController {
         universityService.create(new University(universityTitle));
         
         return "/process_application_first";
+    }
+    
+    @GetMapping("/add")
+    public String createCard() {
+        
+        return "";
     }
     
     @PostMapping("/add/dormitory")

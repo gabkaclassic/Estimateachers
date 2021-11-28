@@ -14,10 +14,7 @@ import java.util.Objects;
 public class HomePageController {
     
     @GetMapping("/")
-    public String homepage(@AuthenticationPrincipal User user, Model model) {
-        
-        model.addAttribute("user", user);
-        model.addAttribute("isAdmin", (!Objects.isNull(user) && user.isAdmin()));
+    public String homepage() {
         
         return "/homepage";
     }
