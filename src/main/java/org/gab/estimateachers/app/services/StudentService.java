@@ -2,10 +2,10 @@ package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.StudentRepository;
 import org.gab.estimateachers.app.repositories.system.ApplicationRepository;
+import org.gab.estimateachers.app.repositories.system.UserRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Student;
-import org.gab.estimateachers.entities.system.Application;
 import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.RegistrationApplication;
 import org.gab.estimateachers.entities.system.User;
@@ -24,8 +24,12 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
     private StudentRepository studentRepository;
     
     @Autowired
+    @Qualifier("userRepository")
+    private UserRepository userRepository;
+    
+    @Autowired
     @Qualifier("applicationRepository")
-    private ApplicationRepository applicationRepository;
+    private ApplicationRepository<RegistrationApplication> applicationRepository;
     
     @Autowired
     @Qualifier("filesUtilities")
@@ -61,7 +65,7 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
                               User user) {
     
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
-        
+        userRepository.save(user);
         Student student = new Student(
                 firstName,
                 lastName,
@@ -70,7 +74,7 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
                 user
         );
     
-        Application application = new RegistrationApplication(
+        RegistrationApplication application = new RegistrationApplication(
                 student,
                 date,
                 filesUtilities.registrationFile(cardPhoto, RegistrationType.OTHER)

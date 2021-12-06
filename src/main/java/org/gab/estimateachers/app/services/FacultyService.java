@@ -4,12 +4,14 @@ import org.gab.estimateachers.app.repositories.client.FacultyRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Faculty;
+import org.gab.estimateachers.entities.client.University;
 import org.gab.estimateachers.entities.system.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service("facultyService")
 public class FacultyService implements org.gab.estimateachers.app.services.Service<Faculty> {
@@ -42,8 +44,23 @@ public class FacultyService implements org.gab.estimateachers.app.services.Servi
         facultyRepository.deleteById(id);
     }
     
-    public Faculty findByTitle(String title) {
+    public Faculty findByTitleAndUniversity(String title, University university) {
         
-        return facultyRepository.findByTitle(title);
+        return facultyRepository.findByTitleAndUniversity(title, university);
+    }
+    
+    public List<Faculty> findByTitles(Set<String> facultiesTitles) {
+        
+        return facultyRepository.findAllByTitle(facultiesTitles);
+    }
+    
+    public Faculty create(String facultyTitle, University university) {
+        
+        Faculty faculty = new Faculty(facultyTitle, university);
+        faculty.addPhoto(filesUtilities.registrationFile(null, RegistrationType.OTHER));
+        
+        save(faculty);
+        
+        return faculty;
     }
 }

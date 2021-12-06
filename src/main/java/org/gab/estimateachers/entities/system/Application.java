@@ -32,13 +32,13 @@ public abstract class Application {
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date")
-    private Date dateSending;
+    private Date date;
     
     @Column(
             name = "viewed",
             nullable = false
     )
-    boolean viewed;
+    private boolean viewed;
     
     protected Application(Student student, String date) {
         
@@ -50,7 +50,7 @@ public abstract class Application {
     private void setDateSending(String date) {
     
         try {
-            dateSending = dateFormat.parse(date);
+            this.date = dateFormat.parse(date);
         } catch (ParseException e) {
             log.warn("Incorrect parsing date: ".concat(date), e);
         }
@@ -58,6 +58,6 @@ public abstract class Application {
     
     protected String getDateSending() {
         
-        return dateFormat.format(dateSending);
+        return dateFormat.format(date);
     }
 }

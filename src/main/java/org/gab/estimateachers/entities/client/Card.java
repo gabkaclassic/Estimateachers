@@ -19,8 +19,7 @@ public abstract class Card {
     
     @Column(
             name = "title",
-            nullable = false,
-            unique = true
+            nullable = false
     )
     protected String title;
     

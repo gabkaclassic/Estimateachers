@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service("universityService")
 public class UniversityService implements org.gab.estimateachers.app.services.Service<University> {
@@ -26,11 +27,14 @@ public class UniversityService implements org.gab.estimateachers.app.services.Se
         universityRepository.save(university);
     }
     
-    public void create(University university) {
+    public University create(String universityTitle) {
     
+        University university = new University(universityTitle);
         university.addPhoto(filesUtilities.registrationFile(null, RegistrationType.BUILDING));
         
         save(university);
+        
+        return university;
     }
     
     public List<University> findAll() {
@@ -46,6 +50,11 @@ public class UniversityService implements org.gab.estimateachers.app.services.Se
     public University findByAbbreviation(String abbreviation) {
         
         return universityRepository.findByAbbreviation(abbreviation);
+    }
+    
+    public List<University> findByAbbreviations(Set<String> abbreviations) {
+       
+        return universityRepository.findAllByAbbreviation(abbreviations);
     }
     
     public University findById(Long id) {

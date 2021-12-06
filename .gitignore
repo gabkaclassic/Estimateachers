@@ -5,4 +5,4 @@
 *.properties
 *.jpg
 *.png
-V2__Add_admin.sql
+/src/main/resources/db/migration/V2__Add_admin.sql

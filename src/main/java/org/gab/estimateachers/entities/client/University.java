@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -42,14 +43,15 @@ public class University extends Card {
             orphanRemoval = true,
             targetEntity = Faculty.class,
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
+            fetch = FetchType.EAGER,
+            mappedBy = "university"
     )
     private Set<Faculty> faculties = new HashSet<>();
     
     @Getter
     @Setter
     @ManyToMany(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
     @JoinTable(
@@ -63,7 +65,8 @@ public class University extends Card {
     @Setter
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            mappedBy = "university"
     )
     private Set<Student> students = new HashSet<>();
     
@@ -71,7 +74,8 @@ public class University extends Card {
     @Setter
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
+            fetch = FetchType.EAGER,
+            mappedBy = "university"
     )
     private Set<Dormitory> dormitories = new HashSet<>();
     
@@ -105,5 +109,11 @@ public class University extends Card {
     protected Double getTotalRating() {
         
         return (priceRating + utilityRating + complexityRating) / 3;
+    }
+    
+    public void addTeacher(Teacher teacher) {
+        
+        if(Objects.nonNull(teacher) && Objects.nonNull(teacher.getId()))
+            teachers.add(teacher);
     }
 }

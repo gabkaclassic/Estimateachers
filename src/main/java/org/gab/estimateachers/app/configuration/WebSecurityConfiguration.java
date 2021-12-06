@@ -32,21 +32,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.
         authorizeRequests()
-                .antMatchers("/", "/users/registry", "/static/**", "/img/**").permitAll()
+                .antMatchers("/", "/users/registry", "/static/**", "/img/**", "/cards/list/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-//                .formLogin()
-//                .loginPage("/users/login")
-//                .defaultSuccessUrl("/")
-//                .successForwardUrl("/")
-//                .permitAll()
                 .formLogin()
                 .loginPage("/users/login")
                 .permitAll()
                 .and()
                 .logout()
                 .logoutUrl("/users/logout")
-                .permitAll();
+                .permitAll()
+                .and()
+                .csrf()
+                .and()
+                .cors();
     }
     
     @Bean
@@ -60,12 +59,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return firewall;
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-
-        super.configure(web);
-        web.httpFirewall(allowSlashInUrl());
-    }
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//
+//        super.configure(web);
+//        web.httpFirewall(allowSlashInUrl());
+//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

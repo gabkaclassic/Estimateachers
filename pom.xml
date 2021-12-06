@@ -133,6 +133,12 @@
             <version>5.5.6.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>6.4.4</version>
+        </dependency>
+
         <!--    Security    -->
 
         <dependency>
@@ -148,6 +154,13 @@
             <version>${spring.security.version}</version>
         </dependency>
 
+        <!--   Logging     -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.30</version>
+        </dependency>
     </dependencies>
 
 </project>

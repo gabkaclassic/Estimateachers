@@ -76,6 +76,7 @@ public class AdminController {
         RegistrationApplication application = registrationApplicationService.findById(applicationId);
         model.addAttribute("universities", listUtilities.getUniversitiesAbbreviationsList());
         model.addAttribute("application", application);
+        model.addAttribute("student", application.getStudent());
         
         return "/process_application_first";
     }
@@ -87,9 +88,8 @@ public class AdminController {
                                                  Model model) {
         
         University university = universityService.findByAbbreviation(abbreviationUniversity);
-        
-        model.addAttribute("dormitories", listUtilities.getDormitoriesTitlesList(abbreviationUniversity));
-        model.addAttribute("faculties", listUtilities.getFacultiesTitlesList(abbreviationUniversity));
+        model.addAttribute("dormitories", listUtilities.convertToTitlesList(university.getDormitories()));
+        model.addAttribute("faculties", listUtilities.convertToTitlesList(university.getFaculties()));
         model.addAttribute("university", university);
         model.addAttribute("course", course);
         
@@ -103,6 +103,7 @@ public class AdminController {
         RegistrationApplication application = registrationApplicationService.findById(applicationId);
         
         model.addAttribute("application", application);
+        model.addAttribute("student", application.getStudent());
         
         return "/process_application_second";
     }
@@ -110,7 +111,7 @@ public class AdminController {
     @PostMapping("/applications/processing/second/{id}")
     public String processingApplicationSecondStepSave(@PathVariable(name = "id") Long applicationId,
                                                      @RequestParam("faculty") String facultyTitle,
-                                                     @RequestParam("dormitory") String dormitoryTitle,
+                                                     @RequestParam(value = "dormitory", required = false) String dormitoryTitle,
                                                      @RequestParam("course") Integer course,
                                                      Model model) {
         

@@ -15,7 +15,11 @@
                         <p class="card-text">
                             <p>Email: <#if usr.email??>${usr.email}<#else>None</#if></p>
                             <p>Profile photo: </p>  <br>
-                            <p><img width="300" height="200" src = "/img/${usr.filename!''}" /></p>
+                            <#if usr.filename??>
+                                <img src = "/img/${usr.filename}" height = "100" weight = "150" class="img-thumbnail" />
+                            <#else>
+                                None
+                            </#if>
                             <p> Roles:
                                 <@ul.foreach collection = usr.roles![] status="light" />
                             </p>

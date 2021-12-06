@@ -21,8 +21,10 @@
 
         <div class="card" style="width: 18rem;">
             <#if card.photos??>
-            <@cl.images photos=card.photos />
+                <@cl.images photos=card.photos />
             <#else>
+                :)
+            </#if>
             <div class="card-body">
                 <h5 class="card-title">${card.title}</h5>
                 <p class="card-text">

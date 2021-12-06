@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
-public class ApplicationService<T extends Application> implements org.gab.estimateachers.app.services.Service<T> {
+public abstract class ApplicationService<T extends Application> implements org.gab.estimateachers.app.services.Service<T> {
     
 
     protected ApplicationRepository<T> applicationRepository;
@@ -40,23 +40,6 @@ public class ApplicationService<T extends Application> implements org.gab.estima
     public void save(T object) {
         
         applicationRepository.save(object);
-    }
-    
-    public void apply(Long applicationId, String facultyTitle, String dormitoryTitle, Integer course) {
-        
-        T application = findById(applicationId);
-        Faculty faculty = facultyService.findByTitle(facultyTitle);
-        Dormitory dormitory = dormitoryService.findByTitle(dormitoryTitle);
-        Student student = application.getStudent();
-        
-        student.setFaculty(faculty);
-        student.setDormitory(dormitory);
-        student.setCourse(course);
-        student.setUniversity(faculty.getUniversity());
-        student.getAccount().apply();
-        
-        applicationRepository.delete(application);
-        studentService.save(student);
     }
     
     public void deleteById(Long applicationId) {

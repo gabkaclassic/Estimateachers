@@ -2,6 +2,7 @@ package org.gab.estimateachers.entities.system;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.gab.estimateachers.entities.client.Student;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -50,6 +51,12 @@ public class User implements UserDetails {
     @Column(name = "active")
     private boolean active;
     
+    @OneToOne(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
+    )
+    private Student owner;
+    
     @ElementCollection(
             fetch = FetchType.EAGER,
             targetClass = Roles.class
@@ -62,7 +69,7 @@ public class User implements UserDetails {
     private Set<Roles> roles = new HashSet<>();
     
     @ManyToMany(
-          cascade = CascadeType.ALL,
+          cascade = CascadeType.PERSIST,
           fetch = FetchType.EAGER,
           mappedBy = "participants"
     )

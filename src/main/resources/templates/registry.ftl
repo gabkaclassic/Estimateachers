@@ -7,7 +7,7 @@
         <@ul.select enum = genders![] name = "genders" />
     </@ul.data_form>
 
-    <#if (!remarks??)>
+    <#if remarks??>
         <@ul.foreach collection = remarks![] status="danger"/>
     </#if>
 

@@ -3,19 +3,20 @@
 
 <@main.page>
 
-    <@main.menu user = user />
-
     <h2><span>Applications:</span></h2>
 
     <#if applications??>
 
         <#list applications as application>
-
-            <p><a href = "/admin/applications/processing/first/${application.id}"> Application №${application.id}</a></p> <br>
-            <i>Date sending: <#if application.dateSending??>${application.dateSending}<#else>None</#if></i>
-
-            <h1>---------------------------------------------------</h1>
-
+            <div class="card">
+                <div class="card-header">
+                    Application №${application.id}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"><i>Date sending: <#if application.date??>${application.date}<#else>None</#if></i></h5>
+                    <a href="/admin/applications/processing/first/${application.id}" class="btn btn-primary">Reject</a>
+                </div>
+            </div>
         </#list>
 
     </#if>

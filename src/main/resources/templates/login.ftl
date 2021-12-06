@@ -6,7 +6,7 @@
     <@ul.data_form registry = false textButton = "Sign in" />
 
 
-    <#if (!remarks??)>
+    <#if remarks??>
         <@ul.foreach collection = remarks![] status="danger"/>
     </#if>
 

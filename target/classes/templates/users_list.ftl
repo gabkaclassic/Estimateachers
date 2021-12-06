@@ -2,25 +2,30 @@
 <#import "parts/users_logic.ftl" as ul>
 
 <@main.page>
-    <@main.menu user=user />
       <h2><span>All users:</span></h2>
 
       <#if users??>
 
-          <#list users as user>
+          <#list users as usr>
 
-              <p>Id: ${user.id}</p> <br>
-              <p>Login: <a href = "/users/edit/${user.id}">${user.username}</a></p> <br>
-              <p>Password: ${user.password}</p> <br>
-              <p>Email: <#if user.email??>${user.email}<#else>None</#if></p> <br>
-              <p>Profile photo: </p>  <br>
-              <#if user.filename??><p><img src = "/img/${user.filename}" /></p><#else>None</#if> <br>
-              <p> Roles:
-                  <@ul.foreach collection = user.roles![] />
-              </p>  <br>
-
-              <h1>---------------------------------------------------</h1>  <br>
-
+                <div class="card" style="width: 50rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Login: <a href = "/users/edit/${usr.id}">${usr.username}</a></h5>
+                        <h6 class="card-subtitle mb-2 text-muted"><p>Id: ${usr.id}</p></h6>
+                        <p class="card-text">
+                            <p>Email: <#if usr.email??>${usr.email}<#else>None</#if></p>
+                            <p>Profile photo: </p>  <br>
+                            <#if usr.filename??>
+                                <img src = "/img/${usr.filename}" height = "100" weight = "150" class="img-thumbnail" />
+                            <#else>
+                                None
+                            </#if>
+                            <p> Roles:
+                                <@ul.foreach collection = usr.roles![] status="light" />
+                            </p>
+                        </p>
+                    </div>
+                </div>
           </#list>
         </#if>
 

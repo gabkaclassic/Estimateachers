@@ -1,10 +1,10 @@
 <#import "security.ftl" as security>
+<#import "date.ftl" as date>
 
 <#macro data_form registry=false edit=false textButton = "Submit">
 
 <div>
     <form method = "post" enctype = "multipart/form-data">
-
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Login: </label>
             <div class="col-sm-6">
@@ -75,6 +75,7 @@
                     <@file type = "file" name = "cardPhoto" id = "cardPhoto" text = "Your photo with a student card" />
                 </div>
             </div>
+            <@date.date />
         </#if>
         <#if edit>
             <div class="form-group row">
@@ -148,5 +149,17 @@
             </#list>
         </select>
     </#if>
+
+</#macro>
+
+<#macro m_select enum=[] name="">
+
+<#if enum??>
+<select class="form-select" multiple true name="${name}">
+    <#list enum as element>
+    <option value="${element}">${element}</option>
+</#list>
+</select>
+</#if>
 
 </#macro>

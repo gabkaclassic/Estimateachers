@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Slf4j
 @SpringBootApplication
@@ -24,14 +25,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class EstimateachersApplication {
     
     public static void main(String[] args) {
-
+        
         EstimateachersApplication app = new EstimateachersApplication();
 
         log.info("App started");
 
         app.start(args);
-
-        
     }
     
     private void start(String[] args) {

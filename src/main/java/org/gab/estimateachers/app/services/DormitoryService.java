@@ -3,7 +3,9 @@ package org.gab.estimateachers.app.services;
 import org.gab.estimateachers.app.repositories.client.DormitoryRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
+import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.Dormitory;
+import org.gab.estimateachers.entities.client.University;
 import org.gab.estimateachers.entities.system.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,11 +34,13 @@ public class DormitoryService implements org.gab.estimateachers.app.services.Ser
         dormitoryRepository.save(dormitory);
     }
     
-    public void create(Dormitory dormitory) {
+    public Dormitory create(String dormitoryTitle, University university) {
         
+        Dormitory dormitory = new Dormitory(dormitoryTitle, university);
         dormitory.addPhoto(filesUtilities.registrationFile(null, RegistrationType.BUILDING));
         
         save(dormitory);
+        return dormitory;
     }
     
     public List<Dormitory> findAll() {

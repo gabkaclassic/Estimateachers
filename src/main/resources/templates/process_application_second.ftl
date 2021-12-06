@@ -6,44 +6,49 @@
 
     <h2>Application №${application.id}:</h2>
 
+        <div class="form-group row">
+         <span><i>Date sending:<#if application.dateSending??>${application.dateSending}<#else>None</#if></i></span>
+        </div>
+        <div class="form-group row">
+                 <span>First name: ${student.firstName}</span>
+        </div>
+        <div class="form-group row">
+                 <span>Last name: ${student.lastName}</span>
+        </div>
+        <div class="form-group row">
+                 <span>Email: <#if student.account.email??>${student.account.email}<#else>None</#if></span>
+        </div>
 
-     <span><i>Date sending:<#if application.dateSending??>${application.dateSending}<#else>None</#if></i></span> <br>
+         <span>Student card photo:</span>
+        <#if application.filename??>
+            <img src = "/img/${application.filename}" height = "150" weight = "200" />
+        <#else>
+            None
+        </#if>
 
-     <span>First name: ${application.student.firstName}</span> <br>
-     <span>Last name: ${application.student.lastName}</span> <br>
-     <span>Age: ${application.student.age}</span> <br>
-     <span>Email: <#if application.student.account.email??>${application.student.account.email}<#else>None</#if></span> <br>
-     <span>Student card photo:</span> <br>
-     <#if application.filename??><img src = "/img/${application.filename}" height = "150" weight = "200" /><#else>None</#if> <br>
-     <div>
-    <span>University: ${university.title}</span> <br>
-    <span>Course: ${course}</span>
-    <div>
+        <div class="form-group row">
+                <span>University: ${university.title}</span>
+        </div>
+        <div class="form-group row">
+                <span>Course: ${course}</span>
+        </div>
         <form method = "post" action = "/admin/applications/processing/second/${application.id}">
-            <span> Faculty: <@ul.select enum = faculties name = "faculty" /> </span> <br>
-            <span> Dormitory: <@ul.select enum = dormitories name = "dormitory" /> </span> <br>
+            <span> Faculty: <@ul.select enum = faculties name = "faculty" /> </span>
+            <span> Dormitory: <@ul.select enum = dormitories name = "dormitory" /> </span>
             <input type = "hidden" name = "course" value = "${course}"/>
             <input type = "hidden" name = "universityId" value = "${university.id}"/>
             <@security.token />
-            <button type = "submit">Apply application</button>
+            <button type = "submit" class="btn btn-success">Apply application</button>
         </form>
     </div>
-     <form method = "post" action = "/cards/add/faculty">
-         <input name = "title" type = "text" placeholder = "Title faculty" /> <br>
-         <input type = "hidden" name = "universityId" value = "${university.id}"/>
-         <@security.token />
-         <button type = "submit">Add faculty</button>
-     </form> <br>
-     <form method = "post" action = "/cards/add/dormitory">
-         <input name = "title" type = "text" placeholder = "Title dormitory" /> <br>
-         <input type = "hidden" name = "universityId" value = "${university.id}" />
-         <@security.token />
-         <button type = "submit">Add dormitory</button>
-     </form> <br>
+
     <form method = "post" action = "/admin/applications/reject/${application.id}">
         <@security.token />
-        <button type = "submit">Reject the application</button>
+        <button type = "submit" class="btn btn-danger">Reject the application</button>
     </form>
-    <a href = "/admin/applications">Exit</a>
+    <form method = "get" action = "/admin/applications">
+        <@security.token />
+        <button type = "submit" class="btn btn-secondary">Exit</button>
+    </form>
 
 </@main.page>

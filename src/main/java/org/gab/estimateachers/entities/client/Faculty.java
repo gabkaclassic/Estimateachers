@@ -6,6 +6,7 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -33,8 +34,8 @@ public class Faculty extends Card {
     @Getter
     @Setter
     @ManyToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.EAGER
     )
     @JoinTable(
             name = "faculties_teachers",
@@ -54,12 +55,27 @@ public class Faculty extends Card {
     public Faculty(String title, University university) {
         
         super(title);
-        
+        educationRating = 0.0;
+        priceRating = 0.0;
         setUniversity(university);
     }
     
     public Double getTotalRating() {
         
+        if(Objects.isNull(priceRating) || Objects.isNull(educationRating)) {
+            
+            priceRating = 0.0;
+            educationRating = 0.0;
+            
+            return 0.0;
+        }
+        
         return (priceRating + educationRating) / 2;
+    }
+    
+    public void addTeacher(Teacher teacher) {
+    
+        if(Objects.nonNull(teacher) && Objects.nonNull(teacher.getId()))
+            teachers.add(teacher);
     }
 }

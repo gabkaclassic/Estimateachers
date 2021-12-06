@@ -64,11 +64,11 @@ public class UsersController {
             @RequestParam(name = "lastName") String lastName,
             @RequestParam(name = "patronymic") String patronymic,
             @RequestParam(name = "email") String email,
-            @RequestParam(name = "date") String date,
             @RequestParam(name = "password") String password,
             @RequestParam(name = "genders") String genderName,
             @RequestParam(name = "profilePhoto") MultipartFile profilePhoto,
             @RequestParam(name = "cardPhoto") MultipartFile cardPhoto,
+            @RequestParam(name = "date") String date,
             Model model
     ) {
     

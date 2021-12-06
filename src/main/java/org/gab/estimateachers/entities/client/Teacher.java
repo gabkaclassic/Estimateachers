@@ -37,6 +37,9 @@ public class Teacher extends Card {
     @Column(name = "age")
     private int age;
     
+//    @Column(name = "email")
+//    private String email;
+    
     @Column(name = "severity_rating")
     private double severityRating;
     
@@ -54,7 +57,7 @@ public class Teacher extends Card {
     
     @ManyToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "teachers"
     )
     private Set<Faculty> faculties = new HashSet<>();
@@ -77,7 +80,7 @@ public class Teacher extends Card {
     )
     private Set<Student> students = new HashSet<>();
     
-    public Teacher(String firstName, String lastName, String patronymic) {
+    public Teacher(String firstName, String lastName, String patronymic, String email) {
         
         super(lastName +
                 ' ' +
@@ -89,6 +92,17 @@ public class Teacher extends Card {
         setFirstName(firstName);
         setLastName(lastName);
         setPatronymic(patronymic);
+//        setEmail(email);
+    }
+    
+    public void addUniversity(University university) {
+        
+        universities.add(university);
+    }
+    
+    public void addFaculty(Faculty faculty) {
+        
+        faculties.add(faculty);
     }
     
     public String getTitle() {

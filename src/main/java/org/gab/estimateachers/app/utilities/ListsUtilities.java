@@ -6,8 +6,10 @@ import org.gab.estimateachers.app.repositories.client.UniversityRepository;
 import org.gab.estimateachers.app.services.CreatingCardApplicationService;
 import org.gab.estimateachers.app.services.RegistrationApplicationService;
 import org.gab.estimateachers.app.services.UserService;
+import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.Faculty;
+import org.gab.estimateachers.entities.client.University;
 import org.gab.estimateachers.entities.system.CreatingCardApplication;
 import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.RegistrationApplication;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component("listsUtilities")
@@ -65,15 +68,15 @@ public class ListsUtilities {
     }
     
     
-    public List<String> getDormitoriesTitlesList(String abbreviationUniversity) {
+    public List<String> getDormitoriesTitlesList(University university) {
         
-        return universityRepository.findByAbbreviation(abbreviationUniversity).getDormitories()
+        return universityRepository.getOne(university.getId()).getDormitories()
                 .stream().map(Dormitory::getTitle).collect(Collectors.toList());
     }
     
-    public List<String> getFacultiesTitlesList(String abbreviationUniversity) {
+    public List<String> getFacultiesTitlesList(University university) {
         
-        return universityRepository.findByAbbreviation(abbreviationUniversity).getFaculties()
+        return universityRepository.getOne(university.getId()).getFaculties()
                 .stream().map(Faculty::getTitle).collect(Collectors.toList());
     }
     
@@ -90,5 +93,15 @@ public class ListsUtilities {
     public List<RegistrationApplication> getRegistrationApplicationList() {
         
         return registrationApplicationService.findAll();
+    }
+    
+    public List<String> convertToTitlesList(Set<? extends Card> cards) {
+        
+        return cards.stream().map(Card::getTitle).collect(Collectors.toList());
+    }
+    
+    public List<String> getAllFacultiesTitlesList() {
+        
+        return facultyRepository.findAllTitle();
     }
 }

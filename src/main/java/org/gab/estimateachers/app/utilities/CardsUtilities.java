@@ -19,7 +19,7 @@ public class CardsUtilities {
         boolean isCorrectTitle = Objects.nonNull(title)
                 && TITLE_PATTERN.matcher(
                         title = (title.substring(0, 1).toUpperCase(Locale.ROOT).concat(title.substring(1)).trim())
-                ).matches()
+                ).find()
                 && (title.length() >= MIN_LENGTH_TITLE) && (title.length() <= MAX_LENGTH_TITLE);
         
         if(!isCorrectTitle)
