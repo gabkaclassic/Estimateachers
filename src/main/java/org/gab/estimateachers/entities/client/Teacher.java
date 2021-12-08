@@ -2,12 +2,9 @@ package org.gab.estimateachers.entities.client;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.awt.image.BufferedImage;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -37,8 +34,8 @@ public class Teacher extends Card {
     @Column(name = "age")
     private int age;
     
-//    @Column(name = "email")
-//    private String email;
+    @Column(name = "email")
+    private String email;
     
     @Column(name = "severity_rating")
     private double severityRating;
@@ -56,7 +53,7 @@ public class Teacher extends Card {
     private Set<String> excuses = new HashSet<>();
     
     @ManyToMany(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER,
             mappedBy = "teachers"
     )
@@ -64,21 +61,14 @@ public class Teacher extends Card {
     
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            mappedBy = "teachers"
-    )
-    private Set<University> universities = new HashSet<>();
-    
-    @ManyToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            cascade = CascadeType.PERSIST
     )
     @JoinTable(
-            name = "teachers_students",
+            name = "universities_teachers",
             joinColumns = {@JoinColumn(name = "teacher_id")},
-            inverseJoinColumns = {@JoinColumn(name = "student_id")}
+            inverseJoinColumns = {@JoinColumn(name = "university_id")}
     )
-    private Set<Student> students = new HashSet<>();
+    private Set<University> universities = new HashSet<>();
     
     public Teacher(String firstName, String lastName, String patronymic, String email) {
         
@@ -92,7 +82,7 @@ public class Teacher extends Card {
         setFirstName(firstName);
         setLastName(lastName);
         setPatronymic(patronymic);
-//        setEmail(email);
+        setEmail(email);
     }
     
     public void addUniversity(University university) {

@@ -7,7 +7,7 @@
 
 
     <div class="form-group row">
-        <span><i>Date sending: ${application.dateSending!'None'}</i></span>
+        <span><i>Date sending: <#if application.date??>${application.date}<#else>None</#if></i></span>
     </div>
     <div class="form-group row">
         <span>First name: ${student.firstName!'None'}</span>

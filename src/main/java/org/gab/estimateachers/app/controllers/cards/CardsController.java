@@ -139,11 +139,9 @@ public class CardsController {
     
         if(!remarks.isEmpty())
             model.addAttribute("remarks", remarks);
-        
-        facultyService.save(new Faculty(facultyTitle, universityService.findByAbbreviation(universityAbbreviation)));
     
         if(user.isAdmin())
-            facultyService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation));
+            facultyService.create(facultyTitle, universityAbbreviation);
         else
             creatingCardApplicationService.create(CardType.DORMITORY, dormitoryService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation)), user, dateSending);
             

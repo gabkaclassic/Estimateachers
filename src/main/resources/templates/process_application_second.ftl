@@ -7,7 +7,7 @@
     <h2>Application №${application.id}:</h2>
 
         <div class="form-group row">
-         <span><i>Date sending:<#if application.dateSending??>${application.dateSending}<#else>None</#if></i></span>
+         <span><i>Date sending: <#if application.date??>${application.date}<#else>None</#if></i></span>
         </div>
         <div class="form-group row">
                  <span>First name: ${student.firstName}</span>
@@ -37,6 +37,7 @@
             <span> Dormitory: <@ul.select enum = dormitories name = "dormitory" /> </span>
             <input type = "hidden" name = "course" value = "${course}"/>
             <input type = "hidden" name = "universityId" value = "${university.id}"/>
+
             <@security.token />
             <button type = "submit" class="btn btn-success">Apply application</button>
         </form>

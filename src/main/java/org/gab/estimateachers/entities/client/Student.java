@@ -64,24 +64,38 @@ public class Student {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
+    @JoinTable(
+            name = "university_students",
+            joinColumns = {@JoinColumn(name = "student_id")},
+            inverseJoinColumns = {@JoinColumn(name = "university_id")}
+    )
     private University university;
     
     @ManyToOne(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
+    @JoinTable(
+            name = "faculty_students",
+            joinColumns = {@JoinColumn(name = "student_id")},
+            inverseJoinColumns = {@JoinColumn(name = "faculty_id")}
+    )
     private Faculty faculty;
     
-    @ManyToMany(
+    @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "students"
+            fetch = FetchType.LAZY
     )
     private Set<Teacher> teachers = new HashSet<>();
     
     @ManyToOne(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
+    )
+    @JoinTable(
+            name = "dormitory_students",
+            joinColumns = {@JoinColumn(name = "student_id")},
+            inverseJoinColumns = {@JoinColumn(name = "dormitory_id")}
     )
     private Dormitory dormitory;
     

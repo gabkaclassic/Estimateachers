@@ -5,7 +5,6 @@ import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.client.University;
-import org.gab.estimateachers.entities.system.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,10 @@ public class FacultyService implements org.gab.estimateachers.app.services.Servi
     @Autowired
     @Qualifier("facultyRepository")
     private FacultyRepository facultyRepository;
+    
+    @Autowired
+    @Qualifier("universityService")
+    private UniversityService universityService;
     
     @Autowired
     @Qualifier("filesUtilities")
@@ -54,12 +57,15 @@ public class FacultyService implements org.gab.estimateachers.app.services.Servi
         return facultyRepository.findAllByTitle(facultiesTitles);
     }
     
-    public Faculty create(String facultyTitle, University university) {
+    public Faculty create(String facultyTitle, String universityAbbreviation) {
         
+        University university = universityService.findByAbbreviation(universityAbbreviation);
         Faculty faculty = new Faculty(facultyTitle, university);
+        university.addFaculty(faculty);
         faculty.addPhoto(filesUtilities.registrationFile(null, RegistrationType.OTHER));
         
         save(faculty);
+        universityService.save(university);
         
         return faculty;
     }

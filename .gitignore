@@ -2,7 +2,6 @@
 *.jar
 *.ear
 *.war
-*.properties
 *.jpg
 *.png
 /src/main/resources/db/migration/V2__Add_admin.sql

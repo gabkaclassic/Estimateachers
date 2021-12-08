@@ -11,7 +11,10 @@ import java.util.Set;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "faculties")
+@Table(
+        name = "faculties",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"title"})
+)
 public class Faculty extends Card {
     
     @Getter
@@ -25,10 +28,15 @@ public class Faculty extends Card {
     @Getter
     @Setter
     @ManyToOne(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER
     )
     @NonNull
+    @JoinTable(
+            name = "university_faculties",
+            joinColumns = {@JoinColumn(name = "faculty_id")},
+            inverseJoinColumns = {@JoinColumn(name = "university_id")}
+    )
     private University university;
     
     @Getter
@@ -43,18 +51,11 @@ public class Faculty extends Card {
             inverseJoinColumns = {@JoinColumn(name = "teacher_id")}
     )
     private Set<Teacher> teachers;
-    
-    @Getter
-    @Setter
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
-    )
-    private Set<Student> students = new HashSet<>();
 
     public Faculty(String title, University university) {
-        
-        super(title);
+    
+        setTitle(String.format("%s(%s)", title.substring(0, 1).toUpperCase().concat(title.substring(1)), university.getAbbreviation()));
+        photos = new HashSet<>();
         educationRating = 0.0;
         priceRating = 0.0;
         setUniversity(university);

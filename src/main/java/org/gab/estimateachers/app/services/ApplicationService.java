@@ -24,6 +24,10 @@ public abstract class ApplicationService<T extends Application> implements org.g
     protected DormitoryService dormitoryService;
     
     @Autowired
+    @Qualifier("universityService")
+    protected UniversityService universityService;
+    
+    @Autowired
     @Qualifier("studentService")
     protected StudentService studentService;
     

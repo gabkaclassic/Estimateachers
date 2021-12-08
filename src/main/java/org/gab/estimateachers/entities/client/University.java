@@ -41,8 +41,7 @@ public class University extends Card {
     @Setter
     @OneToMany(
             orphanRemoval = true,
-            targetEntity = Faculty.class,
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER,
             mappedBy = "university"
     )
@@ -52,23 +51,10 @@ public class University extends Card {
     @Setter
     @ManyToMany(
             cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY
-    )
-    @JoinTable(
-            name = "universities_teachers",
-            joinColumns = {@JoinColumn(name = "university_id")},
-            inverseJoinColumns = {@JoinColumn(name = "teacher_id")}
+            fetch = FetchType.LAZY,
+            mappedBy = "universities"
     )
     private Set<Teacher> teachers = new HashSet<>();
-    
-    @Getter
-    @Setter
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "university"
-    )
-    private Set<Student> students = new HashSet<>();
     
     @Getter
     @Setter

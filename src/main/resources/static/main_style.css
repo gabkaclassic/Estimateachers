@@ -1,5 +1,47 @@
-body {
 
-    color: #FF0000;
+.accordion {
+  max-width: 600px; margin: 0 auto;
+}
 
+.accordion__heading {
+  display: block; position: relative; cursor: pointer;
+  padding: 10px 15px; margin: 0;
+  background: cornflowerblue;color: white;
+}
+
+.accordion__heading:after, .accordion__heading:before {
+  content: ""; position: absolute;
+  width: 12px; height: 3px;
+  top: 50%; right: 20px;
+  background: white;
+  transition: all 0.5s;
+}
+
+.accordion__checkbox:checked~.accordion__heading:before {
+  transform: rotate(90deg);
+  opacity: 0;
+  transition: all 0.5s;
+}
+
+.accordion__heading:after {
+  transform: rotate(90deg);
+  transition: all 0.5s;
+}
+
+.accordion__checkbox:checked~.accordion__heading:after {
+  transform: rotate(180deg);
+}
+
+.accordion__checkbox {
+  display: none; position: absolute; left: -9999em;
+}
+
+.accordion__checkbox:checked~.accordion__content {
+  max-height: 1000px;
+  transition: all 2s;
+}
+
+.accordion__content {
+  max-height: 0; overflow: hidden; padding: 0 15px;
+  transition: all 0.5s;
 }

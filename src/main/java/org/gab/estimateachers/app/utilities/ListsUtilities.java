@@ -67,7 +67,6 @@ public class ListsUtilities {
         return universityRepository.findAllAbbreviation();
     }
     
-    
     public List<String> getDormitoriesTitlesList(University university) {
         
         return universityRepository.getOne(university.getId()).getDormitories()

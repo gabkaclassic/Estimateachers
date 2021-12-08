@@ -111,13 +111,14 @@ public class AdminController {
     @PostMapping("/applications/processing/second/{id}")
     public String processingApplicationSecondStepSave(@PathVariable(name = "id") Long applicationId,
                                                      @RequestParam("faculty") String facultyTitle,
+                                                     @RequestParam("universityId") Long universityId,
                                                      @RequestParam(value = "dormitory", required = false) String dormitoryTitle,
                                                      @RequestParam("course") Integer course,
                                                      Model model) {
         
-        registrationApplicationService.apply(applicationId, facultyTitle, dormitoryTitle, course);
+        registrationApplicationService.apply(applicationId, universityId, facultyTitle, dormitoryTitle, course);
         
-        return "redirect:/admin/applications";
+        return "redirect:/applications";
     }
     
     @PostMapping("/applications/reject/{id}")
@@ -125,7 +126,6 @@ public class AdminController {
         
         registrationApplicationService.deleteById(applicationId);
         
-        return "redirect:/admin/applications";
+        return "redirect:/applications";
     }
-    
 }

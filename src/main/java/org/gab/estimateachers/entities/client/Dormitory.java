@@ -26,13 +26,12 @@ public class Dormitory extends Card {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
-    private University university;
-    
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+    @JoinTable(
+            name = "university_dormitories",
+            joinColumns = {@JoinColumn(name = "dormitory_id")},
+            inverseJoinColumns = {@JoinColumn(name = "university_id")}
     )
-    private Set<Student> students = new HashSet<>();
+    private University university;
     
     public Dormitory(String title, University university) {
         
