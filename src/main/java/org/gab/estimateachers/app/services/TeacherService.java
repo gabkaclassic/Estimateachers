@@ -66,12 +66,12 @@ public class TeacherService implements org.gab.estimateachers.app.services.Servi
         teacherRepository.deleteById(id);
     }
     
-    public Teacher create(String firstname, String lastname, String patronymic, String email, Set<String> universitiesAbbreviation, Set<String> facultiesTitles) {
+    public Teacher create(String firstname, String lastname, String patronymic, Set<String> universitiesAbbreviation, Set<String> facultiesTitles) {
         
         List<University> universities = universityService.findByAbbreviations(universitiesAbbreviation);
         List<Faculty> faculties = facultyService.findByTitles(facultiesTitles);
     
-        Teacher teacher = new Teacher(firstname, lastname, patronymic, email);
+        Teacher teacher = new Teacher(firstname, lastname, patronymic);
         create(teacher, universities, faculties);
         
         return teacher;

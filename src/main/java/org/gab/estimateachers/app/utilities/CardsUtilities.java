@@ -1,5 +1,7 @@
 package org.gab.estimateachers.app.utilities;
 
+import org.gab.estimateachers.app.services.Service;
+import org.gab.estimateachers.entities.client.Card;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,7 +16,7 @@ public class CardsUtilities {
     private static final int MIN_LENGTH_TITLE = 2;
     private static final int MAX_LENGTH_TITLE = 128;
     
-    public boolean checkTitle(String title, List<String> remarks) {
+    public boolean checkTitle(String title, List<String> remarks, Service<? extends Card> service) {
         
         boolean isCorrectTitle = Objects.nonNull(title)
                 && TITLE_PATTERN.matcher(
@@ -24,6 +26,10 @@ public class CardsUtilities {
         
         if(!isCorrectTitle)
             remarks.add(String.format("The title can contain %d-%d characters and 1 letter", MIN_LENGTH_TITLE, MAX_LENGTH_TITLE));
+    
+        if(remarks.isEmpty() && service.existsByTitle(title))
+            remarks.add("This title already exists");
+        
         
         return isCorrectTitle;
     }

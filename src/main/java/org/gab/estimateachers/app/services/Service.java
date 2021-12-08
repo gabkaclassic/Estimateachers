@@ -12,4 +12,5 @@ public interface Service<T> {
     
     void deleteById(Long id);
     
+    boolean existsByTitle(String title);
 }

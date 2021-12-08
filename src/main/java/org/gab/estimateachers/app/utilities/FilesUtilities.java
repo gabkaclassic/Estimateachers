@@ -19,6 +19,9 @@ public class FilesUtilities {
     @Value("${upload.filename.default.buildings}")
     private String defaultFilenameBuildings;
     
+    @Value("${upload.filename.default.other}")
+    private String defaultFilenameOther;
+    
     @Value("${upload.path}")
     private String uploadPath;
     
@@ -33,7 +36,7 @@ public class FilesUtilities {
         String defaultFilename = switch (type) {
             case PEOPLE -> defaultFilenamePeople;
             case BUILDING -> defaultFilenameBuildings;
-            case OTHER -> "";
+            case OTHER -> defaultFilenameOther;
         };
         
         String filename = getFilename(file, defaultFilename);

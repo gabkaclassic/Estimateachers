@@ -31,12 +31,6 @@ public class Teacher extends Card {
     )
     private String patronymic;
     
-    @Column(name = "age")
-    private int age;
-    
-    @Column(name = "email")
-    private String email;
-    
     @Column(name = "severity_rating")
     private double severityRating;
     
@@ -70,7 +64,7 @@ public class Teacher extends Card {
     )
     private Set<University> universities = new HashSet<>();
     
-    public Teacher(String firstName, String lastName, String patronymic, String email) {
+    public Teacher(String firstName, String lastName, String patronymic) {
         
         super(lastName +
                 ' ' +
@@ -82,7 +76,6 @@ public class Teacher extends Card {
         setFirstName(firstName);
         setLastName(lastName);
         setPatronymic(patronymic);
-        setEmail(email);
     }
     
     public void addUniversity(University university) {

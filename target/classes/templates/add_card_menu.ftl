@@ -20,6 +20,21 @@
                             <div class="form-group row">
                                 <input name = "title" type = "text" placeholder = "University title" /> <br>
                             </div>
+                            <div class="form-group row">
+                                <div class="form-group col">
+                                    <input name="bachelor" type="checkbox" aria-label="Bachelor">Bachelor
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="form-group col">
+                                    <input name="magistracy" type="checkbox" aria-label="Magistracy">Magistracy
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="form-group col">
+                                    <input name="specialty" type="checkbox" aria-label="Specialty">Specialty
+                                </div>
+                            </div>
                             <@date.date />
                             <@security.token />
                             <button type = "submit" class="btn btn-primary">Add university</button>
@@ -106,7 +121,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Email: </label>
                                     <div class="col-sm-4">
-                                        <input type = "email" id = "email" name = "email" placeholder = "Your email address" class="form-control"/>
+                                        <input type = "email" id = "email" name = "email" placeholder = "Teacher email address" class="form-control"/>
                                     </div>
                                 </div>
                                 <div class="form-group row">

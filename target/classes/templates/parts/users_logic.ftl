@@ -89,7 +89,9 @@
                     <@file type = "file" name = "profilePhoto" id = "profilePhoto" text = "Change profile photo" />
                 </div>
                 <div class="col-sm-4">
-                    <img src="/img/${user.filename!''}" class="img-thumbnail">
+                    <#if user.filename??>
+                        <img src = "/img/${user.filename}" height = "100" weight = "150" class="img-thumbnail" />
+                    </#if>
                 </div>
             </div>
         </#if>

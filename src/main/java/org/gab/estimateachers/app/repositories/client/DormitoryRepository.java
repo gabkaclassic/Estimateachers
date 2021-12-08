@@ -13,4 +13,6 @@ public interface DormitoryRepository extends CrudRepository<Dormitory, Long>,
         JpaRepository<Dormitory, Long> {
     
     Dormitory findByTitle(String title);
+    
+    boolean existsByTitle(String title);
 }

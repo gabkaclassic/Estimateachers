@@ -27,9 +27,9 @@ public class UniversityService implements org.gab.estimateachers.app.services.Se
         universityRepository.save(university);
     }
     
-    public University create(String universityTitle) {
+    public University create(String universityTitle, Boolean bachelor, Boolean magistracy, Boolean specialty) {
     
-        University university = new University(universityTitle);
+        University university = new University(universityTitle, bachelor, magistracy, specialty);
         university.addPhoto(filesUtilities.registrationFile(null, RegistrationType.BUILDING));
         
         save(university);

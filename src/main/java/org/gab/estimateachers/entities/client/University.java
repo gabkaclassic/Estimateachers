@@ -28,12 +28,18 @@ public class University extends Card {
     @Column(name = "utility_rating")
     private Double utilityRating;
     
+    @Getter
+    @Setter
     @Column(name = "bachelor")
     private Boolean bachelor;
     
+    @Getter
+    @Setter
     @Column(name = "magistracy")
     private Boolean magistracy;
     
+    @Getter
+    @Setter
     @Column(name = "specialty")
     private Boolean specialty;
     
@@ -65,7 +71,7 @@ public class University extends Card {
     )
     private Set<Dormitory> dormitories = new HashSet<>();
     
-    public University(String title) {
+    public University(String title, Boolean bachelor, Boolean magistracy, Boolean specialty) {
         
         super(title);
         
@@ -75,6 +81,9 @@ public class University extends Card {
             builder.append(word.substring(0, 1).toUpperCase());
     
         abbreviation = builder.toString();
+        setBachelor(Objects.nonNull(bachelor));
+        setMagistracy(Objects.nonNull(magistracy));
+        setSpecialty(Objects.nonNull(specialty));
     }
     
     public void addDormitory(Dormitory dormitory) {

@@ -29,4 +29,6 @@ public interface FacultyRepository extends CrudRepository<Faculty, Long>,
     List<String> findAllTitle();
     
     Faculty findByTitleAndUniversity(String title, University university);
+    
+    boolean existsByTitle(String facultyTitle);
 }

@@ -57,4 +57,9 @@ public class DormitoryService implements org.gab.estimateachers.app.services.Ser
         
         return dormitoryRepository.findByTitle(title);
     }
+    
+    public boolean existsByTitle(String title) {
+        
+        return dormitoryRepository.existsByTitle(title);
+    }
 }

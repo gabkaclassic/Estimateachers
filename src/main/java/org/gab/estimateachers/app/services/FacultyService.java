@@ -69,4 +69,9 @@ public class FacultyService implements org.gab.estimateachers.app.services.Servi
         
         return faculty;
     }
+    
+    public boolean existsByTitle(String title) {
+        
+        return facultyRepository.existsByTitle(title);
+    }
 }
