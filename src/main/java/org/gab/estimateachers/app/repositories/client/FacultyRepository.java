@@ -23,7 +23,7 @@ public interface FacultyRepository extends CrudRepository<Faculty, Long>,
     List<Faculty> findAllByTitle(@Param("titles") Set<String> facultiesTitles);
     
     @Query(
-            value = "select title from faculties;",
+            value = "select title from faculties where approved = 't';",
             nativeQuery = true
     )
     List<String> findAllTitle();

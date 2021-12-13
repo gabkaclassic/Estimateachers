@@ -3,8 +3,10 @@ package org.gab.estimateachers.entities.system;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.gab.estimateachers.entities.client.Student;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -87,12 +89,12 @@ public class User implements UserDetails {
     )
     private Set<Comment> comments = new HashSet<>();
     
-    public User(String name, String email, String password) {
+    public User(String username, String password, String email) {
         
-        username = name;
-        this.email = (Objects.nonNull(email) && email.isEmpty()) ? null : email;
-        this.password = password;
-        active = true;
+        setUsername(username);
+        setEmail((Objects.nonNull(email) && email.isEmpty()) ? null : email);
+        setActive(true);
+        setPassword(password);
         roles.add(Roles.LOCKED);
     }
     

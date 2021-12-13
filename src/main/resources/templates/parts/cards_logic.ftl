@@ -1,6 +1,7 @@
 <#import "users_logic.ftl" as ul>
+<#import "security.ftl" as security>
 
-<#macro images photos=[]>
+<#macro images photos=[] numbers=[]>
 
     <#if photos??>
         <div id="photos_card" class="carousel slide" data-ride="carousel">
@@ -32,22 +33,22 @@
     </#if>
 </#macro>
 
-<#macro links cards=[] cardType>
+<#macro links cardType cards=[]>
 
 <#if cards??>
     <#list cards as card>
-        <li>
+        <li class="list-group-item mt-3">
             <form method = "get" action = "/cards/get">
+                <button class="btn btn-link" type="submit">${card.title}</button>
                 <input type="hidden" name = "cardType" value = ${cardType} />
                 <input type="hidden" name = "id" value = ${card.id} />
-                ${card.title}
             </form>
         </li>
     </#list>
 </#if>
 </#macro>
 
-<#macro card_view card="NULL">
+<#macro card_view cardType card="NULL">
 
     <#if card??>
 
@@ -65,10 +66,11 @@
                     </#if>
                 <p>Rating: ${(card.totalRating)!'-'}</p>
                 </p>
-                <form method = "get" action = "/cards/get" class = "btn btn-primary">
-                    <input type="hidden" name = "cardType" value = ${cardType} />
+                <form method = "get" action = "/cards/get">
+                    <input type="hidden" name = "cardType" value = "${cardType}" />
                     <input type="hidden" name = "id" value = ${card.id} />
-                    To consider...
+                    <@security.token />
+                    <button class="btn btn-primary" type="submit">To consider...</button>
                 </form>
             </div>
         </div>

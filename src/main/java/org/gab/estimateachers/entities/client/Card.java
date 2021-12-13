@@ -23,6 +23,18 @@ public abstract class Card {
     )
     protected String title;
     
+    @Column(
+            name = "approved",
+            columnDefinition = "boolean default 'f'"
+    )
+    protected Boolean approved;
+    
+    @Column(
+            name = "total_rating",
+            columnDefinition = "float8 default 0.0"
+    )
+    protected Double totalRating;
+    
     @ElementCollection(
             targetClass = String.class,
             fetch = FetchType.LAZY
@@ -30,7 +42,8 @@ public abstract class Card {
     protected Set<String> photos;
     
     public Card(String title) {
-        
+    
+        setApproved(false);
         setTitle(title);
         photos = new HashSet<>();
     }

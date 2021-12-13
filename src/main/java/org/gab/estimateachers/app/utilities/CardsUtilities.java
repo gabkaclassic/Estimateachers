@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.utilities;
 
+import org.gab.estimateachers.app.services.CardService;
 import org.gab.estimateachers.app.services.Service;
 import org.gab.estimateachers.entities.client.Card;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ public class CardsUtilities {
     private static final int MIN_LENGTH_TITLE = 2;
     private static final int MAX_LENGTH_TITLE = 128;
     
-    public boolean checkTitle(String title, List<String> remarks, Service<? extends Card> service) {
+    public boolean checkTitle(String title, List<String> remarks, CardService<? extends Card> service) {
         
         boolean isCorrectTitle = Objects.nonNull(title)
                 && TITLE_PATTERN.matcher(

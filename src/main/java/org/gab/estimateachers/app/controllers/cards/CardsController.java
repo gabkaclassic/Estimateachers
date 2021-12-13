@@ -5,7 +5,7 @@ import org.gab.estimateachers.app.utilities.CardsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.app.utilities.UsersUtilities;
 import org.gab.estimateachers.entities.client.Card;
-import org.gab.estimateachers.entities.client.Faculty;
+import org.gab.estimateachers.entities.client.University;
 import org.gab.estimateachers.entities.system.CardType;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,7 +137,12 @@ public class CardsController {
         if(user.isAdmin())
             dormitoryService.create(dormitoryTitle, universityService.findByAbbreviation(universityAbbreviation));
         else
-            creatingCardApplicationService.create(CardType.DORMITORY, dormitoryService.create(dormitoryTitle, universityService.findByAbbreviation(universityAbbreviation)), user, dateSending);
+            creatingCardApplicationService.create(
+                    CardType.DORMITORY,
+                    dormitoryService.create(dormitoryTitle, universityService.findByAbbreviation(universityAbbreviation)),
+                    user,
+                    dateSending
+            );
         
         return "redirect:/cards/add";
     }
@@ -162,7 +167,12 @@ public class CardsController {
         if(user.isAdmin())
             facultyService.create(facultyTitle, universityAbbreviation);
         else
-            creatingCardApplicationService.create(CardType.DORMITORY, dormitoryService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation)), user, dateSending);
+            creatingCardApplicationService.create(
+                    CardType.DORMITORY,
+                    dormitoryService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation)),
+                    user,
+                    dateSending
+            );
             
         return "redirect:/cards/add";
     }
@@ -198,22 +208,23 @@ public class CardsController {
         return "redirect:/cards/add";
     }
     
-    @GetMapping("/cards/get")
+    @GetMapping("/get")
     public String universityCard(@AuthenticationPrincipal User user,
-                                 @RequestParam("id") Long id,
+                                 @RequestParam("id") Long cardId,
                                  @RequestParam("cardType") String cardType,
                                  Model model) {
         Card card;
         
         switch (cardType) {
-            case "university" -> card = universityService.findById(id);
-            case "dormitory" -> card = dormitoryService.findById(id);
-            case "faculty" -> card = facultyService.findById(id);
-            case "teacher" -> card = teacherService.findById(id);
+            case "university" -> model.addAttribute("university", card = universityService.findById(cardId));
+            case "dormitory" -> model.addAttribute("dormitory", card = dormitoryService.findById(cardId));
+            case "faculty" -> model.addAttribute("faculty", card = facultyService.findById(cardId));
+            case "teacher" -> model.addAttribute("teacher", card = teacherService.findById(cardId));
             default -> card = null;
-        }
-        
-        model.addAttribute("card", card);
+            }
+            
+        if(Objects.nonNull(card))
+            model.addAttribute("numbers", listUtilities.getNumbers(card.getPhotos()));
         model.addAttribute("user", user);
         model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
         

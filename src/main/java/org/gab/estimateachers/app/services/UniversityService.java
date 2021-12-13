@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service("universityService")
-public class UniversityService implements org.gab.estimateachers.app.services.Service<University> {
+public class UniversityService implements CardService<University> {
     
     @Autowired
     @Qualifier("universityRepository")
@@ -45,6 +45,11 @@ public class UniversityService implements org.gab.estimateachers.app.services.Se
     public void deleteById(Long id) {
         
         universityRepository.deleteById(id);
+    }
+    
+    public boolean existsByTitle(String title) {
+        
+        return universityRepository.existsByTitle(title);
     }
     
     public University findByAbbreviation(String abbreviation) {

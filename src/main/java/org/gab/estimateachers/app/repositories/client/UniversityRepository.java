@@ -26,4 +26,12 @@ public interface UniversityRepository extends CrudRepository<University, Long>,
             value = "select university from University university where university.abbreviation in :abbreviations"
     )
     List<University> findAllByAbbreviation(@Param("abbreviations") Set<String> universitiesAbbreviations);
+    
+    boolean existsByTitle(String title);
+    
+    @Query(
+            value = "select abbreviation from universities where approved = 't';",
+            nativeQuery = true
+    )
+    List<String> findAllAbbreviationApproved();
 }

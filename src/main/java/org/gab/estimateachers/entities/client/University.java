@@ -1,5 +1,6 @@
 package org.gab.estimateachers.entities.client;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,42 +10,52 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "universities")
 public class University extends Card {
     
-    @Getter
-    @Setter
     @Column(name = "abbreviation")
     private String abbreviation;
     
-    @Column(name = "price_rating")
+    @Column(
+            name = "price_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private Double priceRating;
-    
-    @Column(name = "complexity_rating")
+
+    @Column(
+            name = "complexity_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private Double complexityRating;
-    
-    @Column(name = "utility_rating")
+
+    @Column(
+            name = "utility_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private Double utilityRating;
-    
-    @Getter
-    @Setter
-    @Column(name = "bachelor")
+
+    @Column(
+            name = "bachelor",
+            columnDefinition = "boolean default 'f'"
+    )
     private Boolean bachelor;
-    
-    @Getter
-    @Setter
-    @Column(name = "magistracy")
+
+    @Column(
+            name = "magistracy",
+            columnDefinition = "boolean default 'f'"
+    )
     private Boolean magistracy;
-    
-    @Getter
-    @Setter
-    @Column(name = "specialty")
+
+    @Column(
+            name = "specialty",
+            columnDefinition = "boolean default 'f'"
+    )
     private Boolean specialty;
-    
-    @Getter
-    @Setter
+
     @OneToMany(
             orphanRemoval = true,
             cascade = CascadeType.PERSIST,
@@ -52,18 +63,14 @@ public class University extends Card {
             mappedBy = "university"
     )
     private Set<Faculty> faculties = new HashSet<>();
-    
-    @Getter
-    @Setter
+
     @ManyToMany(
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY,
             mappedBy = "universities"
     )
     private Set<Teacher> teachers = new HashSet<>();
-    
-    @Getter
-    @Setter
+
     @OneToMany(
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
@@ -84,6 +91,9 @@ public class University extends Card {
         setBachelor(Objects.nonNull(bachelor));
         setMagistracy(Objects.nonNull(magistracy));
         setSpecialty(Objects.nonNull(specialty));
+        setComplexityRating(0.0);
+        setPriceRating(0.0);
+        setUtilityRating(0.0);
     }
     
     public void addDormitory(Dormitory dormitory) {
@@ -103,7 +113,7 @@ public class University extends Card {
     
     protected Double getTotalRating() {
         
-        return (priceRating + utilityRating + complexityRating) / 3;
+        return totalRating = (priceRating + utilityRating + complexityRating) / 3;
     }
     
     public void addTeacher(Teacher teacher) {

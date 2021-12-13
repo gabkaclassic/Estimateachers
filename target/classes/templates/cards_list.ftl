@@ -9,7 +9,7 @@
 
         <#list cards as card>
 
-            <@cl.card_view card=card />
+            <@cl.card_view cardType="${cardType}" card=card />
         </#list>
     </#if>
 

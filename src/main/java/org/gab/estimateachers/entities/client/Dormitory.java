@@ -13,13 +13,22 @@ import java.util.Set;
 @Table(name = "dormitories")
 public class Dormitory extends Card {
     
-    @Column(name = "cleaning_rating")
+    @Column(
+            name = "cleaning_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private Double cleaningRating;
     
-    @Column(name = "roommates_rating")
+    @Column(
+            name = "roommates_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private Double roommatesRating;
     
-    @Column(name = "capacity_rating")
+    @Column(
+            name = "capacity_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private Double capacityRating;
     
     @ManyToOne(
@@ -36,12 +45,15 @@ public class Dormitory extends Card {
     public Dormitory(String title, University university) {
         
         super(title);
-        
+        setCapacityRating(0.0);
+        setCleaningRating(0.0);
+        setRoommatesRating(0.0);
+        setTotalRating(0.0);
         setUniversity(university);
     }
     
     public Double getTotalRating() {
         
-        return (cleaningRating + roommatesRating + capacityRating) / 3;
+        return totalRating = (cleaningRating + roommatesRating + capacityRating) / 3;
     }
 }

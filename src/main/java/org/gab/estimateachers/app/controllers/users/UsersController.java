@@ -102,7 +102,7 @@ public class UsersController {
                 profilePhoto,
                 cardPhoto,
                 date,
-                new User(username, email, password)
+                userService.createUser(username, password, email)
         );
         
         log.trace("Successful process registration");

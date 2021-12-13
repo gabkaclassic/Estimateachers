@@ -119,12 +119,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Email: </label>
-                                    <div class="col-sm-4">
-                                        <input type = "email" id = "email" name = "email" placeholder = "Teacher email address" class="form-control"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
                                     <span> Universities: <@ul.m_select enum = universities name = "universities" /> </span>
                                 </div>
                                 <div class="form-group row">
@@ -141,7 +135,7 @@
         </div>
         <div class="column ml-3">
             <#if remarks??>
-                <@ul.foreach collection = remarks![] status="danger"/>
+                <@ul.foreach collection = remarks![] status="danger" />
             </#if>
         </div>
      </div>

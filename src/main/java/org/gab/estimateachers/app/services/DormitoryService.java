@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service("dormitoryService")
-public class DormitoryService implements org.gab.estimateachers.app.services.Service<Dormitory>  {
+public class DormitoryService implements CardService<Dormitory>  {
     
     @Autowired
     @Qualifier("dormitoryRepository")

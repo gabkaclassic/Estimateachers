@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,9 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
     
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     public List<User> findAll() {
        
         return userRepository.findAll();
@@ -33,6 +37,13 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
     public void deleteById(Long id) {
         
         userRepository.deleteById(id);
+    }
+    
+    public User createUser(String username, String password, String email) {
+        
+        password = passwordEncoder.encode(password);
+        
+        return new User(username, password, email);
     }
     
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -67,7 +78,7 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         
         User user = userRepository.getOne(id);
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         
         user.setEmail(email); //TO DO
         
@@ -77,7 +88,7 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         
         User user = userRepository.getOne(id);
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
         
         user.setEmail(email); //TO DO

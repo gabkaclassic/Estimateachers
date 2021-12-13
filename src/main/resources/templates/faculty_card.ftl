@@ -1,6 +1,6 @@
 <#import "parts/main.ftl" as main>
-<#import "parts/card_logic.ftl" as cl>
-<#import "parts/user_logic.ftl" as ul>
+<#import "parts/cards_logic.ftl" as cl>
+<#import "parts/users_logic.ftl" as ul>
 
 <@main.page>
 
@@ -8,7 +8,7 @@
     <h5>${faculty.title}</h5>
 </div>
 <div class="row mt-5">
-    <@cl.images photos=${faculty.photos} />
+    <@cl.images photos=faculty.photos />
 </div>
 <div class="row mt-5">
     <ul class="list-group">
@@ -21,12 +21,12 @@
     University:
     <form method = "get" action = "/cards/get">
         <input type="hidden" name = "cardType" value = "university" />
-        <input type="hidden" name = "id" value = ${university.id} />
-        ${university.title}
+        <input type="hidden" name = "id" value = ${faculty.university.id} />
+        ${faculty.university.title}
     </form>
 </div>
 <div class="row mt-3">
     Teachers:
-    <@cl.links cards=${teachers} cardType="teacher" />
+    <@cl.links cards=faculty.teachers cardType="teacher" />
 </div>
 </@main.page>

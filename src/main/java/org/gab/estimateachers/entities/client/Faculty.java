@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Data
 @NoArgsConstructor
 @Entity
 @Table(
@@ -17,16 +18,18 @@ import java.util.Set;
 )
 public class Faculty extends Card {
     
-    @Getter
-    @Column(name = "price_rating")
+    @Column(
+            name = "price_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private Double priceRating;
     
-    @Getter
-    @Column(name = "education_rating")
+    @Column(
+            name = "education_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private Double educationRating;
-    
-    @Getter
-    @Setter
+
     @ManyToOne(
             cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER
@@ -38,9 +41,7 @@ public class Faculty extends Card {
             inverseJoinColumns = {@JoinColumn(name = "university_id")}
     )
     private University university;
-    
-    @Getter
-    @Setter
+
     @ManyToMany(
             cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER
@@ -53,25 +54,18 @@ public class Faculty extends Card {
     private Set<Teacher> teachers;
 
     public Faculty(String title, University university) {
-    
+        
         setTitle(String.format("%s(%s)", title.substring(0, 1).toUpperCase().concat(title.substring(1)), university.getAbbreviation()));
         photos = new HashSet<>();
-        educationRating = 0.0;
-        priceRating = 0.0;
+        setEducationRating(0.0);
+        setPriceRating(0.0);
+        setTotalRating(0.0);
         setUniversity(university);
     }
     
     public Double getTotalRating() {
         
-        if(Objects.isNull(priceRating) || Objects.isNull(educationRating)) {
-            
-            priceRating = 0.0;
-            educationRating = 0.0;
-            
-            return 0.0;
-        }
-        
-        return (priceRating + educationRating) / 2;
+        return totalRating = (priceRating + educationRating) / 2;
     }
     
     public void addTeacher(Teacher teacher) {

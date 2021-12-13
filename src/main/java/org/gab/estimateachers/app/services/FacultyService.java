@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service("facultyService")
-public class FacultyService implements org.gab.estimateachers.app.services.Service<Faculty> {
+public class FacultyService implements CardService<Faculty> {
     
     @Autowired
     @Qualifier("facultyRepository")

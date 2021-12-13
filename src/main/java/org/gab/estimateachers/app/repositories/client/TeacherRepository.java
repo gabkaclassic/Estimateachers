@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeacherRepository extends CrudRepository<Teacher, Long>,
         JpaRepository<Teacher, Long> {
-
+    
+    boolean existsByTitle(String title);
 }

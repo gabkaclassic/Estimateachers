@@ -55,13 +55,13 @@ public class Student {
     private Integer course = 1;
     
     @OneToOne(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER
     )
     private User account;
     
     @ManyToOne(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
     @JoinTable(
@@ -72,7 +72,7 @@ public class Student {
     private University university;
     
     @ManyToOne(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
     @JoinTable(
@@ -83,13 +83,13 @@ public class Student {
     private Faculty faculty;
     
     @OneToMany(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
     private Set<Teacher> teachers = new HashSet<>();
     
     @ManyToOne(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
     @JoinTable(

@@ -31,13 +31,22 @@ public class Teacher extends Card {
     )
     private String patronymic;
     
-    @Column(name = "severity_rating")
+    @Column(
+            name = "severity_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private double severityRating;
     
-    @Column(name = "exacting_rating")
+    @Column(
+            name = "exacting_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private double exactingRating;
     
-    @Column(name = "freebies_rating")
+    @Column(
+            name = "freebies_rating",
+            columnDefinition = "float8 default 0.0"
+    )
     private double freebiesRating;
     
     @ElementCollection(
@@ -76,6 +85,10 @@ public class Teacher extends Card {
         setFirstName(firstName);
         setLastName(lastName);
         setPatronymic(patronymic);
+        setExactingRating(0.0);
+        setSeverityRating(0.0);
+        setFreebiesRating(0.0);
+        setTotalRating(0.0);
     }
     
     public void addUniversity(University university) {
@@ -95,6 +108,6 @@ public class Teacher extends Card {
     
     protected Double getTotalRating() {
         
-        return (severityRating + exactingRating + freebiesRating) / 3;
+        return totalRating = (severityRating + exactingRating + freebiesRating) / 3;
     }
 }

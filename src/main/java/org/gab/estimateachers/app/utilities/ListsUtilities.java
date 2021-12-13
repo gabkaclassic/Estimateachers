@@ -19,12 +19,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component("listsUtilities")
 public class ListsUtilities {
+    
+    private static final List<String> GENDERS = Arrays.stream(Genders.values())
+            .map(Genders::name)
+            .collect(Collectors.toList());
     
     @Autowired
     @Qualifier("universityRepository")
@@ -57,26 +63,30 @@ public class ListsUtilities {
     
     public List<String> getGendersList() {
     
-        return Arrays.stream(Genders.values())
-                .map(Genders::toString)
-                .collect(Collectors.toList());
+        return GENDERS;
     }
     
      public List<String> getUniversitiesAbbreviationsList() {
     
-        return universityRepository.findAllAbbreviation();
+        return universityRepository.findAllAbbreviationApproved();
     }
     
     public List<String> getDormitoriesTitlesList(University university) {
         
         return universityRepository.getOne(university.getId()).getDormitories()
-                .stream().map(Dormitory::getTitle).collect(Collectors.toList());
+                .stream()
+                .filter(Dormitory::getApproved)
+                .map(Dormitory::getTitle)
+                .collect(Collectors.toList());
     }
     
     public List<String> getFacultiesTitlesList(University university) {
         
         return universityRepository.getOne(university.getId()).getFaculties()
-                .stream().map(Faculty::getTitle).collect(Collectors.toList());
+                .stream()
+                .filter(Faculty::getApproved)
+                .map(Faculty::getTitle)
+                .collect(Collectors.toList());
     }
     
     public List<User> getFilteredUsersList(String login) {
@@ -102,5 +112,10 @@ public class ListsUtilities {
     public List<String> getAllFacultiesTitlesList() {
         
         return facultyRepository.findAllTitle();
+    }
+    
+    public Object getNumbers(Collection<?> list) {
+       
+       return Stream.iterate(1, n -> n+1).limit(list.size()).collect(Collectors.toList());
     }
 }

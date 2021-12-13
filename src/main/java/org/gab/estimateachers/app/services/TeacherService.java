@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service("teacherService")
-public class TeacherService implements org.gab.estimateachers.app.services.Service<Teacher> {
+public class TeacherService implements CardService<Teacher> {
     
     @Autowired
     @Qualifier("teacherRepository")
@@ -64,6 +64,11 @@ public class TeacherService implements org.gab.estimateachers.app.services.Servi
     public void deleteById(Long id) {
         
         teacherRepository.deleteById(id);
+    }
+    
+    public boolean existsByTitle(String title) {
+        
+        return teacherRepository.existsByTitle(title);
     }
     
     public Teacher create(String firstname, String lastname, String patronymic, Set<String> universitiesAbbreviation, Set<String> facultiesTitles) {

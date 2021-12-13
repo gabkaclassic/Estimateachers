@@ -38,6 +38,5 @@ public class RegistrationApplicationService extends ApplicationService<Registrat
     
         studentService.save(student);
         applicationRepository.delete(application);
-        
     }
 }

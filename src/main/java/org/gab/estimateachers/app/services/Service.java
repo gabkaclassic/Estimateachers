@@ -11,6 +11,4 @@ public interface Service<T> {
     List<T> findAll();
     
     void deleteById(Long id);
-    
-    boolean existsByTitle(String title);
 }
