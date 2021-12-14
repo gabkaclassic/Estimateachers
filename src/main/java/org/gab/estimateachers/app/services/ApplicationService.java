@@ -10,10 +10,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
-public abstract class ApplicationService<T extends Application> implements org.gab.estimateachers.app.services.Service<T> {
+public abstract class ApplicationService<T extends Application, R extends ApplicationRepository<T>> implements org.gab.estimateachers.app.services.Service<T> {
     
-
-    protected ApplicationRepository<T> applicationRepository;
+    protected R applicationRepository;
     
     @Autowired
     @Qualifier("facultyService")
@@ -51,7 +50,7 @@ public abstract class ApplicationService<T extends Application> implements org.g
         applicationRepository.deleteById(applicationId);
     }
     
-    protected void setApplicationRepository(ApplicationRepository<T> repository) {
+    protected void setApplicationRepository(R repository) {
         
         applicationRepository = repository;
     }

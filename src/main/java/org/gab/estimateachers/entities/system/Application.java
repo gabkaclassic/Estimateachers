@@ -36,7 +36,8 @@ public abstract class Application {
     
     @Column(
             name = "viewed",
-            nullable = false
+            nullable = false,
+            columnDefinition = "boolean default 'f'"
     )
     private boolean viewed;
     

@@ -14,10 +14,12 @@
                 </div>`
                 <div class="card-body">
                     <h5 class="card-title"><i>Date sending: <#if application.date??>${application.date}<#else>None</#if></i></h5>
-                    <#if registry>
+                    <#if type="registry">
                         <a href="/applications/processing/first/${application.id}" class="btn btn-primary">Reject</a>
-                    <#else>
+                    <#elseif type="card">
                         <a href="/applications/approving/${application.id}" class="btn btn-primary">Reject</a>
+                    <#elseif type="request">
+                        <a href="/applications/requests/${application.id}" class="btn btn-primary">Reject</a>
                     </#if>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.system.ApplicationRepository;
+import org.gab.estimateachers.app.repositories.system.RegistrationApplicationRepository;
 import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.client.Student;
@@ -13,11 +14,11 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service("registrationApplicationService")
-public class RegistrationApplicationService extends ApplicationService<RegistrationApplication> {
+public class RegistrationApplicationService extends ApplicationService<RegistrationApplication, RegistrationApplicationRepository> {
     
     @Autowired
     @Qualifier("registrationApplicationRepository")
-    protected void setApplicationRepository(ApplicationRepository<RegistrationApplication> repository) {
+    protected void setApplicationRepository(RegistrationApplicationRepository repository) {
         
         super.setApplicationRepository(repository);
     }

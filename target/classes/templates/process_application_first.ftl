@@ -43,7 +43,7 @@
         <button type = "submit" class="btn btn-danger">Reject the application</button>
     </form>
 
-    <form method = "get" action = "/applications">
+    <form method = "get" action = "/applications/users">
         <@security.token />
         <button type = "submit" class="btn btn-secondary">Exit</button>
     </form>

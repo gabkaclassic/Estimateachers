@@ -8,7 +8,7 @@
     </@ul.data_form>
 
     <#if remarks??>
-        <@ul.foreach collection = remarks![] status="danger"/>
+        <@ul.foreach collection = remarks![] status="danger" />
     </#if>
 
 

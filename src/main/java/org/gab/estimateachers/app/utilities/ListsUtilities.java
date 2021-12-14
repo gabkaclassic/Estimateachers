@@ -3,15 +3,9 @@ package org.gab.estimateachers.app.utilities;
 import org.gab.estimateachers.app.repositories.client.DormitoryRepository;
 import org.gab.estimateachers.app.repositories.client.FacultyRepository;
 import org.gab.estimateachers.app.repositories.client.UniversityRepository;
-import org.gab.estimateachers.app.services.CreatingCardApplicationService;
-import org.gab.estimateachers.app.services.RegistrationApplicationService;
-import org.gab.estimateachers.app.services.TeacherService;
-import org.gab.estimateachers.app.services.UserService;
+import org.gab.estimateachers.app.services.*;
 import org.gab.estimateachers.entities.client.*;
-import org.gab.estimateachers.entities.system.CreatingCardApplication;
-import org.gab.estimateachers.entities.system.Genders;
-import org.gab.estimateachers.entities.system.RegistrationApplication;
-import org.gab.estimateachers.entities.system.User;
+import org.gab.estimateachers.entities.system.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -57,6 +51,10 @@ public class ListsUtilities {
     @Autowired
     @Qualifier("teacherService")
     private TeacherService teacherService;
+    
+    @Autowired
+    @Qualifier("requestService")
+    private RequestService requestService;
     
     public List<User> getUsersList() {
     
@@ -125,4 +123,14 @@ public class ListsUtilities {
         
         return teacherService.getTitles();
     }
+    
+    public List<Request> getCardRequestList() {
+        
+        return requestService.findAllCard();
+    }
+    public List<Request> getServiceRequestList() {
+        
+        return requestService.findAllService();
+    }
+    
 }

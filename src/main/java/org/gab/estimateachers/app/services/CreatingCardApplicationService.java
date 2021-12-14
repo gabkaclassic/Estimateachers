@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service("creatingCardApplicationService")
-public class CreatingCardApplicationService extends ApplicationService<CreatingCardApplication> {
+public class CreatingCardApplicationService extends ApplicationService<CreatingCardApplication, CreatingCardApplicationRepository> {
     
     @Autowired
     @Qualifier("creatingCardApplicationRepository")
-    protected void setApplicationRepository(ApplicationRepository<CreatingCardApplication> repository) {
+    protected void setApplicationRepository(CreatingCardApplicationRepository repository) {
         
         super.setApplicationRepository(repository);
     }

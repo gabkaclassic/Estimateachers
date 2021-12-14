@@ -1,21 +1,33 @@
 package org.gab.estimateachers.app.controllers.applications;
 
 import org.gab.estimateachers.app.services.*;
+import org.gab.estimateachers.app.utilities.ApplicationsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.entities.client.University;
 import org.gab.estimateachers.entities.system.CreatingCardApplication;
 import org.gab.estimateachers.entities.system.RegistrationApplication;
+import org.gab.estimateachers.entities.system.RequestType;
+import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 @Controller
-@RequestMapping("/applications")
 @PreAuthorize("hasAuthority('ADMIN')")
+@RequestMapping("/applications")
 public class ApplicationController {
+    
+    @Autowired
+    @Qualifier("applicationsUtilities")
+    private ApplicationsUtilities applicationsUtilities;
     
     @Autowired
     @Qualifier("listsUtilities")
@@ -28,6 +40,10 @@ public class ApplicationController {
     @Autowired
     @Qualifier("creatingCardApplicationService")
     private CreatingCardApplicationService creatingCardApplicationService;
+    
+    @Autowired
+    @Qualifier("requestService")
+    private RequestService requestService;
     
     @Autowired
     @Qualifier("universityService")
@@ -49,7 +65,7 @@ public class ApplicationController {
     public String newUserApplications(Model model) {
         
         model.addAttribute("applications", listUtilities.getRegistrationApplicationList());
-        model.addAttribute("registry", true);
+        model.addAttribute("type", "registry");
         
         return "/applications";
     }
@@ -58,7 +74,7 @@ public class ApplicationController {
     public String newCardApplications(Model model) {
         
         model.addAttribute("applications", listUtilities.getCreatingCardApplicationList());
-        model.addAttribute("registry", false);
+        model.addAttribute("type", "card");
         
         return "/applications";
     }
@@ -170,4 +186,90 @@ public class ApplicationController {
         
         return "redirect:/applications/cards";
     }
+    
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("/requests")
+    public String menuRequest() {
+        
+        return "/add_request_menu";
+    }
+    
+    @PreAuthorize("hasAuthority('USER')")
+    @PostMapping("/requests")
+    public String saveRequest(@AuthenticationPrincipal User user,
+                              @RequestParam("text") String textRequest,
+                              @RequestParam("date") String dateSending,
+                              @RequestParam(value = "type", required = false) String type,
+                              Model model) {
+        
+        List<String> remarks = new ArrayList<>();
+        applicationsUtilities.checkRequestData(textRequest, type, remarks);
+
+        if(!remarks.isEmpty()) {
+            model.addAttribute("remarks", remarks);
+            model.addAttribute("text", textRequest);
+        }
+        else
+            requestService.create(user, dateSending, textRequest, type);
+        
+        return "/add_request_menu";
+    }
+    
+    @GetMapping("/requests/cards")
+    public String listCardRequest(Model model) {
+        
+        model.addAttribute("applications", listUtilities.getCardRequestList());
+        model.addAttribute("type", "request");
+        
+        return "/applications";
+    }
+    
+    @GetMapping("/requests/service")
+    public String listServiceRequest(Model model) {
+    
+        model.addAttribute("applications", listUtilities.getServiceRequestList());
+        model.addAttribute("type", "request");
+        
+        return "/applications";
+    }
+    
+    @GetMapping("/requests/{id}")
+    public String getRequest(@PathVariable("id") Long requestId,
+                             Model model) {
+        
+        model.addAttribute("request", requestService.findById(requestId));
+        
+        return "/request";
+    }
+    
+    @PostMapping("/requests/success/{id}")
+    public String successRequest(@PathVariable("id") Long requestId,
+                             Model model) {
+        
+        RequestType type = requestService.findById(requestId).getRequestType();
+        requestService.deleteById(requestId);
+    
+        switch (type) {
+            case CHANGING_CARDS -> { return "redirect:/applications/requests/cards";}
+            case OPERATIONS_SERVICE -> { return "redirect:/applications/requests/service"; }
+            default -> { return "redirect:/"; }
+        }
+    }
+    
+    @PostMapping("/requests/reject/{id}")
+    public String rejectRequest(@PathVariable("id") Long requestId,
+                                @RequestParam("reason") String reason,
+                                 Model model) {
+        
+        RequestType type = requestService.findById(requestId).getRequestType();
+        requestService.deleteById(requestId);
+        
+        switch (type) {
+            case CHANGING_CARDS -> { return "redirect:/applications/requests/cards";}
+            case OPERATIONS_SERVICE -> { return "redirect:/applications/requests/service"; }
+            default -> { return "redirect:/"; }
+        }
+    }
+    
+    
 }

@@ -58,6 +58,19 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/chats/">Chats</a>
                     </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="/admin/applications/users" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+                                Requests
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <#if isAdmin>
+                                    <li><a class="dropdown-item" href = "/applications/requests/cards">Changing cards</a></li>
+                                    <li><a class="dropdown-item" href = "/applications/requests/service">Operation of the service</a></li>
+                                <#else>
+                                    <li><a class="dropdown-item" href = "/applications/requests/">New requests</a></li>
+                                </#if>
+                            </ul>
+                        </li>
                     <li class="nav-item">
                         <@ul.logout />
                     </li>

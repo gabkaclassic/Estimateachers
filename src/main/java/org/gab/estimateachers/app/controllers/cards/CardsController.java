@@ -223,12 +223,11 @@ public class CardsController {
             case "faculty" -> model.addAttribute("faculty", card = facultyService.findById(cardId));
             case "teacher" -> model.addAttribute("teacher", card = teacherService.findById(cardId));
             default -> card = null;
-            }
+        }
             
         if(Objects.nonNull(card))
             model.addAttribute("numbers", listUtilities.getNumbers(card.getPhotos()));
         model.addAttribute("user", user);
-        model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
         
         return "/".concat(cardType).concat("_card");
     }
