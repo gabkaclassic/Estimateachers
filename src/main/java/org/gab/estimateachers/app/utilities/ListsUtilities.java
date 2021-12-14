@@ -5,11 +5,9 @@ import org.gab.estimateachers.app.repositories.client.FacultyRepository;
 import org.gab.estimateachers.app.repositories.client.UniversityRepository;
 import org.gab.estimateachers.app.services.CreatingCardApplicationService;
 import org.gab.estimateachers.app.services.RegistrationApplicationService;
+import org.gab.estimateachers.app.services.TeacherService;
 import org.gab.estimateachers.app.services.UserService;
-import org.gab.estimateachers.entities.client.Card;
-import org.gab.estimateachers.entities.client.Dormitory;
-import org.gab.estimateachers.entities.client.Faculty;
-import org.gab.estimateachers.entities.client.University;
+import org.gab.estimateachers.entities.client.*;
 import org.gab.estimateachers.entities.system.CreatingCardApplication;
 import org.gab.estimateachers.entities.system.Genders;
 import org.gab.estimateachers.entities.system.RegistrationApplication;
@@ -55,6 +53,10 @@ public class ListsUtilities {
     @Autowired
     @Qualifier("userService")
     private UserService userService;
+    
+    @Autowired
+    @Qualifier("teacherService")
+    private TeacherService teacherService;
     
     public List<User> getUsersList() {
     
@@ -117,5 +119,10 @@ public class ListsUtilities {
     public Object getNumbers(Collection<?> list) {
        
        return Stream.iterate(1, n -> n+1).limit(list.size()).collect(Collectors.toList());
+    }
+    
+    public List<String> getTeachersTitles() {
+        
+        return teacherService.getTitles();
     }
 }

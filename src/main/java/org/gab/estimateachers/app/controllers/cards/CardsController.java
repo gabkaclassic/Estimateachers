@@ -86,6 +86,7 @@ public class CardsController {
         
         model.addAttribute("universities", listUtilities.getUniversitiesAbbreviationsList());
         model.addAttribute("faculties", listUtilities.getAllFacultiesTitlesList());
+        model.addAttribute("teachers", listUtilities.getTeachersTitles());
         
         return "/add_card_menu";
     }
@@ -152,11 +153,12 @@ public class CardsController {
                              @RequestParam("title") String facultyTitle,
                              @RequestParam("university") String universityAbbreviation,
                              @RequestParam("date") String dateSending,
+                             @RequestParam("teachers") Set<String> teachersTitles,
                              Model model) {
     
         List<String> remarks = new ArrayList<>();
         cardsUtilities.checkTitle(facultyTitle, remarks, facultyService);
-    
+        
         if(!remarks.isEmpty()) {
         
             model.addAttribute("remarks", remarks);
@@ -165,11 +167,11 @@ public class CardsController {
         }
         
         if(user.isAdmin())
-            facultyService.create(facultyTitle, universityAbbreviation);
+            facultyService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation), teachersTitles);
         else
             creatingCardApplicationService.create(
                     CardType.DORMITORY,
-                    dormitoryService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation)),
+                    facultyService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation), teachersTitles),
                     user,
                     dateSending
             );

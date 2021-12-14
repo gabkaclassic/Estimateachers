@@ -24,18 +24,6 @@ public class AdminController {
     @Qualifier("listsUtilities")
     private ListsUtilities listUtilities;
     
-    @Autowired
-    @Qualifier("registrationApplicationService")
-    private RegistrationApplicationService registrationApplicationService;
-    
-    @Autowired
-    @Qualifier("creatingCardApplicationService")
-    private CreatingCardApplicationService creatingCardApplicationService;
-    
-    @Autowired
-    @Qualifier("universityService")
-    private UniversityService universityService;
-    
     @GetMapping("/allUsers")
     public String showAllUsers(Model model) {
         
@@ -51,81 +39,5 @@ public class AdminController {
         model.addAttribute("users", listUtilities.getFilteredUsersList(login));
         
         return "/users_list";
-    }
-    
-    @GetMapping("/applications/users")
-    public String newUserApplications(Model model) {
-        
-        model.addAttribute("applications", listUtilities.getRegistrationApplicationList());
-        
-        return "/applications";
-    }
-    
-    @GetMapping("/applications/cards")
-    public String newCardApplications(Model model) {
-        
-        model.addAttribute("applications", listUtilities.getCreatingCardApplicationList());
-        
-        return "/applications";
-    }
-    
-    @GetMapping("/applications/processing/first/{id}")
-    public String processingApplicationFirstStep(@PathVariable(name = "id") Long applicationId,
-                                        Model model) {
-        
-        RegistrationApplication application = registrationApplicationService.findById(applicationId);
-        model.addAttribute("universities", listUtilities.getUniversitiesAbbreviationsList());
-        model.addAttribute("application", application);
-        model.addAttribute("student", application.getStudent());
-        
-        return "/process_application_first";
-    }
-    
-    @PostMapping("/applications/processing/first/{id}")
-    public String processingApplicationFirstStepSave(@PathVariable(name = "id") Long applicationId,
-                                                 @RequestParam("course") Integer course,
-                                                 @RequestParam("university") String abbreviationUniversity,
-                                                 Model model) {
-        
-        University university = universityService.findByAbbreviation(abbreviationUniversity);
-        model.addAttribute("dormitories", listUtilities.convertToTitlesList(university.getDormitories()));
-        model.addAttribute("faculties", listUtilities.convertToTitlesList(university.getFaculties()));
-        model.addAttribute("university", university);
-        model.addAttribute("course", course);
-        
-        return processingApplicationSecondStep(applicationId, model);
-    }
-    
-    @GetMapping("/applications/processing/second/{id}")
-    public String processingApplicationSecondStep(@PathVariable(name = "id") Long applicationId,
-                                                 Model model) {
-    
-        RegistrationApplication application = registrationApplicationService.findById(applicationId);
-        
-        model.addAttribute("application", application);
-        model.addAttribute("student", application.getStudent());
-        
-        return "/process_application_second";
-    }
-    
-    @PostMapping("/applications/processing/second/{id}")
-    public String processingApplicationSecondStepSave(@PathVariable(name = "id") Long applicationId,
-                                                     @RequestParam("faculty") String facultyTitle,
-                                                     @RequestParam("universityId") Long universityId,
-                                                     @RequestParam(value = "dormitory", required = false) String dormitoryTitle,
-                                                     @RequestParam("course") Integer course,
-                                                     Model model) {
-        
-        registrationApplicationService.apply(applicationId, universityId, facultyTitle, dormitoryTitle, course);
-        
-        return "redirect:/applications";
-    }
-    
-    @PostMapping("/applications/reject/{id}")
-    public String rejectApplication(@PathVariable(name = "id") Long applicationId) {
-        
-        registrationApplicationService.deleteById(applicationId);
-        
-        return "redirect:/applications";
     }
 }

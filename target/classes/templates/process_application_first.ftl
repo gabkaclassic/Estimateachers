@@ -38,11 +38,12 @@
         </form>
     </div>
 
-    <form method = "post" action = "/admin/applications/reject/${application.id}">
+    <form method = "post" action = "/applications/reject/registry/${application.id}">
+        <@security.token />
         <button type = "submit" class="btn btn-danger">Reject the application</button>
     </form>
 
-    <form method = "get" action = "/admin/applications">
+    <form method = "get" action = "/applications">
         <@security.token />
         <button type = "submit" class="btn btn-secondary">Exit</button>
     </form>

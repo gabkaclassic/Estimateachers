@@ -81,4 +81,14 @@ public class TeacherService implements CardService<Teacher> {
         
         return teacher;
     }
+    
+    public List<String> getTitles() {
+        
+        return teacherRepository.getTitles();
+    }
+    
+    public List<Teacher> findByTitles(Set<String> teachersTitles) {
+        
+        return teacherRepository.findByTitles(teachersTitles);
+    }
 }

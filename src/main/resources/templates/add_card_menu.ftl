@@ -55,6 +55,9 @@
                             <div class="form-group row">
                                 <span> University: <@ul.select enum = universities name = "university" /> </span>
                             </div>
+                            <div class="form-group row">
+                                <span> Teachers: <@ul.m_select enum = teachers name = "teachers" /> </span>
+                            </div>
                             <@date.date />
                             <@security.token />
                             <button type = "submit" class="btn btn-primary">Add faculty</button>

@@ -42,8 +42,8 @@
                                     Applications
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href = "/admin/applications/users">New users</a></li>
-                                    <li> <a class="dropdown-item" href = "/admin/applications/cards">New cards</a></li>
+                                    <li><a class="dropdown-item" href = "/applications/users">New users</a></li>
+                                    <li> <a class="dropdown-item" href = "/applications/cards">New cards</a></li>
                                 </ul>
                             </li>
                         </ul>

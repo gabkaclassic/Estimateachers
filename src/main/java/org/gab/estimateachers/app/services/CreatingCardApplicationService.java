@@ -24,7 +24,7 @@ public class CreatingCardApplicationService extends ApplicationService<CreatingC
     
     public void create(CardType type, Card card, User user, String date) {
         
-        CreatingCardApplication application = new CreatingCardApplication(user.getOwner(), date, type, card.getTitle());
+        CreatingCardApplication application = new CreatingCardApplication(user.getOwner(), date, type, card.getId());
         applicationRepository.save(application);
     }
     

@@ -19,14 +19,17 @@ public class CreatingCardApplication extends Application {
     @Enumerated(EnumType.STRING)
     private CardType cardType;
     
-    @Column(name = "card_title")
-    private String cardTitle;
+    @Column(
+            name = "card_id",
+            nullable = false
+    )
+    private Long cardId;
     
-    public CreatingCardApplication(Student student, String date, CardType type, String title) {
+    public CreatingCardApplication(Student student, String date, CardType type, Long cardId) {
         
         super(student, date);
         setCardType(type);
-        setCardTitle(title);
+        setCardId(cardId);
     }
 
 }

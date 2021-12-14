@@ -32,7 +32,7 @@
         <div class="form-group row">
                 <span>Course: ${course}</span>
         </div>
-        <form method = "post" action = "/admin/applications/processing/second/${application.id}">
+        <form method = "post" action = "/applications/processing/second/${application.id}">
             <span> Faculty: <@ul.select enum = faculties name = "faculty" /> </span>
             <span> Dormitory: <@ul.select enum = dormitories name = "dormitory" /> </span>
             <input type = "hidden" name = "course" value = "${course}"/>
@@ -43,11 +43,11 @@
         </form>
     </div>
 
-    <form method = "post" action = "/admin/applications/reject/${application.id}">
+    <form method = "post" action = "/applications/reject/registry/${application.id}">
         <@security.token />
         <button type = "submit" class="btn btn-danger">Reject the application</button>
     </form>
-    <form method = "get" action = "/admin/applications">
+    <form method = "get" action = "/applications">
         <@security.token />
         <button type = "submit" class="btn btn-secondary">Exit</button>
     </form>
