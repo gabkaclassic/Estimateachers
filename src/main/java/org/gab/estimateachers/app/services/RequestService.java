@@ -3,6 +3,8 @@ package org.gab.estimateachers.app.services;
 import org.gab.estimateachers.app.repositories.system.ApplicationRepository;
 import org.gab.estimateachers.app.repositories.system.RequestRepository;
 import org.gab.estimateachers.app.utilities.ApplicationsUtilities;
+import org.gab.estimateachers.app.utilities.FilesUtilities;
+import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.system.Request;
 import org.gab.estimateachers.entities.system.RequestType;
@@ -10,12 +12,19 @@ import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("requestService")
 public class RequestService extends ApplicationService<Request, RequestRepository> {
+    
+    @Autowired
+    @Qualifier("filesUtilities")
+    private FilesUtilities filesUtilities;
     
     @Autowired
     @Qualifier("requestRepository")
@@ -24,15 +33,20 @@ public class RequestService extends ApplicationService<Request, RequestRepositor
         super.setApplicationRepository(repository);
     }
     
-    public void create(User user, String date, String textRequest, String type) {
+    public void create(User user, String date, String textRequest, String type, Set<MultipartFile> files) {
         
         RequestType requestType = RequestType.valueOf(type);
+        
+        
         Request request = new Request(
                 user.getOwner(),
                 date,
                 textRequest,
                 requestType
         );
+        files.stream()
+                .map(f -> filesUtilities.registrationFile(f, RegistrationType.OTHER))
+                .forEach(request::addPhoto);
         
         applicationRepository.save(request);
     }

@@ -11,7 +11,7 @@ import java.util.List;
 public interface RequestRepository extends ApplicationRepository<Request> {
     
     @Query(
-            value = "select * from requests where request_type = :type",
+            value = "select * from requests where request_type = :type and viewed = 'f'",
             nativeQuery = true
     )
     List<Request> findAllType(@Param("type") String type);

@@ -16,6 +16,9 @@
         <span>Last name: ${student.lastName!'None'}</span>
     </div>
     <div class="form-group row">
+        <span>Patronymic: ${student.patronymic!'None'}</span>
+    </div>
+    <div class="form-group row">
         <span>Email: <#if student.account.email??>${student.account.email}<#else>None</#if></span>
     </div>
     <div class="form-group row">
@@ -41,10 +44,5 @@
     <form method = "post" action = "/applications/reject/registry/${application.id}">
         <@security.token />
         <button type = "submit" class="btn btn-danger">Reject the application</button>
-    </form>
-
-    <form method = "get" action = "/applications/users">
-        <@security.token />
-        <button type = "submit" class="btn btn-secondary">Exit</button>
     </form>
 </@main.page>

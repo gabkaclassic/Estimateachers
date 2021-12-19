@@ -109,6 +109,17 @@ public class User implements UserDetails {
         roles.add(Roles.ADMIN);
     }
     
+    public void deprivePower() {
+        
+        roles.remove(Roles.ADMIN);
+    }
+    
+    public void lock() {
+        
+        roles.add(Roles.LOCKED);
+        roles.remove(Roles.ADMIN);
+    }
+    
     public Collection<? extends GrantedAuthority> getAuthorities() {
         
         return getRoles();
@@ -142,5 +153,15 @@ public class User implements UserDetails {
     public boolean isAdmin() {
         
         return roles.contains(Roles.ADMIN);
+    }
+    
+    public boolean isUser() {
+        
+        return roles.contains(Roles.USER);
+    }
+    
+    public boolean isLocked() {
+        
+        return roles.contains(Roles.LOCKED);
     }
 }

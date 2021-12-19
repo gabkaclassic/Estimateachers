@@ -11,8 +11,10 @@ import org.gab.estimateachers.entities.system.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service("teacherService")
@@ -44,17 +46,10 @@ public class TeacherService implements CardService<Teacher> {
         teacherRepository.save(teacher);
     }
     
-    public void create(Teacher teacher, List<University> universities, List<Faculty> faculties) {
-    
-        teacher.setUniversities(Set.copyOf(universities));
-        teacher.setFaculties(Set.copyOf(faculties));
-        teacher.addPhoto(filesUtilities.registrationFile(null, RegistrationType.PEOPLE));
-    
-        save(teacher);
-        
-        universities.stream().peek(u -> u.addTeacher(teacher)).forEach(universityService::save);
-        faculties.stream().peek(f -> f.addTeacher(teacher)).forEach(facultyService::save);
-    }
+//    public void create(Teacher teacher, List<University> universities, List<Faculty> faculties) {
+//
+//
+//    }
     
     public List<Teacher> findAll() {
         
@@ -71,15 +66,41 @@ public class TeacherService implements CardService<Teacher> {
         return teacherRepository.existsByTitle(title);
     }
     
-    public Teacher create(String firstname, String lastname, String patronymic, Set<String> universitiesAbbreviation, Set<String> facultiesTitles) {
+    public Teacher create(String firstname,
+                          String lastname,
+                          String patronymic,
+                          Set<String> universitiesAbbreviation,
+                          Set<String> facultiesTitles,
+                          Set<MultipartFile> files,
+                          boolean approved) {
         
         List<University> universities = universityService.findByAbbreviations(universitiesAbbreviation);
         List<Faculty> faculties = facultyService.findByTitles(facultiesTitles);
-    
         Teacher teacher = new Teacher(firstname, lastname, patronymic);
-        create(teacher, universities, faculties);
+        teacher.setApproved(approved);
+        teacher.setUniversities(Set.copyOf(universities));
+        teacher.setFaculties(Set.copyOf(faculties));
+        if(Objects.isNull(files) || files.isEmpty())
+            teacher.addPhoto(filesUtilities.registrationFile(null, RegistrationType.PEOPLE));
+        else
+            files.stream().map(f -> filesUtilities.registrationFile(f, RegistrationType.PEOPLE)).forEach(teacher::addPhoto);
+    
+        save(teacher);
+        universities.stream().peek(u -> u.addTeacher(teacher)).forEach(universityService::save);
+        faculties.stream().peek(f -> f.addTeacher(teacher)).forEach(facultyService::save);
         
         return teacher;
+    }
+    
+    public void edit(Long id, String title, Set<MultipartFile> files) {
+        
+        Teacher card = teacherRepository.getOne(id);
+        card.setTitle(title);
+        files.stream()
+                .map(f -> filesUtilities.registrationFile(f, RegistrationType.OTHER))
+                .forEach(card::addPhoto);
+    
+        teacherRepository.save(card);
     }
     
     public List<String> getTitles() {

@@ -4,14 +4,14 @@
 
 <@main.page>
 
+<@cl.title card=university type="university" />
+
 <div class="row mt-5">
-    <h5>${university.abbreviation}</h5>
-</div>
-<div class="row mt-5">
-    <@cl.images photos=university.photos numbers=numbers/>
+    <@cl.images number=0 photos=university.photos size=university.photos?size />
 </div>
 <div class="row mt-5">
     <ul class="list-group">
+        <li class="list-group-item">Abbreviation: ${university.abbreviation}</li>
         <li class="list-group-item">Price: ${university.priceRating}/10</li>
         <li class="list-group-item">Complexity: ${university.complexityRating}/10</li>
         <li class="list-group-item">Utility: ${university.utilityRating}/10</li>

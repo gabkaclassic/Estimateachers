@@ -4,11 +4,10 @@
 
 <@main.page>
 
+<@cl.title card=dormitory type="dormitory" />
+
 <div class="row mt-5">
-    <h5>${dormitory.title}</h5>
-</div>
-<div class="row mt-5">
-    <@cl.images photos=dormitory.photos />
+    <@cl.images number=0 photos=dormitory.photos size=dormitory.photos?size />
 </div>
 <div class="row mt-5">
     <ul class="list-group">

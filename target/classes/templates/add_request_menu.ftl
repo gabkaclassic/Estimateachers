@@ -6,7 +6,7 @@
 <@main.page>
     <h2>Creating new request</h2>
 
-    <form method = "post" action = "/applications/requests">
+    <form method = "post" action = "/applications/requests" enctype="multipart/form-data">
 
         <div class="form-group">
             <label for="request_text">Text of request</label>
@@ -27,11 +27,12 @@
         <div class="form-group">
             <input type="reset" value="Clear" />
         </div>
+        <label for="formFileMultiple" class="form-label">Photos</label>
+        <input class="form-control" name="files" type="file" id="formFileMultiple" multiple />
         <@date.date />
         <@security.token />
         <button type = "submit" class="btn btn-primary">Send</button>
     </form>
-
     <#if remarks??>
         <@ul.foreach collection = remarks![] status="danger" />
     </#if>

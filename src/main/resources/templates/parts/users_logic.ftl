@@ -88,6 +88,23 @@
                 <div class="col-sm-4">
                     <@file type = "file" name = "profilePhoto" id = "profilePhoto" text = "Change profile photo" />
                 </div>
+                <#if isAdmin>
+                    <div class="form-group row mt-2">
+                        <div class="row"><h5>User roles:</h5></div>
+                        <div class="row mt-1">
+                            <div class="col-1">
+                                <div class="btn-group" role="group" aria-label="User roles control">
+                                    <input type="checkbox" class="btn-check" name="userRole" id="user_role" autocomplete="on" <#if userRole>checked</#if>>
+                                    <label class="btn btn-outline-secondary" for="user_role">User</label>
+                                    <input type="checkbox" class="btn-check" name="adminRole" id="admin_role"  autocomplete="off" <#if adminRole>checked</#if>>
+                                    <label class="btn btn-outline-secondary" for="admin_role">Admin</label>
+                                    <input type="checkbox" class="btn-check" name="lockedRole" id="locked_role" autocomplete="off" <#if lockedRole>checked</#if>>
+                                    <label class="btn btn-outline-secondary" for="locked_role">Locked</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </#if>
                 <div class="col-sm-4">
                     <#if user.filename??>
                         <img src = "/img/${user.filename}" height = "100" weight = "150" class="img-thumbnail" />
@@ -125,7 +142,6 @@
 </#macro>
 
 <#macro file type name id text = "" >
-
     <label for="${id}" class="form-label">${text}</label>
     <input class="form-control" type="${type}" name="${name}" id="${id}"/>
 </#macro>

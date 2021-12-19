@@ -26,7 +26,7 @@ public class ListsUtilities {
     
     @Autowired
     @Qualifier("universityRepository")
-    private UniversityRepository universityRepository;  //Заменить на сервисы
+    private UniversityRepository<Card, Number> universityRepository;  //Заменить на сервисы
     
     @Autowired
     @Qualifier("dormitoryRepository")
@@ -96,12 +96,12 @@ public class ListsUtilities {
     
     public List<CreatingCardApplication> getCreatingCardApplicationList() {
         
-        return creatingCardApplicationService.findAll();
+        return creatingCardApplicationService.findAllNotViewed();
     }
     
     public List<RegistrationApplication> getRegistrationApplicationList() {
         
-        return registrationApplicationService.findAll();
+        return registrationApplicationService.findAllNotViewed();
     }
     
     public List<String> convertToTitlesList(Set<? extends Card> cards) {

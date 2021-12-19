@@ -1,6 +1,8 @@
 package org.gab.estimateachers.app.utilities;
 
 import org.gab.estimateachers.app.repositories.system.UserRepository;
+import org.gab.estimateachers.entities.system.Roles;
+import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -144,5 +146,27 @@ public class UsersUtilities {
             remarks.add(String.format("The login can contain %d-%d characters and 1 letter", MIN_LENGTH_LOGIN, MAX_LENGTH_LOGIN));
         
         return isCorrectLogin;
+    }
+    
+    public void checkRoles(Boolean userRole, Boolean adminRole, Boolean lockedRole, User user, List<String> remarks) {
+        
+        userRole = Objects.nonNull(userRole) && userRole;
+        adminRole = Objects.nonNull(adminRole) && adminRole;
+        lockedRole = Objects.nonNull(lockedRole) && lockedRole;
+        
+        if(userRole || adminRole || lockedRole) {
+            if(userRole)
+                user.apply();
+            if(adminRole)
+                user.appointmentAdmin();
+            if(lockedRole || !userRole)
+                user.lock();
+            if(!adminRole)
+                user.deprivePower();
+            if(!lockedRole)
+                user.apply();
+        }
+        else
+            remarks.add("Incorrect user roles");
     }
 }

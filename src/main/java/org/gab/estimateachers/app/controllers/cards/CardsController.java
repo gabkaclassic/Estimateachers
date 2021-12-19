@@ -4,8 +4,7 @@ import org.gab.estimateachers.app.services.*;
 import org.gab.estimateachers.app.utilities.CardsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.app.utilities.UsersUtilities;
-import org.gab.estimateachers.entities.client.Card;
-import org.gab.estimateachers.entities.client.University;
+import org.gab.estimateachers.entities.client.*;
 import org.gab.estimateachers.entities.system.CardType;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -98,6 +98,7 @@ public class CardsController {
                                 @RequestParam(value = "magistracy", required = false) Boolean magistracy,
                                 @RequestParam(value = "specialty", required = false) Boolean specialty,
                                 @RequestParam("date") String dateSending,
+                                @RequestParam("files") Set<MultipartFile> files,
                                 Model model) {
     
         List<String> remarks = new ArrayList<>();
@@ -111,11 +112,16 @@ public class CardsController {
         }
         
         if(user.isAdmin())
-            universityService.create(universityTitle, bachelor, magistracy, specialty);
+            universityService.create(universityTitle, bachelor, magistracy, specialty, files, user.isAdmin());
         else
-            creatingCardApplicationService.create(CardType.UNIVERSITY, universityService.create(universityTitle, bachelor, magistracy, specialty), user, dateSending);
+            creatingCardApplicationService.create(
+                    CardType.UNIVERSITY,
+                    universityService.create(universityTitle, bachelor, magistracy, specialty, files, user.isAdmin()),
+                    user,
+                    dateSending
+            );
         
-        return "redirect:/cards/add";
+        return createCard(model);
     }
     
     @PostMapping("/add/dormitory")
@@ -123,6 +129,7 @@ public class CardsController {
                                @RequestParam("title") String dormitoryTitle,
                                @RequestParam("university") String universityAbbreviation,
                                @RequestParam("date") String dateSending,
+                               @RequestParam("files") Set<MultipartFile> files,
                                Model model) {
     
         List<String> remarks = new ArrayList<>();
@@ -136,16 +143,18 @@ public class CardsController {
         }
         
         if(user.isAdmin())
-            dormitoryService.create(dormitoryTitle, universityService.findByAbbreviation(universityAbbreviation));
+            dormitoryService.create(dormitoryTitle, universityService.findByAbbreviation(universityAbbreviation), files, user.isAdmin());
         else
             creatingCardApplicationService.create(
                     CardType.DORMITORY,
-                    dormitoryService.create(dormitoryTitle, universityService.findByAbbreviation(universityAbbreviation)),
+                    dormitoryService.create(dormitoryTitle, universityService.findByAbbreviation(universityAbbreviation), files, user.isAdmin()),
                     user,
                     dateSending
             );
-        
-        return "redirect:/cards/add";
+    
+        model.addAttribute("toast", true);
+    
+        return createCard(model);
     }
     
     @PostMapping("/add/faculty")
@@ -154,6 +163,7 @@ public class CardsController {
                              @RequestParam("university") String universityAbbreviation,
                              @RequestParam("date") String dateSending,
                              @RequestParam("teachers") Set<String> teachersTitles,
+                             @RequestParam("files") Set<MultipartFile> files,
                              Model model) {
     
         List<String> remarks = new ArrayList<>();
@@ -167,16 +177,18 @@ public class CardsController {
         }
         
         if(user.isAdmin())
-            facultyService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation), teachersTitles);
+            facultyService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation), teachersTitles, files, user.isAdmin());
         else
             creatingCardApplicationService.create(
                     CardType.DORMITORY,
-                    facultyService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation), teachersTitles),
+                    facultyService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation), teachersTitles, files, user.isAdmin()),
                     user,
                     dateSending
             );
-            
-        return "redirect:/cards/add";
+    
+        model.addAttribute("toast", true);
+    
+        return createCard(model);
     }
     
     @PostMapping("/add/teacher")
@@ -187,6 +199,7 @@ public class CardsController {
                              @RequestParam("universities") Set<String> universitiesAbbreviation,
                              @RequestParam("faculties") Set<String> facultiesTitles,
                              @RequestParam("date") String dateSending,
+                             @RequestParam("files") Set<MultipartFile> files,
                              Model model) {
     
         List<String> remarks = new ArrayList<>();
@@ -200,18 +213,22 @@ public class CardsController {
         }
     
         if(user.isAdmin())
-            teacherService.create(firstname, lastname, patronymic, universitiesAbbreviation, facultiesTitles);
+            teacherService.create(firstname, lastname, patronymic, universitiesAbbreviation, facultiesTitles, files, user.isAdmin());
         else
             creatingCardApplicationService.create(
                     CardType.TEACHER,
-                    teacherService.create(firstname, lastname, patronymic, universitiesAbbreviation, facultiesTitles), user, dateSending
+                    teacherService.create(firstname, lastname, patronymic, universitiesAbbreviation, facultiesTitles, files, user.isAdmin()),
+                    user,
+                    dateSending
             );
-        
-        return "redirect:/cards/add";
+    
+        model.addAttribute("toast", true);
+    
+        return createCard(model);
     }
     
     @GetMapping("/get")
-    public String universityCard(@AuthenticationPrincipal User user,
+    public String getCard(@AuthenticationPrincipal User user,
                                  @RequestParam("id") Long cardId,
                                  @RequestParam("cardType") String cardType,
                                  Model model) {
@@ -228,7 +245,28 @@ public class CardsController {
         if(Objects.nonNull(card))
             model.addAttribute("numbers", listUtilities.getNumbers(card.getPhotos()));
         model.addAttribute("user", user);
-        
+        model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
         return "/".concat(cardType).concat("_card");
+    }
+    
+    @PostMapping("/edit")
+    public String editCard(@AuthenticationPrincipal User user,
+                           @RequestParam("title") String cardTitle,
+                           @RequestParam("type") String cardType,
+                           @RequestParam("id") Long cardId,
+                           @RequestParam(value = "files", required = false) Set<MultipartFile> files,
+                           Model model) {
+        
+        switch (cardType) {
+            case "university" -> universityService.edit(cardId, cardTitle, files);
+            case "dormitory" -> dormitoryService.edit(cardId, cardTitle, files);
+            case "faculty" -> facultyService.edit(cardId, cardTitle, files);
+            case "teacher" -> teacherService.edit(cardId, cardTitle, files);
+            default -> {
+                throw new IllegalStateException("Unexpected value: " + cardType);
+            }
+        }
+        
+        return getCard(user, cardId, cardType, model);
     }
 }

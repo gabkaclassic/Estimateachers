@@ -4,11 +4,10 @@
 
 <@main.page>
 
+<@cl.title card=teacher type="teacher" />
+
     <div class="row mt-5">
-        <h5>${teacher.title}</h5>
-    </div>
-    <div class="row mt-5">
-        <@cl.images photos=teacher.photos />
+        <@cl.images number=0 photos=teacher.photos size=teacher.photos?size />
     </div>
     <div class="row mt-5">
         <ul class="list-group">
@@ -27,10 +26,10 @@
     </div>
     <div class="row mt-3">
         Universities:
-        <#if teacher.universities?has_content><@cl.links cards=teacher.universities cardType="university" /> <#else>None</#if>
+        <@cl.links cards=teacher.universities cardType="university" />
     </div>
     <div class="row mt-3">
         Faculties:
-        <#if teacher.faculties?has_content><@cl.links cards=teacher.faculties cardType="faculty" /> <#else>None</#if>
+        <@cl.links cards=teacher.faculties cardType="faculty" />
     </div>
 </@main.page>

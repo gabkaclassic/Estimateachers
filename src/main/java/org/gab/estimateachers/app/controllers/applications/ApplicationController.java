@@ -4,10 +4,7 @@ import org.gab.estimateachers.app.services.*;
 import org.gab.estimateachers.app.utilities.ApplicationsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.entities.client.University;
-import org.gab.estimateachers.entities.system.CreatingCardApplication;
-import org.gab.estimateachers.entities.system.RegistrationApplication;
-import org.gab.estimateachers.entities.system.RequestType;
-import org.gab.estimateachers.entities.system.User;
+import org.gab.estimateachers.entities.system.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +12,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
@@ -84,6 +83,16 @@ public class ApplicationController {
                                 Model model) {
     
         CreatingCardApplication application = creatingCardApplicationService.findById(applicationId);
+        
+        if(application.isViewed()) {
+            
+            model.addAttribute("application", application);
+            
+            return "/application_is_viewed";
+        }
+        
+        application.setViewed(true);
+        creatingCardApplicationService.save(application);
         Long cardId = application.getCardId();
         
         switch (application.getCardType()) {
@@ -122,8 +131,17 @@ public class ApplicationController {
     @GetMapping("/processing/first/{id}")
     public String processingApplicationFirstStep(@PathVariable(name = "id") Long applicationId,
                                                  Model model) {
-        
+            
         RegistrationApplication application = registrationApplicationService.findById(applicationId);
+        
+        if(application.isViewed()) {
+            
+            model.addAttribute("application", application);
+            
+            return "/application_is_viewed";
+        }
+        application.setViewed(true);
+        registrationApplicationService.save(application);
         model.addAttribute("universities", listUtilities.getUniversitiesAbbreviationsList());
         model.addAttribute("application", application);
         model.addAttribute("student", application.getStudent());
@@ -200,17 +218,18 @@ public class ApplicationController {
                               @RequestParam("text") String textRequest,
                               @RequestParam("date") String dateSending,
                               @RequestParam(value = "type", required = false) String type,
+                              @RequestParam(value = "files", required = false) Set<MultipartFile> files,
                               Model model) {
         
         List<String> remarks = new ArrayList<>();
         applicationsUtilities.checkRequestData(textRequest, type, remarks);
-
+        
         if(!remarks.isEmpty()) {
             model.addAttribute("remarks", remarks);
             model.addAttribute("text", textRequest);
         }
         else
-            requestService.create(user, dateSending, textRequest, type);
+            requestService.create(user, dateSending, textRequest, type, files);
         
         return "/add_request_menu";
     }
@@ -237,7 +256,17 @@ public class ApplicationController {
     public String getRequest(@PathVariable("id") Long requestId,
                              Model model) {
         
-        model.addAttribute("request", requestService.findById(requestId));
+        Request request = requestService.findById(requestId);
+        if(request.isViewed()) {
+            
+            model.addAttribute("application", request);
+    
+            return "/application_is_viewed";
+        }
+        request.setViewed(true);
+        requestService.save(request);
+        model.addAttribute("request", request);
+        model.addAttribute("numbers", listUtilities.getNumbers(request.getPhotos()));
         
         return "/request";
     }

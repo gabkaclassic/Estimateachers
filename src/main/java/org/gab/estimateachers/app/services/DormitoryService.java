@@ -10,8 +10,11 @@ import org.gab.estimateachers.entities.system.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service("dormitoryService")
 public class DormitoryService implements CardService<Dormitory>  {
@@ -34,13 +37,27 @@ public class DormitoryService implements CardService<Dormitory>  {
         dormitoryRepository.save(dormitory);
     }
     
-    public Dormitory create(String dormitoryTitle, University university) {
+    public Dormitory create(String dormitoryTitle, University university, Set<MultipartFile> files, boolean approved) {
         
         Dormitory dormitory = new Dormitory(dormitoryTitle, university);
-        dormitory.addPhoto(filesUtilities.registrationFile(null, RegistrationType.BUILDING));
-        
+        if(Objects.isNull(files) || files.isEmpty())
+            dormitory.addPhoto(filesUtilities.registrationFile(null, RegistrationType.BUILDING));
+        else
+            files.stream().map(f -> filesUtilities.registrationFile(f, RegistrationType.BUILDING)).forEach(dormitory::addPhoto);
+        dormitory.setApproved(approved);
         save(dormitory);
         return dormitory;
+    }
+    
+    public void edit(Long id, String title, Set<MultipartFile> files) {
+        
+        Dormitory card = dormitoryRepository.getOne(id);
+        card.setTitle(title);
+        files.stream()
+                .map(f -> filesUtilities.registrationFile(f, RegistrationType.OTHER))
+                .forEach(card::addPhoto);
+    
+        dormitoryRepository.save(card);
     }
     
     public List<Dormitory> findAll() {

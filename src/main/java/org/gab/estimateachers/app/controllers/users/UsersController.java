@@ -132,20 +132,29 @@ public class UsersController {
             
             return "/error_forbidden";
         }
-        
+        User user = userService.findById(userId);
         model.addAttribute("user", (currentUser.getId().equals(userId)) ?
-                currentUser : userService.findById(userId));
+                currentUser : user);
         model.addAttribute("isAdmin", currentUser.isAdmin());
+        if(currentUser.isAdmin()) {
+            model.addAttribute("adminRole", user.isAdmin());
+            model.addAttribute("userRole", user.isUser());
+            model.addAttribute("lockedRole", user.isLocked());
+        }
         
         return "/user_edit";
     }
     
     @PostMapping("/edit/{id}")
-    public String egitProcess(@PathVariable("id") Long userId,
+    public String egitProcess(@AuthenticationPrincipal User currentUser,
+                              @PathVariable("id") Long userId,
                               @RequestParam("username") String username,
                               @RequestParam("password") String password,
                               @RequestParam("email") String email,
                               @RequestParam("profilePhoto") MultipartFile profilePhoto,
+                              @RequestParam(value = "userRole", required = false) Boolean userRole,
+                              @RequestParam(value = "adminRole", required = false) Boolean adminRole,
+                              @RequestParam(value = "lockedRole", required = false) Boolean lockedRole,
                               Model model) {
         
         log.trace("User edit profile process");
@@ -154,6 +163,8 @@ public class UsersController {
         User user = userService.findById(userId);
         usersUtilities.checkLoginWithoutUnique(username, remarks);
         usersUtilities.checkPassword(password, remarks);
+        if(currentUser.isAdmin())
+            usersUtilities.checkRoles(userRole, adminRole, lockedRole, user, remarks);
         if(!(Objects.isNull(profilePhoto) || profilePhoto.isEmpty()))
             usersUtilities.checkFile(profilePhoto, remarks);
         

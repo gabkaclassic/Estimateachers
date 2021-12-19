@@ -28,4 +28,8 @@ public class CreatingCardApplicationService extends ApplicationService<CreatingC
         applicationRepository.save(application);
     }
     
+    public List<CreatingCardApplication> findAllNotViewed() {
+        
+        return applicationRepository.findAllNotViewed();
+    }
 }

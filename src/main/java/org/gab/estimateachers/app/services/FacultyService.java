@@ -9,8 +9,10 @@ import org.gab.estimateachers.entities.client.University;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service("facultyService")
@@ -62,12 +64,26 @@ public class FacultyService implements CardService<Faculty> {
         return facultyRepository.findAllByTitle(facultiesTitles);
     }
     
-    public Faculty create(String facultyTitle, University university, Set<String> teachersTitles) {
+    public void edit(Long id, String title, Set<MultipartFile> files) {
+        
+        Faculty card = facultyRepository.getOne(id);
+        card.setTitle(title);
+        files.stream()
+                .map(f -> filesUtilities.registrationFile(f, RegistrationType.OTHER))
+                .forEach(card::addPhoto);
+    
+        facultyRepository.save(card);
+    }
+    
+    public Faculty create(String facultyTitle, University university, Set<String> teachersTitles, Set<MultipartFile> files, boolean approved) {
         
         Faculty faculty = new Faculty(facultyTitle, university);
         university.addFaculty(faculty);
-        faculty.addPhoto(filesUtilities.registrationFile(null, RegistrationType.OTHER));
-        
+        if(Objects.isNull(files) || files.isEmpty())
+            faculty.addPhoto(filesUtilities.registrationFile(null, RegistrationType.OTHER));
+        else
+            files.stream().map(f -> filesUtilities.registrationFile(f, RegistrationType.OTHER)).forEach(faculty::addPhoto);
+        faculty.setApproved(approved);
         save(faculty);
         universityService.save(university);
         List<Teacher> teachers = teacherService.findByTitles(teachersTitles);

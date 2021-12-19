@@ -4,11 +4,10 @@
 
 <@main.page>
 
+<@cl.title card=faculty type="faculty" />
+
 <div class="row mt-5">
-    <h5>${faculty.title}</h5>
-</div>
-<div class="row mt-5">
-    <@cl.images photos=faculty.photos />
+    <@cl.images number=0 photos=faculty.photos size=faculty.photos?size />
 </div>
 <div class="row mt-5">
     <ul class="list-group">

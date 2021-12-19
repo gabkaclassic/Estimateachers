@@ -54,5 +54,4 @@ public abstract class ApplicationService<T extends Application, R extends Applic
         
         applicationRepository = repository;
     }
-    
 }

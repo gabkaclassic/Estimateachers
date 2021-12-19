@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.services;
 
+import org.apache.logging.log4j.util.Strings;
 import org.gab.estimateachers.app.repositories.system.UserRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
@@ -92,6 +93,17 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
         
         user.setEmail(email); //TO DO
+        
+        userRepository.save(user);
+    }
+    
+    public void createAdmin(String login, String password) {
+        
+        password = passwordEncoder.encode(password);
+        
+        User user = new User(login, password, Strings.EMPTY);
+        user.appointmentAdmin();
+        user.apply();
         
         userRepository.save(user);
     }

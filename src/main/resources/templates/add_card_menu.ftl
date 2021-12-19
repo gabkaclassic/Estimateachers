@@ -16,7 +16,7 @@
                 </h2>
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#forms_add_new_card">
                     <div class="accordion-body">
-                        <form class="d-block w-100" method = "post" action = "/cards/add/university">
+                        <form class="d-block w-100" enctype="multipart/form-data" method = "post" action = "/cards/add/university">
                             <div class="form-group row">
                                 <input name = "title" type = "text" placeholder = "University title" /> <br>
                             </div>
@@ -35,6 +35,10 @@
                                     <input name="specialty" type="checkbox" aria-label="Specialty">Specialty
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="formFileMultiple" class="form-label">Photos</label>
+                                <input class="form-control" name="files" type="file" id="formFileMultiple" multiple />
+                            </div>
                             <@date.date />
                             <@security.token />
                             <button type = "submit" class="btn btn-primary">Add university</button>
@@ -50,13 +54,17 @@
                 </h2>
                 <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#forms_add_new_card">
                     <div class="accordion-body">
-                        <form class="d-block w-100" method = "post" action = "/cards/add/faculty">
+                        <form class="d-block w-100" enctype="multipart/form-data" method = "post" action = "/cards/add/faculty">
                             <input name = "title" type = "text" placeholder = "Title faculty" />
                             <div class="form-group row">
                                 <span> University: <@ul.select enum = universities name = "university" /> </span>
                             </div>
                             <div class="form-group row">
                                 <span> Teachers: <@ul.m_select enum = teachers name = "teachers" /> </span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="formFileMultiple" class="form-label">Photos</label>
+                                <input class="form-control" name="files" type="file" id="formFileMultiple" multiple />
                             </div>
                             <@date.date />
                             <@security.token />
@@ -73,10 +81,14 @@
                 </h2>
                 <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#forms_add_new_card">
                     <div class="accordion-body">
-                        <form class="d-block w-100" method = "post" action = "/cards/add/dormitory">
+                        <form class="d-block w-100" enctype="multipart/form-data" method = "post" action = "/cards/add/dormitory">
                             <input name = "title" type = "text" placeholder = "Title dormitory" /> <br>
                             <div class="form-group row">
                                 <span> University: <@ul.select enum = universities name = "university" /> </span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="formFileMultiple" class="form-label">Photos</label>
+                                <input class="form-control" name="files" type="file" id="formFileMultiple" multiple />
                             </div>
                             <@date.date />
                             <@security.token />
@@ -93,7 +105,7 @@
                     </h2>
                     <div id="collapseFor" class="accordion-collapse collapse" aria-labelledby="headingFor" data-bs-parent="#forms_add_new_card">
                         <div class="accordion-body">
-                            <form class="d-block w-100" method = "post" action = "/cards/add/teacher">
+                            <form class="d-block w-100" enctype="multipart/form-data" method = "post" action = "/cards/add/teacher">
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">First name: </label>
                                     <div class="col-sm-4">
@@ -127,6 +139,10 @@
                                 <div class="form-group row">
                                     <span> Faculties: <@ul.m_select enum = faculties name = "faculties" /> </span>
                                 </div>
+                                <div class="form-group row">
+                                    <label for="formFileMultiple" class="form-label">Photos</label>
+                                    <input class="form-control" name="files" type="file" id="formFileMultiple" multiple />
+                                </div>
                                 <@date.date />
                                 <@security.token />
                                 <button type = "submit" class="btn btn-primary">Add teacher</button>
@@ -141,6 +157,4 @@
                 <@ul.foreach collection = remarks![] status="danger" />
             </#if>
         </div>
-     </div>
-
 </@main.page>

@@ -6,10 +6,10 @@
     <h2><span>${listName}</span></h2>
 
     <#if cards??>
-
         <#list cards as card>
 
-            <@cl.card_view cardType="${cardType}" card=card />
+            <@cl.card_view cardType="${cardType}" card=card/>
+
         </#list>
     </#if>
 
