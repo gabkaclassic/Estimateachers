@@ -124,7 +124,7 @@ public class Teacher extends Card {
         return String.format(FORMAT_TITLE,
                 getLastName(),
                 getFirstName().toUpperCase().charAt(0),
-                Objects.isNull(patronymic) || patronymic.length() == 0 ? ' ' : getPatronymic().toUpperCase().charAt(0)
+                Objects.isNull(patronymic) || patronymic.length() == 0 ? '-' : getPatronymic().toUpperCase().charAt(0)
         );
     }
     

@@ -79,14 +79,14 @@ public class Student {
             fetch = FetchType.LAZY
     )
     @JoinTable(
-            name = "faculty_students",
+        name = "faculty_students",
             joinColumns = {@JoinColumn(name = "student_id")},
             inverseJoinColumns = {@JoinColumn(name = "faculty_id")}
     )
     private Faculty faculty;
     
     @OneToMany(
-            cascade = CascadeType.PERSIST,
+            cascade = CascadeType.REFRESH,
             fetch = FetchType.LAZY
     )
     private Set<Teacher> teachers = new HashSet<>();
@@ -116,7 +116,12 @@ public class Student {
         return String.format(FORMAT_TITLE,
                 getLastName(),
                 getFirstName().toUpperCase().charAt(0),
-                Objects.isNull(patronymic) || patronymic.length() == 0 ? ' ' : getPatronymic().toUpperCase().charAt(0)
+                Objects.isNull(patronymic) || patronymic.length() == 0 ? '-' : getPatronymic().toUpperCase().charAt(0)
         );
+    }
+    
+    public void addTeacher(Teacher teacher) {
+        
+        teachers.add(teacher);
     }
 }

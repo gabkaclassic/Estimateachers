@@ -40,12 +40,11 @@
             <button type = "submit" class="btn btn-success">Next step</button>
         </form>
     </div>
-
     <form method = "post" action = "/applications/reject/registry/${application.id}">
-            <div class="form-group">
-                <label for="reason">Reason of reject</label>
-                <textarea class="form-control" id="reason" name="reason" rows="5"></textarea>
-            </div>
+        <div class="form-group">
+            <label for="reason">Reason of reject</label>
+            <textarea class="form-control" id="reason" name="reason" rows="5"></textarea>
+        </div>
         <@security.token />
         <button type = "submit" class="btn btn-danger">Reject the application</button>
     </form>

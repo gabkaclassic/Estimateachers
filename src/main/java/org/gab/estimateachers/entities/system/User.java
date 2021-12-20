@@ -53,6 +53,9 @@ public class User implements UserDetails {
     @Column(name = "active")
     private boolean active;
     
+    @Column(name = "online", columnDefinition = "boolean default 'f'")
+    private boolean online;
+    
     @OneToOne(
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
@@ -94,6 +97,7 @@ public class User implements UserDetails {
         setUsername(username);
         setEmail((Objects.nonNull(email) && email.isEmpty()) ? null : email);
         setActive(true);
+        setOnline(false);
         setPassword(password);
         roles.add(Roles.LOCKED);
     }
@@ -163,5 +167,10 @@ public class User implements UserDetails {
     public boolean isLocked() {
         
         return roles.contains(Roles.LOCKED);
+    }
+    
+    public boolean online() {
+        
+        return online;
     }
 }

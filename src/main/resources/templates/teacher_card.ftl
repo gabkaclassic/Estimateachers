@@ -17,7 +17,7 @@
             <li class="list-group-item">Severity: ${teacher.severityRating}/10</li>
             <li class="list-group-item">Exacting: ${teacher.exactingRating}/10</li>
             <li class="list-group-item">Freebies: ${teacher.freebiesRating}/10</li>
-            <li class="list-group-item">Rating: <#if teacher.totalRating??> ${teacher.totalRating}<#else>0</#if>/10/10</li>
+            <li class="list-group-item">Rating: <#if teacher.totalRating??> ${teacher.totalRating}<#else>0</#if>/10</li>
         </ul>
     </div>
     <div class="row mt-3">

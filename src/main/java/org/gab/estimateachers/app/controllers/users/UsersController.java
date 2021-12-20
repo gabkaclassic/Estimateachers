@@ -124,6 +124,24 @@ public class UsersController {
         return "/login";
     }
     
+    @PostMapping("/logout")
+    public String logout(@AuthenticationPrincipal User user) {
+        
+        user.setOnline(false);
+        userService.save(user);
+        
+        return "redirect:/users/logout";
+    }
+    
+    @PostMapping("/login")
+    public String signIn(@AuthenticationPrincipal User user) {
+    
+        user.setOnline(true);
+        userService.save(user);
+    
+        return "redirect:/users/login";
+    }
+    
     @GetMapping("/edit/{id}")
     public String edit(@AuthenticationPrincipal User currentUser,
                        @PathVariable(value = "id") Long userId,

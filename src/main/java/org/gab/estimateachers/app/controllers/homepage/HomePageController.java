@@ -1,6 +1,9 @@
 package org.gab.estimateachers.app.controllers.homepage;
 
+import org.gab.estimateachers.app.services.UserService;
 import org.gab.estimateachers.entities.system.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +17,7 @@ import java.util.Objects;
 public class HomePageController {
     
     @GetMapping("/")
-    public String homepage() {
+    public String homepage(@AuthenticationPrincipal User user) {
         
         return "/homepage";
     }

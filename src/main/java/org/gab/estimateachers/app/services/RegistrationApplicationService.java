@@ -46,6 +46,7 @@ public class RegistrationApplicationService extends ApplicationService<Registrat
         student.setUniversity(university);
         student.getAccount().apply();
         student.getAccount().setOwner(student);
+        faculty.getTeachers().forEach(student::addTeacher);
     
         studentService.save(student);
         applicationRepository.delete(application);
