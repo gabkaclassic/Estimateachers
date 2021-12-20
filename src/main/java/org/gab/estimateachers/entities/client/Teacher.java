@@ -13,6 +13,8 @@ import java.util.Set;
 @Table(name = "teachers")
 public class Teacher extends Card {
     
+    private static final String FORMAT_TITLE = "%s %c.%c";
+    
     @Column(
             name = "first_name",
             nullable = false
@@ -103,7 +105,11 @@ public class Teacher extends Card {
     
     public String getTitle() {
         
-        return lastName.concat(" ").concat(firstName);
+        return String.format(FORMAT_TITLE,
+                getLastName(),
+                getFirstName().toUpperCase().charAt(0),
+                getPatronymic().toUpperCase().charAt(0)
+        );
     }
     
     protected Double getTotalRating() {

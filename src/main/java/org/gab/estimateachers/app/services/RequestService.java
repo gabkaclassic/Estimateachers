@@ -33,10 +33,25 @@ public class RequestService extends ApplicationService<Request, RequestRepositor
         super.setApplicationRepository(repository);
     }
     
+    public void apply(Long requestId) {
+    
+        Request request = findById(requestId);
+        mailService.applyRequest(request.getStudent().getAccount());
+    
+        deleteById(requestId);
+    }
+    
+    public void reject(Long requestId, String reason) {
+        
+        Request request = findById(requestId);
+        mailService.rejectRequest(request.getStudent().getAccount(), reason);
+        
+        deleteById(requestId);
+    }
+    
     public void create(User user, String date, String textRequest, String type, Set<MultipartFile> files) {
         
         RequestType requestType = RequestType.valueOf(type);
-        
         
         Request request = new Request(
                 user.getOwner(),

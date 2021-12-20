@@ -50,18 +50,18 @@ public class UsersUtilities {
     
     public boolean checkNames(String firstName, String lastName, String patronymic, List<String> remarks) {
         
-        boolean isCorrectNames = (Objects.nonNull(firstName) && (!firstName.isEmpty())
+        boolean isCorrectNames = (!StringUtils.isEmpty(firstName)
                 && ((firstName = firstName.substring(0, 1).toUpperCase(Locale.ROOT).concat(firstName.substring(1)).trim()))
                 .length() >= MIN_LENGTH_LOGIN && firstName.length() <= MAX_LENGTH_LOGIN)
                 && NAME_PATTERN.matcher(firstName).matches()
-                && (Objects.nonNull(lastName) && (!lastName.isEmpty())
+                && (!StringUtils.isEmpty(lastName)
                 && ((lastName = lastName.substring(0, 1).toUpperCase(Locale.ROOT).concat(lastName.substring(1)).trim()))
                 .length() >= MIN_LENGTH_LOGIN && lastName.length() <= MAX_LENGTH_LOGIN)
                 && NAME_PATTERN.matcher(lastName).matches()
-                && (Objects.nonNull(patronymic) && (!patronymic.isEmpty())
-                && ((patronymic = patronymic.substring(0, 1).toUpperCase(Locale.ROOT).concat(patronymic.substring(1)).trim()))
+                && ((!StringUtils.isEmpty(patronymic)
+                || ((patronymic = patronymic.substring(0, 1).toUpperCase(Locale.ROOT).concat(patronymic.substring(1)).trim())
                 .length() >= MIN_LENGTH_LOGIN && patronymic.length() <= MAX_LENGTH_LOGIN)
-                && NAME_PATTERN.matcher(patronymic).matches();
+                && NAME_PATTERN.matcher(patronymic).matches()));
                 
         if(!isCorrectNames)
             remarks.add(String.format("The first, last name and patronymic must consist of %d-%d letters", MIN_LENGTH_LOGIN, MAX_LENGTH_LOGIN));
@@ -155,7 +155,7 @@ public class UsersUtilities {
         lockedRole = Objects.nonNull(lockedRole) && lockedRole;
         
         if(userRole || adminRole || lockedRole) {
-            if(userRole)
+            if(userRole || !lockedRole)
                 user.apply();
             if(adminRole)
                 user.appointmentAdmin();
@@ -163,8 +163,6 @@ public class UsersUtilities {
                 user.lock();
             if(!adminRole)
                 user.deprivePower();
-            if(!lockedRole)
-                user.apply();
         }
         else
             remarks.add("Incorrect user roles");

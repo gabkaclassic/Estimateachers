@@ -85,7 +85,8 @@ public class University extends Card {
         StringBuilder builder = new StringBuilder();
         
         for(String word: title.split(" "))
-            builder.append(word.substring(0, 1).toUpperCase());
+            if(word.length() > 0)
+                builder.append(word.substring(0, 1).toUpperCase());
     
         abbreviation = builder.toString();
         setBachelor(Objects.nonNull(bachelor));

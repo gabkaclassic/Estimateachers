@@ -62,7 +62,7 @@ public class UsersController {
             @RequestParam(name = "username") String username,
             @RequestParam(name = "firstName") String firstName,
             @RequestParam(name = "lastName") String lastName,
-            @RequestParam(name = "patronymic") String patronymic,
+            @RequestParam(name = "patronymic", required = false) String patronymic,
             @RequestParam(name = "email") String email,
             @RequestParam(name = "password") String password,
             @RequestParam(name = "genders") String genderName,
@@ -90,6 +90,12 @@ public class UsersController {
         if(!isCorrectData) {
             
             log.info("Incorrect user data: ".concat(String.join("; ", remarks)));
+            model.addAttribute("username", username);
+            model.addAttribute("firstname", firstName);
+            model.addAttribute("lastname", lastName);
+            model.addAttribute("patronymic", patronymic);
+            model.addAttribute("password", password);
+            model.addAttribute("email", email);
             
             return registryPage(model);
         }

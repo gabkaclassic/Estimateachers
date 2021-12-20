@@ -18,6 +18,14 @@ import java.util.Objects;
 public class RegistrationApplicationService extends ApplicationService<RegistrationApplication, RegistrationApplicationRepository> {
     
     @Autowired
+    @Qualifier("userService")
+    private UserService userService;
+    
+    @Autowired
+    @Qualifier("studentService")
+    private StudentService studentService;
+    
+    @Autowired
     @Qualifier("registrationApplicationRepository")
     protected void setApplicationRepository(RegistrationApplicationRepository repository) {
         
@@ -37,13 +45,25 @@ public class RegistrationApplicationService extends ApplicationService<Registrat
         student.setCourse(course);
         student.setUniversity(university);
         student.getAccount().apply();
+        student.getAccount().setOwner(student);
     
         studentService.save(student);
         applicationRepository.delete(application);
     }
     
+    public void apply(Long requestId) {}
+    
     public List<RegistrationApplication> findAllNotViewed() {
         
         return applicationRepository.findAllNotViewed();
+    }
+    
+    public void reject(Long applicationId, String reason) {
+        
+        RegistrationApplication application = findById(applicationId);
+        mailService.notifyRejectRegistration(application.getStudent().getAccount(), reason);
+        userService.deleteById(application.getStudent().getAccount().getId());
+        studentService.deleteById(application.getStudent().getId());
+        deleteById(applicationId);
     }
 }

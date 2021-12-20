@@ -65,7 +65,6 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
                               User user) {
     
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
-        userRepository.save(user);
         Student student = new Student(
                 firstName,
                 lastName,
@@ -73,6 +72,8 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
                 gender,
                 user
         );
+        user.setOwner(student);
+        userRepository.save(user);
     
         RegistrationApplication application = new RegistrationApplication(
                 student,

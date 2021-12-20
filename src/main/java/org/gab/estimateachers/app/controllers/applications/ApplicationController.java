@@ -113,17 +113,7 @@ public class ApplicationController {
     public String approvingCardSave(@RequestParam(name = "id") Long applicationId,
                                 Model model) {
         
-        CreatingCardApplication application = creatingCardApplicationService.findById(applicationId);
-        
-        switch (application.getCardType()) {
-            
-            case UNIVERSITY -> universityService.approve(application.getCardId());
-            case DORMITORY -> dormitoryService.approve(application.getCardId());
-            case TEACHER -> teacherService.approve(application.getCardId());
-            case FACULTY -> facultyService.approve(application.getCardId());
-        }
-        
-        creatingCardApplicationService.deleteById(applicationId);
+        creatingCardApplicationService.approve(applicationId);
         
         return "redirect:/applications/cards";
     }
@@ -190,17 +180,19 @@ public class ApplicationController {
     }
     
     @PostMapping("/reject/registry/{id}")
-    public String rejectRegistry(@PathVariable(name = "id") Long applicationId) {
+    public String rejectRegistry(@PathVariable(name = "id") Long applicationId,
+                                 @RequestParam("reason") String reason) {
         
-        registrationApplicationService.deleteById(applicationId);
+        registrationApplicationService.reject(applicationId, reason);
         
         return "redirect:/applications/users";
     }
     
     @PostMapping("/reject/card/{id}")
-    public String rejectCard(@PathVariable(name = "id") Long applicationId) {
+    public String rejectCard(@PathVariable(name = "id") Long applicationId,
+                             @RequestParam("reason") String reason) {
         
-        creatingCardApplicationService.deleteById(applicationId);
+        creatingCardApplicationService.reject(applicationId, reason);
         
         return "redirect:/applications/cards";
     }
@@ -276,7 +268,7 @@ public class ApplicationController {
                              Model model) {
         
         RequestType type = requestService.findById(requestId).getRequestType();
-        requestService.deleteById(requestId);
+        requestService.apply(requestId);
     
         switch (type) {
             case CHANGING_CARDS -> { return "redirect:/applications/requests/cards";}
@@ -291,7 +283,7 @@ public class ApplicationController {
                                  Model model) {
         
         RequestType type = requestService.findById(requestId).getRequestType();
-        requestService.deleteById(requestId);
+        requestService.reject(requestId, reason);
         
         switch (type) {
             case CHANGING_CARDS -> { return "redirect:/applications/requests/cards";}

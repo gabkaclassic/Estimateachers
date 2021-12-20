@@ -25,7 +25,7 @@ public abstract class Application {
     private Long id;
     
     @OneToOne(
-            cascade = CascadeType.PERSIST,
+            cascade = CascadeType.REFRESH,
             fetch = FetchType.EAGER
     )
     private Student student;

@@ -30,6 +30,10 @@ public abstract class ApplicationService<T extends Application, R extends Applic
     @Qualifier("studentService")
     protected StudentService studentService;
     
+    @Autowired
+    @Qualifier("mailService")
+    protected MailService mailService;
+    
     public List<T> findAll() {
         
         return applicationRepository.findAll();
@@ -54,4 +58,8 @@ public abstract class ApplicationService<T extends Application, R extends Applic
         
         applicationRepository = repository;
     }
+    
+    public abstract void reject(Long applicationId, String reason);
+    
+    public abstract void apply(Long requestId);
 }

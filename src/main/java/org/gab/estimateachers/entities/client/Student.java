@@ -17,7 +17,9 @@ import java.util.Set;
         uniqueConstraints = @UniqueConstraint(name = "unique_account", columnNames = "account_id")
 )
 public class Student {
-
+    
+    private static final String FORMAT_TITLE = "%s %c.%c";
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -106,5 +108,14 @@ public class Student {
         setPatronymic(patronymic);
         setGender(gender);
         setAccount(account);
+    }
+    
+    public String getTitle() {
+    
+        return String.format(FORMAT_TITLE,
+                getLastName(),
+                getFirstName().toUpperCase().charAt(0),
+                getPatronymic().toUpperCase().charAt(0)
+        );
     }
 }

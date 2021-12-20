@@ -8,7 +8,7 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Login: </label>
             <div class="col-sm-6">
-                <input type = "text" name = "username" id = "username" value="${(user.username)!''}" placeholder = "Your login" class="form-control" />
+                <input type = "text" name = "username" id = "username" value="${username!''}" placeholder = "Your login" class="form-control" />
                 <#if registry>
                     <div id="loginHelpBlock" class="form-text">
                         The login must consist of 2-32 letters
@@ -19,9 +19,9 @@
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Password: </label>
             <div class="col-sm-6">
-                <input type = "password" name = "password" id = "password" placeholder = "Your password" class="form-control"/>
+                <input type = "password" name = "password" value="${password!''}" id = "password" placeholder = "Your password" class="form-control"/>
             </div>
-            <#if registry>
+            <#if registry || edit>
                 <div id="passwordHelpBlock" class="form-text">
                     The password must contain 8-32 characters, of which 1 digit and 1 specified character.
                 </div>
@@ -31,17 +31,16 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">First name: </label>
                 <div class="col-sm-4">
-                    <input type = "text" id = "firstName" name = "firstName" placeholder = "Your first name" class="form-control"/>
+                    <input type = "text" id = "firstName" value="${firstname!''}" name = "firstName" placeholder = "Your first name" class="form-control"/>
                     <div id="firstNameHelpBlock" class="form-text">
                         The first name must consist of 2-32 letters
                     </div>
-
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Last name: </label>
                 <div class="col-sm-4">
-                    <input type = "text" id = "lastName" name = "lastName" placeholder = "Your last name" class="form-control"/>
+                    <input type = "text" id = "lastName" value="${lastname!''}" name = "lastName" placeholder = "Your last name" class="form-control"/>
                     <div id="lastNameHelpBlock" class="form-text">
                         The last name must consist of 2-32 letters
                     </div>
@@ -50,7 +49,7 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Patronymic: </label>
                 <div class="col-sm-4">
-                    <input type = "text" id = "patronymic" name = "patronymic" placeholder = "Your patronymic" class="form-control"/>
+                    <input type = "text" id = "patronymic" value="${patronymic!''}" name = "patronymic" placeholder = "Your patronymic" class="form-control"/>
                     <div id="patronymicHelpBlock" class="form-text">
                         The patronymic must consist of 2-32 letters
                     </div>
@@ -59,7 +58,7 @@
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label">Email: </label>
                 <div class="col-sm-4">
-                    <input type = "email" id = "email" name = "email" placeholder = "Your email address" class="form-control"/>
+                    <input type = "email" id = "email" value="${email!''}" name="email" placeholder = "Your email address" class="form-control"/>
                 </div>
             </div>
             <div class="form-group row">
