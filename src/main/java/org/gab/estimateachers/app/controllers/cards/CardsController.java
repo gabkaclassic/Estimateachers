@@ -58,8 +58,8 @@ public class CardsController {
     
     @GetMapping("/list/{cardsType}")
     public String cardsList(@AuthenticationPrincipal User user,
-                                   @PathVariable("cardsType") String cardsType,
-                                   Model model) {
+                            @PathVariable("cardsType") String cardsType,
+                            Model model) {
         
         model.addAttribute("listName", cardsType.substring(0, 1).toUpperCase().concat(cardsType.substring(1)));
         model.addAttribute("user", user);
@@ -68,10 +68,10 @@ public class CardsController {
         List<? extends Card> list;
         
         switch (cardsType) {
-            case "universities" -> list = universityService.findAll();
-            case "dormitories" -> list = dormitoryService.findAll();
-            case "faculties" -> list = facultyService.findAll();
-            case "teachers" -> list = teacherService.findAll();
+            case "universities" -> list = universityService.findAllApproved();
+            case "dormitories" -> list = dormitoryService.findAllApproved();
+            case "faculties" -> list = facultyService.findAllApproved();
+            case "teachers" -> list = teacherService.findAllApproved();
             default -> list = Collections.emptyList();
         }
         
@@ -181,7 +181,7 @@ public class CardsController {
             facultyService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation), teachersTitles, files, user.isAdmin());
         else
             creatingCardApplicationService.create(
-                    CardType.DORMITORY,
+                    CardType.FACULTY,
                     facultyService.create(facultyTitle, universityService.findByAbbreviation(universityAbbreviation), teachersTitles, files, user.isAdmin()),
                     user,
                     dateSending

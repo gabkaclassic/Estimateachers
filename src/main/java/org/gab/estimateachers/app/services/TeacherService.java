@@ -46,6 +46,11 @@ public class TeacherService implements CardService<Teacher> {
         teacherRepository.save(teacher);
     }
     
+    public List<Teacher> findAllApproved() {
+        
+        return teacherRepository.findAllApproved();
+    }
+    
     public List<Teacher> findAll() {
         
         return teacherRepository.findAll();

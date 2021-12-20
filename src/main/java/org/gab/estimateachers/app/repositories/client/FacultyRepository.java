@@ -31,4 +31,7 @@ public interface FacultyRepository extends CrudRepository<Faculty, Long>,
     Faculty findByTitleAndUniversity(String title, University university);
     
     boolean existsByTitle(String facultyTitle);
+    
+    @Query(value = "SELECT f FROM Faculty f WHERE f.approved = true")
+    List<Faculty> findAllApproved();
 }

@@ -27,4 +27,7 @@ public interface TeacherRepository extends CrudRepository<Teacher, Long>,
             value = "select teacher from Teacher teacher where teacher.title in :titles"
     )
     List<Teacher> findByTitles(@Param("titles") Set<String> teachersTitles);
+    
+    @Query(value = "SELECT t FROM Teacher t WHERE t.approved = true")
+    List<Teacher> findAllApproved();
 }

@@ -44,6 +44,11 @@ public class FacultyService implements CardService<Faculty> {
         facultyRepository.save(faculty);
     }
     
+    public List<Faculty> findAllApproved() {
+        
+        return facultyRepository.findAllApproved();
+    }
+    
     public List<Faculty> findAll() {
         
         return facultyRepository.findAll();

@@ -35,7 +35,7 @@ public class Faculty extends Card {
 
     @ManyToOne(
             cascade = CascadeType.PERSIST,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     @NonNull
     @JoinTable(

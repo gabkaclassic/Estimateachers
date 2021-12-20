@@ -3,6 +3,7 @@ package org.gab.estimateachers.app.repositories.client;
 import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.University;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,7 @@ public interface DormitoryRepository extends CrudRepository<Dormitory, Long>,
     Dormitory findByTitle(String title);
     
     boolean existsByTitle(String title);
+    
+    @Query(value = "SELECT d FROM Dormitory d WHERE d.approved = true")
+    List<Dormitory> findAllApproved();
 }

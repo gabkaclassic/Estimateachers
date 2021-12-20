@@ -43,6 +43,11 @@ public class UniversityService implements CardService<University> {
         return university;
     }
     
+    public List<University> findAllApproved() {
+        
+        return universityRepository.findAllApproved();
+    }
+    
     public List<University> findAll() {
         
         return universityRepository.findAll();

@@ -35,4 +35,7 @@ public interface UniversityRepository<U extends Card, Long> extends CrudReposito
             nativeQuery = true
     )
     List<String> findAllAbbreviationApproved();
+    
+    @Query(value = "SELECT u FROM University u WHERE u.approved = true")
+    List<University> findAllApproved();
 }
