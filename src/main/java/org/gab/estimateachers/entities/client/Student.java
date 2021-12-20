@@ -7,6 +7,7 @@ import org.gab.estimateachers.entities.system.User;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -115,7 +116,7 @@ public class Student {
         return String.format(FORMAT_TITLE,
                 getLastName(),
                 getFirstName().toUpperCase().charAt(0),
-                getPatronymic().toUpperCase().charAt(0)
+                Objects.isNull(patronymic) || patronymic.length() == 0 ? ' ' : getPatronymic().toUpperCase().charAt(0)
         );
     }
 }

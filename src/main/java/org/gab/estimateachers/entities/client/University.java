@@ -66,13 +66,18 @@ public class University extends Card {
 
     @ManyToMany(
             cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY,
-            mappedBy = "universities"
+            fetch = FetchType.LAZY
     )
+    @JoinTable(
+            name = "universities_teachers",
+            joinColumns = {@JoinColumn(name = "university_id")},
+            inverseJoinColumns = {@JoinColumn(name = "teacher_id")}
+    )
+
     private Set<Teacher> teachers = new HashSet<>();
 
     @OneToMany(
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER,
             mappedBy = "university"
     )

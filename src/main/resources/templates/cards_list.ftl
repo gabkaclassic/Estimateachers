@@ -7,9 +7,11 @@
 
     <#if cards??>
         <#list cards as card>
-
-            <@cl.card_view cardType="${cardType}" card=card/>
-
+            <div class="row mt-2">
+                <div class="col-7">
+                    <@cl.card_view cardType="${cardType}" card=card/>
+                </div>
+            </div>
         </#list>
     </#if>
 

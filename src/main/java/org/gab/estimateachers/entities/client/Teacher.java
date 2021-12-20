@@ -1,13 +1,16 @@
 package org.gab.estimateachers.entities.client;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.junit.gen5.commons.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "teachers")
@@ -19,70 +22,83 @@ public class Teacher extends Card {
             name = "first_name",
             nullable = false
     )
+    @Getter
+    @Setter
     private String firstName;
     
     @Column(
             name = "last_name",
             nullable = false
     )
+    @Getter
+    @Setter
     private String lastName;
     
     @Column(
             name = "patronymic",
             nullable = false
     )
+    @Getter
+    @Setter
     private String patronymic;
     
     @Column(
             name = "severity_rating",
             columnDefinition = "float8 default 0.0"
     )
+    @Getter
+    @Setter
     private double severityRating;
     
     @Column(
             name = "exacting_rating",
             columnDefinition = "float8 default 0.0"
     )
+    @Getter
+    @Setter
     private double exactingRating;
     
     @Column(
             name = "freebies_rating",
             columnDefinition = "float8 default 0.0"
     )
+    @Getter
+    @Setter
     private double freebiesRating;
     
     @ElementCollection(
             targetClass = String.class,
             fetch = FetchType.LAZY
     )
+    @Getter
+    @Setter
     private Set<String> excuses = new HashSet<>();
     
     @ManyToMany(
             cascade = CascadeType.PERSIST,
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "teachers"
     )
+    @Getter
+    @Setter
     private Set<Faculty> faculties = new HashSet<>();
     
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST
+            cascade = CascadeType.PERSIST,
+            mappedBy = "teachers"
     )
-    @JoinTable(
-            name = "universities_teachers",
-            joinColumns = {@JoinColumn(name = "teacher_id")},
-            inverseJoinColumns = {@JoinColumn(name = "university_id")}
-    )
+    @Getter
+    @Setter
     private Set<University> universities = new HashSet<>();
     
     public Teacher(String firstName, String lastName, String patronymic) {
         
-        super(lastName +
-                ' ' +
-                firstName.charAt(0) +
-                '.' +
-                patronymic.charAt(0) +
-                '.');
+        super(String.format(FORMAT_TITLE,
+                lastName,
+                firstName.toUpperCase().charAt(0),
+                Objects.isNull(patronymic) || patronymic.length() == 0 ? ' ' : patronymic.toUpperCase().charAt(0)
+        ));
         
         setFirstName(firstName);
         setLastName(lastName);
@@ -104,11 +120,11 @@ public class Teacher extends Card {
     }
     
     public String getTitle() {
-        
+    
         return String.format(FORMAT_TITLE,
                 getLastName(),
                 getFirstName().toUpperCase().charAt(0),
-                getPatronymic().toUpperCase().charAt(0)
+                Objects.isNull(patronymic) || patronymic.length() == 0 ? ' ' : getPatronymic().toUpperCase().charAt(0)
         );
     }
     

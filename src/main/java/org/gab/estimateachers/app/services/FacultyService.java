@@ -96,4 +96,9 @@ public class FacultyService implements CardService<Faculty> {
         
         return facultyRepository.existsByTitle(title);
     }
+    
+    public void saveAll(List<Faculty> faculties) {
+        
+        facultyRepository.saveAll(faculties);
+    }
 }

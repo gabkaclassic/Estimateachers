@@ -58,7 +58,7 @@ public class UsersUtilities {
                 && ((lastName = lastName.substring(0, 1).toUpperCase(Locale.ROOT).concat(lastName.substring(1)).trim()))
                 .length() >= MIN_LENGTH_LOGIN && lastName.length() <= MAX_LENGTH_LOGIN)
                 && NAME_PATTERN.matcher(lastName).matches()
-                && ((!StringUtils.isEmpty(patronymic)
+                && ((StringUtils.isEmpty(patronymic)
                 || ((patronymic = patronymic.substring(0, 1).toUpperCase(Locale.ROOT).concat(patronymic.substring(1)).trim())
                 .length() >= MIN_LENGTH_LOGIN && patronymic.length() <= MAX_LENGTH_LOGIN)
                 && NAME_PATTERN.matcher(patronymic).matches()));

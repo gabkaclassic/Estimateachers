@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Data
 @NoArgsConstructor
 @Entity
 @Table(
@@ -22,12 +21,16 @@ public class Faculty extends Card {
             name = "price_rating",
             columnDefinition = "float8 default 0.0"
     )
+    @Getter
+    @Setter
     private Double priceRating;
     
     @Column(
             name = "education_rating",
             columnDefinition = "float8 default 0.0"
     )
+    @Getter
+    @Setter
     private Double educationRating;
 
     @ManyToOne(
@@ -40,17 +43,21 @@ public class Faculty extends Card {
             joinColumns = {@JoinColumn(name = "faculty_id")},
             inverseJoinColumns = {@JoinColumn(name = "university_id")}
     )
+    @Getter
+    @Setter
     private University university;
 
     @ManyToMany(
             cascade = CascadeType.PERSIST,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     @JoinTable(
             name = "faculties_teachers",
             joinColumns = {@JoinColumn(name = "faculty_id")},
             inverseJoinColumns = {@JoinColumn(name = "teacher_id")}
     )
+    @Getter
+    @Setter
     private Set<Teacher> teachers;
 
     public Faculty(String title, University university) {

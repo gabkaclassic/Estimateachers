@@ -9,6 +9,7 @@ import org.gab.estimateachers.entities.system.CardType;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,7 +64,7 @@ public class CardsController {
         model.addAttribute("listName", cardsType.substring(0, 1).toUpperCase().concat(cardsType.substring(1)));
         model.addAttribute("user", user);
         model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
-        String cardType = (cardsType.equals("teachers")) ? cardsType.substring(1) : cardsType.replace("ies", "y");
+        String cardType = (cardsType.equals("teachers")) ? cardsType.substring(0, cardsType.length()-1) : cardsType.replace("ies", "y");
         List<? extends Card> list;
         
         switch (cardsType) {
@@ -195,7 +196,7 @@ public class CardsController {
     public String addTeacher(@AuthenticationPrincipal User user,
                              @RequestParam("firstName") String firstname,
                              @RequestParam("lastName") String lastname,
-                             @RequestParam("patronymic") String patronymic,
+                             @RequestParam(value = "patronymic", required = false) String patronymic,
                              @RequestParam("universities") Set<String> universitiesAbbreviation,
                              @RequestParam("faculties") Set<String> facultiesTitles,
                              @RequestParam("date") String dateSending,
@@ -222,8 +223,6 @@ public class CardsController {
                     dateSending
             );
     
-        model.addAttribute("toast", true);
-    
         return createCard(model);
     }
     
@@ -239,7 +238,7 @@ public class CardsController {
             case "dormitory" -> model.addAttribute("dormitory", card = dormitoryService.findById(cardId));
             case "faculty" -> model.addAttribute("faculty", card = facultyService.findById(cardId));
             case "teacher" -> model.addAttribute("teacher", card = teacherService.findById(cardId));
-            default -> card = null;
+            default -> throw new IllegalStateException("Unexpected value: " + cardType);
         }
             
         if(Objects.nonNull(card))
@@ -249,6 +248,8 @@ public class CardsController {
         return "/".concat(cardType).concat("_card");
     }
     
+    
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/edit")
     public String editCard(@AuthenticationPrincipal User user,
                            @RequestParam("title") String cardTitle,
@@ -262,11 +263,30 @@ public class CardsController {
             case "dormitory" -> dormitoryService.edit(cardId, cardTitle, files);
             case "faculty" -> facultyService.edit(cardId, cardTitle, files);
             case "teacher" -> teacherService.edit(cardId, cardTitle, files);
-            default -> {
-                throw new IllegalStateException("Unexpected value: " + cardType);
-            }
+            default -> throw new IllegalStateException("Unexpected value: " + cardType);
+            
         }
         
         return getCard(user, cardId, cardType, model);
+    }
+    
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/delete")
+    public String deleteCard(@AuthenticationPrincipal User user,
+                             @RequestParam("id") Long cardId,
+                             @RequestParam("type") String cardType,
+                             Model model) {
+    
+        switch (cardType) {
+            case "university" -> universityService.deleteById(cardId);
+            case "dormitory" -> dormitoryService.deleteById(cardId);
+            case "faculty" -> facultyService.deleteById(cardId);
+            case "teacher" -> teacherService.deleteById(cardId);
+            default -> throw new IllegalStateException("Unexpected value: " + cardType);
+        }
+        
+        cardType = (cardType.equals("teacher")) ? cardType.concat("s") : cardType.replace("y", "ies");
+        
+        return cardsList(user, cardType, model);
     }
 }

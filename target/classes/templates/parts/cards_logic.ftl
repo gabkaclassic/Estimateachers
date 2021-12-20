@@ -32,15 +32,25 @@
 
 <#macro title card type="">
     <#if isAdmin>
-        <form class="d-block w-100 mt-3" method = "post" enctype="multipart/form-data" action = "/cards/edit">
-            <input name = "title" type = "text" placeholder = "title" value="${card.title}"/> <br>
-            <label for="formFileMultiple" class="form-label">Photos</label>
-            <input class="form-control" name="files" type="file" id="formFileMultiple" multiple />
-            <input type="hidden" name="id" value="${card.id}" />
-            <input type="hidden" name="type" value="${type}" />
-            <@security.token />
-            <button type = "submit" class="btn btn-primary mt-1">Edit</button>
-        </form>
+        <div class="row mt-5">
+            <form class="d-block w-100 mt-3" method = "post" enctype="multipart/form-data" action = "/cards/edit">
+                <input name = "title" type = "text" placeholder = "title" value="${card.title}"/> <br>
+                <label for="formFileMultiple" class="form-label">Photos</label>
+                <input class="form-control" name="files" type="file" id="formFileMultiple" multiple />
+                <input type="hidden" name="id" value="${card.id}" />
+                <input type="hidden" name="type" value="${type}" />
+                <@security.token />
+                <button type = "submit" class="btn btn-primary mt-1">Edit</button>
+            </form>
+        </div>
+        <div class="row mt-1">
+            <form method = "post" action = "/cards/delete">
+                <input type="hidden" name = "type" value = "${type}" />
+                <input type="hidden" name = "id" value = ${card.id} />
+                <@security.token />
+                <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+        </div>
     <#else>
         <div class="row mt-5">
             <h5>${card.title}</h5>
@@ -50,19 +60,19 @@
 
 <#macro links cardType cards=[]>
 
-<#if cards??>
-    <#list cards as card>
-        <li class="list-group-item mt-3">
-            <form method = "get" action = "/cards/get">
-                <button class="btn btn-link" type="submit">${card.title}</button>
-                <input type="hidden" name = "cardType" value = ${cardType} />
-                <input type="hidden" name = "id" value = ${card.id} />
-            </form>
-        </li>
-    </#list>
-<#else>
-    None
-</#if>
+    <#if cards??>
+        <#list cards as card>
+            <li class="list-group-item mt-3">
+                <form method = "get" action = "/cards/get">
+                    <button class="btn btn-link" type="submit">${card.title}</button>
+                    <input type="hidden" name = "cardType" value = ${cardType} />
+                    <input type="hidden" name = "id" value = ${card.id} />
+                </form>
+            </li>
+        </#list>
+    <#else>
+        None
+    </#if>
 </#macro>
 
 <#macro card_view cardType card="NULL">
@@ -83,14 +93,27 @@
                     <#if isAdmin>
                         <p>№${card.id}</p>
                     </#if>
-                <p>Rating: ${(card.totalRating)!'-'}</p>
+                    <p>Rating: ${(card.totalRating)!'-'}</p>
                 </p>
-                <form method = "get" action = "/cards/get">
-                    <input type="hidden" name = "cardType" value = "${cardType}" />
-                    <input type="hidden" name = "id" value = ${card.id} />
-                    <@security.token />
-                    <button class="btn btn-primary" type="submit">To consider...</button>
-                </form>
+                <div class="row">
+                    <div class="col-2 mr-2">
+                        <form method = "get" action = "/cards/get">
+                            <input type="hidden" name = "cardType" value = "${cardType}" />
+                            <input type="hidden" name = "id" value = ${card.id} />
+                            <@security.token />
+                            <button class="btn btn-primary" type="submit">To consider...</button>
+                        </form>
+                    </div>
+                    <#if isAdmin>
+                        <div class="col-2 ml-2">
+                            <form method = "post" action = "/cards/delete">
+                                <input type="hidden" name = "type" value = "${cardType}" />
+                                <input type="hidden" name = "id" value = ${card.id} />
+                                <@security.token />
+                                <button class="btn btn-danger" type="submit">Delete</button>
+                            </form>
+                        </div>
+                    </#if>
             </div>
         </div>
     </#if>

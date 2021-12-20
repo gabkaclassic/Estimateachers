@@ -46,11 +46,6 @@ public class TeacherService implements CardService<Teacher> {
         teacherRepository.save(teacher);
     }
     
-//    public void create(Teacher teacher, List<University> universities, List<Faculty> faculties) {
-//
-//
-//    }
-    
     public List<Teacher> findAll() {
         
         return teacherRepository.findAll();
@@ -86,8 +81,10 @@ public class TeacherService implements CardService<Teacher> {
             files.stream().map(f -> filesUtilities.registrationFile(f, RegistrationType.PEOPLE)).forEach(teacher::addPhoto);
     
         save(teacher);
-        universities.stream().peek(u -> u.addTeacher(teacher)).forEach(universityService::save);
-        faculties.stream().peek(f -> f.addTeacher(teacher)).forEach(facultyService::save);
+        faculties.forEach(f -> f.addTeacher(teacher));
+        facultyService.saveAll(faculties);
+        universities.forEach(f -> f.addTeacher(teacher));
+        universityService.saveAll(universities);
         
         return teacher;
     }

@@ -83,4 +83,9 @@ public class UniversityService implements CardService<University> {
         
         return universityRepository.getOne(id);
     }
+    
+    public void saveAll(List<University> universities) {
+        
+        universityRepository.saveAll(universities);
+    }
 }
