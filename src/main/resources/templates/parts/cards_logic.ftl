@@ -14,7 +14,7 @@
                         <div class="carousel-item" data-bs-interval="2000">
                     </#if>
                     <#assign x++>
-                    <img class="d-block card-img-top img-fluid rounded-2" src="/img/${photo}" alt="?" >
+                    <img class="d-block card-img-top rounded-2" width="350" height="300" src="/img/${photo}" alt="?" >
                 </#if>
                 </div>
             </#list>
@@ -79,7 +79,7 @@
 
     <#if card??>
 
-        <div class="card" style="width: 18rem height: 15rem;">
+        <div class="w-75 h-10 mt-2 card" style="width: 18rem height: 15rem;">
             <#if card.photos??>
                 <figure class="figure">
                     <@images number=card.id photos=card.photos size=card.photos?size />
@@ -95,27 +95,22 @@
                     </#if>
                     <p>Rating: ${(card.totalRating)!'-'}</p>
                 </p>
-                <div class="row">
-                    <div class="col-2 mr-2">
                         <form method = "get" action = "/cards/get">
                             <input type="hidden" name = "cardType" value = "${cardType}" />
                             <input type="hidden" name = "id" value = ${card.id} />
                             <@security.token />
                             <button class="btn btn-primary" type="submit">To consider...</button>
                         </form>
-                    </div>
                     <#if isAdmin>
-                        <div class="col-2 ml-2">
                             <form method = "post" action = "/cards/delete">
                                 <input type="hidden" name = "type" value = "${cardType}" />
                                 <input type="hidden" name = "id" value = ${card.id} />
                                 <@security.token />
                                 <button class="btn btn-danger" type="submit">Delete</button>
                             </form>
-                        </div>
                     </#if>
             </div>
         </div>
-    </#if>
+</#if>
 
 </#macro>

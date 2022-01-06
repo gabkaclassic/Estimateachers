@@ -3,7 +3,7 @@
 
 <#macro data_form registry=false edit=false textButton = "Submit">
 
-<div>
+<div class="row mt-2">
     <form method = "post" enctype = "multipart/form-data">
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Login: </label>

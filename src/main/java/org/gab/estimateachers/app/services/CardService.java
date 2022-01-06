@@ -3,6 +3,7 @@ package org.gab.estimateachers.app.services;
 import org.gab.estimateachers.entities.client.Card;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Set;
 
 public interface CardService<T extends Card> extends Service<T> {
@@ -17,4 +18,6 @@ public interface CardService<T extends Card> extends Service<T> {
     }
     
     void edit(Long id, String title, Set<MultipartFile> files);
+    
+    List<T> findByTitlePattern(String pattern);
 }

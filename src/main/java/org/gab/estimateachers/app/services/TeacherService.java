@@ -105,6 +105,11 @@ public class TeacherService implements CardService<Teacher> {
         teacherRepository.save(card);
     }
     
+    public List<Teacher> findByTitlePattern(String pattern) {
+        
+        return teacherRepository.findByTitlePattern(pattern);
+    }
+    
     public List<String> getTitles() {
         
         return teacherRepository.getTitles();

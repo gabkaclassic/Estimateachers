@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/admin")
@@ -46,11 +47,30 @@ public class AdminController {
         return "/users_list";
     }
     
-    @PostMapping("/allUsers")
-    public String findUserByLogin(@RequestParam("filter") String login,
+    @PostMapping("/search/login")
+    public String findUserByLogin(@RequestParam(value = "username", required = false) String login,
                                   Model model) {
         
-        model.addAttribute("users", listUtilities.getFilteredUsersList(login));
+        if(Objects.nonNull(login) && !login.isEmpty()) {
+            model.addAttribute("users", listUtilities.getFilteredUsersList(login));
+            model.addAttribute("username", login);
+        }
+        else
+            return "redirect:/admin/allUsers";
+        
+        return "/users_list";
+    }
+    
+    @PostMapping("/search/id")
+    public String findById(@RequestParam(value = "id", required = false) Long id,
+                                  Model model) {
+    
+        if(Objects.nonNull(id)) {
+            model.addAttribute("users", List.of(userService.findById(id)));
+            model.addAttribute("id", id);
+        }
+        else
+            return "redirect:/admin/allUsers";
         
         return "/users_list";
     }

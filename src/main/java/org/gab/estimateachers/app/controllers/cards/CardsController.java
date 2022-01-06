@@ -82,6 +82,40 @@ public class CardsController {
         return "/cards_list";
     }
     
+    @PostMapping("/search/title")
+    public String findByTitle(@AuthenticationPrincipal User user,
+                              @RequestParam(value = "title", required = false) String title,
+                              @RequestParam("cardsType") String cardType,
+                              Model model) {
+    
+        String cardsType = (cardType.equals("teacher")) ? cardType.concat("s") : cardType.replace("y", "ies");
+        List<? extends Card> list = Collections.emptyList();
+        
+        if(Objects.nonNull(title) && !title.isEmpty()) {
+        
+            switch (cardsType) {
+                case "universities" -> list = universityService.findByTitlePattern(title);
+                case "dormitories" -> list = dormitoryService.findByTitlePattern(title);
+                case "faculties" -> list = facultyService.findByTitlePattern(title);
+                case "teachers" -> list = teacherService.findByTitlePattern(title);
+                default -> {}
+            }
+        
+            model.addAttribute("listName", cardsType.substring(0, 1).toUpperCase().concat(cardsType.substring(1)));
+            model.addAttribute("cardType", cardType);
+            model.addAttribute("numbers", Stream.iterate(1, n -> n + 1).limit(list.size()).collect(Collectors.toList()));
+            model.addAttribute("title", title);
+            model.addAttribute("cards", list);
+        }
+        else
+            return "redirect:/cards/list/".concat(cardsType);
+    
+        model.addAttribute("user", user);
+        model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
+    
+        return "/cards_list";
+    }
+    
     @GetMapping("/add")
     public String createCard(Model model) {
         

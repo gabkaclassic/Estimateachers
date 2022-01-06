@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.repositories.client;
 
+import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.client.University;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,4 +35,9 @@ public interface FacultyRepository extends CrudRepository<Faculty, Long>,
     
     @Query(value = "SELECT f FROM Faculty f WHERE f.approved = true")
     List<Faculty> findAllApproved();
+    
+    @Query(
+            value = "select f from Faculty f where lower(f.title) like lower(concat('%', :title, '%'))"
+    )
+    List<Faculty> findByTitlePattern(@Param("title") String pattern);
 }

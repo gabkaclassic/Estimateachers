@@ -80,6 +80,10 @@ public class FacultyService implements CardService<Faculty> {
         facultyRepository.save(card);
     }
     
+    public List<Faculty> findByTitlePattern(String pattern) {
+        return facultyRepository.findByTitlePattern(pattern);
+    }
+    
     public Faculty create(String facultyTitle, University university, Set<String> teachersTitles, Set<MultipartFile> files, boolean approved) {
         
         Faculty faculty = new Faculty(facultyTitle, university);

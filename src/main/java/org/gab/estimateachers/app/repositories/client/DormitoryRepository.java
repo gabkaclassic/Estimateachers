@@ -5,6 +5,7 @@ import org.gab.estimateachers.entities.client.University;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,4 +20,9 @@ public interface DormitoryRepository extends CrudRepository<Dormitory, Long>,
     
     @Query(value = "SELECT d FROM Dormitory d WHERE d.approved = true")
     List<Dormitory> findAllApproved();
+    
+    @Query(
+            value = "select d from Dormitory d where lower(d.title) like lower(concat('%', :title, '%'))"
+    )
+    List<Dormitory> findByTitlePattern(@Param("title") String pattern);
 }

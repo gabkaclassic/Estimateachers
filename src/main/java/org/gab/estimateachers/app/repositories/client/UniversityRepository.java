@@ -1,6 +1,7 @@
 package org.gab.estimateachers.app.repositories.client;
 
 import org.gab.estimateachers.entities.client.Card;
+import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.University;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -38,4 +39,9 @@ public interface UniversityRepository<U extends Card, Long> extends CrudReposito
     
     @Query(value = "SELECT u FROM University u WHERE u.approved = true")
     List<University> findAllApproved();
+    
+    @Query(
+            value = "select u from University u where lower(u.title) like lower(concat('%', :title, '%'))"
+    )
+    List<University> findByTitlePattern(@Param("title") String pattern);
 }

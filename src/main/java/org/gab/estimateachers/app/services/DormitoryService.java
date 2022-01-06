@@ -60,6 +60,11 @@ public class DormitoryService implements CardService<Dormitory>  {
         dormitoryRepository.save(card);
     }
     
+    public List<Dormitory> findByTitlePattern(String pattern) {
+        
+        return dormitoryRepository.findByTitlePattern(pattern);
+    }
+    
     public List<Dormitory> findAllApproved() {
         
         return dormitoryRepository.findAllApproved();

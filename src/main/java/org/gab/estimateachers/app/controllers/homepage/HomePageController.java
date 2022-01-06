@@ -16,8 +16,18 @@ import java.util.Objects;
 @RequestMapping("/")
 public class HomePageController {
     
+    @Autowired
+    @Qualifier("userService")
+    private UserService userService;
+    
     @GetMapping("/")
     public String homepage(@AuthenticationPrincipal User user) {
+        
+        if(Objects.nonNull(user)) {
+            
+            user.setOnline(true);
+            userService.save(user);
+        }
         
         return "/homepage";
     }

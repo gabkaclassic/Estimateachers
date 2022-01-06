@@ -74,6 +74,11 @@ public class UniversityService implements CardService<University> {
         universityRepository.save(card);
     }
     
+    public List<University> findByTitlePattern(String pattern) {
+        
+        return universityRepository.findByTitlePattern(pattern);
+    }
+    
     public University findByAbbreviation(String abbreviation) {
         
         return universityRepository.findByAbbreviation(abbreviation);

@@ -75,6 +75,11 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         return List.of(userRepository.findByUsername(login));
     }
     
+    public List<User> findByLoginPattern(String pattern) {
+        
+        return userRepository.findByUsernamePattern(pattern);
+    }
+    
     public void update(Long id, String username, String password, String email) {
         
         User user = userRepository.getOne(id);

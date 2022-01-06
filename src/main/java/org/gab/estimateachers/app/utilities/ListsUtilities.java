@@ -91,7 +91,7 @@ public class ListsUtilities {
     
     public List<User> getFilteredUsersList(String login) {
         
-        return userService.findByLogin(login);
+        return userService.findByLoginPattern(login);
     }
     
     public List<CreatingCardApplication> getCreatingCardApplicationList() {

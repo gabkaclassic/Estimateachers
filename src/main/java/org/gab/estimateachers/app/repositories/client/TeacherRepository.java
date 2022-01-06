@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.repositories.client;
 
+import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.Teacher;
 import org.gab.estimateachers.entities.system.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,4 +31,9 @@ public interface TeacherRepository extends CrudRepository<Teacher, Long>,
     
     @Query(value = "SELECT t FROM Teacher t WHERE t.approved = true")
     List<Teacher> findAllApproved();
+    
+    @Query(
+            value = "select t from Teacher t where lower(t.title) like lower(concat('%', :title, '%'))"
+    )
+    List<Teacher> findByTitlePattern(@Param("title") String pattern);
 }
