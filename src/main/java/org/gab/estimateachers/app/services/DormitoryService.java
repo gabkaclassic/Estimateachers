@@ -1,12 +1,14 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.DormitoryRepository;
+import org.gab.estimateachers.app.repositories.system.DormitoryEstimationRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
-import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.University;
-import org.gab.estimateachers.entities.system.Application;
+import org.gab.estimateachers.entities.system.estimations.DormitoryEstimation;
+import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,10 @@ public class DormitoryService implements CardService<Dormitory>  {
     @Autowired
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
+    
+    @Autowired
+    @Qualifier("dormitoryEstimationRepository")
+    private DormitoryEstimationRepository dormitoryEstimationRepository;
     
     public Dormitory findById(Long id) {
         
@@ -88,5 +94,20 @@ public class DormitoryService implements CardService<Dormitory>  {
     public boolean existsByTitle(String title) {
         
         return dormitoryRepository.existsByTitle(title);
+    }
+    
+    public void estimation(Long dormitoryId, User user, Integer cleaningRating, Integer roommatesRating, Integer capacityRating) {
+    
+    
+        cleaningRating = Objects.isNull(cleaningRating) ? 0 : cleaningRating;
+        roommatesRating = Objects.isNull(roommatesRating) ? 0 : roommatesRating;
+        capacityRating = Objects.isNull(capacityRating) ? 0 : capacityRating;
+    
+        Dormitory dormitory = dormitoryRepository.getOne(dormitoryId);
+        DormitoryEstimation estimation = new DormitoryEstimation(cleaningRating, roommatesRating, capacityRating, user);
+        dormitory.estimation(estimation);
+    
+        dormitoryEstimationRepository.save(estimation);
+        dormitoryRepository.save(dormitory);
     }
 }

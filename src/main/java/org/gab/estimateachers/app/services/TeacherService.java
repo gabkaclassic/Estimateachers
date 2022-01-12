@@ -1,13 +1,16 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.TeacherRepository;
+import org.gab.estimateachers.app.repositories.system.TeacherEstimationRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
-import org.gab.estimateachers.entities.client.Card;
+import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.client.Teacher;
 import org.gab.estimateachers.entities.client.University;
-import org.gab.estimateachers.entities.system.Application;
+import org.gab.estimateachers.entities.system.estimations.DormitoryEstimation;
+import org.gab.estimateachers.entities.system.estimations.TeacherEstimation;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,10 @@ public class TeacherService implements CardService<Teacher> {
     @Autowired
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
+    
+    @Autowired
+    @Qualifier("teacherEstimationRepository")
+    private TeacherEstimationRepository teacherEstimationRepository;
     
     public Teacher findById(Long id) {
         
@@ -118,5 +125,20 @@ public class TeacherService implements CardService<Teacher> {
     public List<Teacher> findByTitles(Set<String> teachersTitles) {
         
         return teacherRepository.findByTitles(teachersTitles);
+    }
+    
+    public void estimation(Long teacherId, User user, Integer freebiesRating, Integer exactingRating, Integer severityRating) {
+    
+    
+        freebiesRating = Objects.isNull(freebiesRating) ? 0 : freebiesRating;
+        exactingRating = Objects.isNull(exactingRating) ? 0 : exactingRating;
+        severityRating = Objects.isNull(severityRating) ? 0 : severityRating;
+    
+        Teacher teacher = teacherRepository.getOne(teacherId);
+        TeacherEstimation estimation = new TeacherEstimation(freebiesRating, exactingRating, severityRating, user);
+        teacher.estimation(estimation);
+    
+        teacherEstimationRepository.save(estimation);
+        teacherRepository.save(teacher);
     }
 }

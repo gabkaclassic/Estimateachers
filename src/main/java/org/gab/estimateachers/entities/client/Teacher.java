@@ -4,12 +4,19 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.gab.estimateachers.entities.system.estimations.Estimation;
+import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
+import org.gab.estimateachers.entities.system.estimations.TeacherEstimation;
+import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
+import org.gab.estimateachers.entities.system.users.User;
 import org.junit.gen5.commons.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Entity
@@ -42,30 +49,6 @@ public class Teacher extends Card {
     @Setter
     private String patronymic;
     
-    @Column(
-            name = "severity_rating",
-            columnDefinition = "float8 default 0.0"
-    )
-    @Getter
-    @Setter
-    private double severityRating;
-    
-    @Column(
-            name = "exacting_rating",
-            columnDefinition = "float8 default 0.0"
-    )
-    @Getter
-    @Setter
-    private double exactingRating;
-    
-    @Column(
-            name = "freebies_rating",
-            columnDefinition = "float8 default 0.0"
-    )
-    @Getter
-    @Setter
-    private double freebiesRating;
-    
     @ElementCollection(
             targetClass = String.class,
             fetch = FetchType.LAZY
@@ -92,6 +75,16 @@ public class Teacher extends Card {
     @Setter
     private Set<University> universities = new HashSet<>();
     
+    @OneToMany
+    @JoinTable(
+            name = "teachers_estimations",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "estimation_id")
+    
+    )
+    private List<TeacherEstimation> estimations;
+    
+    
     public Teacher(String firstName, String lastName, String patronymic) {
         
         super(String.format(FORMAT_TITLE,
@@ -103,10 +96,6 @@ public class Teacher extends Card {
         setFirstName(firstName);
         setLastName(lastName);
         setPatronymic(patronymic);
-        setExactingRating(0.0);
-        setSeverityRating(0.0);
-        setFreebiesRating(0.0);
-        setTotalRating(0.0);
     }
     
     public void addUniversity(University university) {
@@ -128,8 +117,38 @@ public class Teacher extends Card {
         );
     }
     
-    protected Double getTotalRating() {
+    public Double getExactingRating() {
         
-        return totalRating = (severityRating + exactingRating + freebiesRating) / 3;
+        return estimations.stream().map(TeacherEstimation.class::cast).mapToDouble(TeacherEstimation::getExactingRating).average().orElse(0);
+    }
+    
+    public Double getFreebiesRating() {
+        
+        return estimations.stream().map(TeacherEstimation.class::cast).mapToDouble(TeacherEstimation::getFreebiesRating).average().orElse(0);
+    }
+    
+    public Double getSeverityRating() {
+        
+        return estimations.stream().map(TeacherEstimation.class::cast).mapToDouble(TeacherEstimation::getSeverityRating).average().orElse(0);
+    }
+    
+    public void estimation(TeacherEstimation estimation) {
+        
+        estimations.add(estimation);
+    }
+    
+    public Double getTotalRating() {
+        
+        return round(estimations.stream().mapToDouble(TeacherEstimation::getTotalRating).average().orElse(0));
+    }
+    
+    public Integer getAssessorsCount() {
+        
+        return estimations.size();
+    }
+    
+    public boolean containsAssessor(User user) {
+        
+        return estimations.stream().map(TeacherEstimation::getAssessor).collect(Collectors.toSet()).contains(user);
     }
 }

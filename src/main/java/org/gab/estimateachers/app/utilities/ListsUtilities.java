@@ -5,7 +5,11 @@ import org.gab.estimateachers.app.repositories.client.FacultyRepository;
 import org.gab.estimateachers.app.repositories.client.UniversityRepository;
 import org.gab.estimateachers.app.services.*;
 import org.gab.estimateachers.entities.client.*;
-import org.gab.estimateachers.entities.system.*;
+import org.gab.estimateachers.entities.system.applications.CreatingCardApplication;
+import org.gab.estimateachers.entities.system.applications.RegistrationApplication;
+import org.gab.estimateachers.entities.system.applications.Request;
+import org.gab.estimateachers.entities.system.users.Genders;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -77,6 +81,7 @@ public class ListsUtilities {
                 .stream()
                 .filter(Dormitory::getApproved)
                 .map(Dormitory::getTitle)
+                .sorted()
                 .collect(Collectors.toList());
     }
     
@@ -86,17 +91,18 @@ public class ListsUtilities {
                 .stream()
                 .filter(Faculty::getApproved)
                 .map(Faculty::getTitle)
+                .sorted()
                 .collect(Collectors.toList());
     }
     
     public List<User> getFilteredUsersList(String login) {
         
-        return userService.findByLoginPattern(login);
+        return userService.findByLoginPattern(login).stream().sorted().collect(Collectors.toList());
     }
     
     public List<CreatingCardApplication> getCreatingCardApplicationList() {
         
-        return creatingCardApplicationService.findAllNotViewed();
+        return creatingCardApplicationService.findAllNotViewed().stream().sorted().collect(Collectors.toList());
     }
     
     public List<RegistrationApplication> getRegistrationApplicationList() {
@@ -106,12 +112,12 @@ public class ListsUtilities {
     
     public List<String> convertToTitlesList(Set<? extends Card> cards) {
         
-        return cards.stream().map(Card::getTitle).collect(Collectors.toList());
+        return cards.stream().map(Card::getTitle).collect(Collectors.toList()).stream().sorted().collect(Collectors.toList());
     }
     
     public List<String> getAllFacultiesTitlesList() {
         
-        return facultyRepository.findAllTitle();
+        return facultyRepository.findAllTitle().stream().sorted().collect(Collectors.toList());
     }
     
     public Object getNumbers(Collection<?> list) {
@@ -121,7 +127,7 @@ public class ListsUtilities {
     
     public List<String> getTeachersTitles() {
         
-        return teacherService.getTitles();
+        return teacherService.getTitles().stream().sorted().collect(Collectors.toList());
     }
     
     public List<Request> getCardRequestList() {

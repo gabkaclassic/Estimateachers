@@ -1,13 +1,19 @@
 package org.gab.estimateachers.entities.client;
 
 import lombok.*;
+import org.gab.estimateachers.entities.system.estimations.Estimation;
+import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
+import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Entity
@@ -16,22 +22,6 @@ import java.util.Set;
         uniqueConstraints = @UniqueConstraint(columnNames = {"title"})
 )
 public class Faculty extends Card {
-    
-    @Column(
-            name = "price_rating",
-            columnDefinition = "float8 default 0.0"
-    )
-    @Getter
-    @Setter
-    private Double priceRating;
-    
-    @Column(
-            name = "education_rating",
-            columnDefinition = "float8 default 0.0"
-    )
-    @Getter
-    @Setter
-    private Double educationRating;
 
     @ManyToOne(
             cascade = CascadeType.PERSIST,
@@ -59,20 +49,51 @@ public class Faculty extends Card {
     @Getter
     @Setter
     private Set<Teacher> teachers;
-
+    
+    @OneToMany
+    @JoinTable(
+            name = "faculties_estimations",
+            joinColumns = @JoinColumn(name = "faculty_id"),
+            inverseJoinColumns = @JoinColumn(name = "estimation_id")
+    
+    )
+    private List<FacultyEstimation> estimations;
+    
     public Faculty(String title, University university) {
         
         setTitle(String.format("%s(%s)", title.substring(0, 1).toUpperCase().concat(title.substring(1)), university.getAbbreviation()));
         photos = new HashSet<>();
-        setEducationRating(0.0);
-        setPriceRating(0.0);
-        setTotalRating(0.0);
         setUniversity(university);
+    }
+    
+    public Double getPriceRating() {
+        
+        return estimations.stream().mapToDouble(FacultyEstimation::getPriceRating).average().orElse(0);
+    }
+    
+    public Double getEducationRating() {
+        
+        return estimations.stream().mapToDouble(FacultyEstimation::getEducationRating).average().orElse(0);
     }
     
     public Double getTotalRating() {
         
-        return totalRating = (priceRating + educationRating) / 2;
+        return estimations.stream().mapToDouble(FacultyEstimation::getTotalRating).average().orElse(0);
+    }
+    
+    public Integer getAssessorsCount() {
+        
+        return estimations.size();
+    }
+    
+    public boolean containsAssessor(User user) {
+        
+        return estimations.stream().map(FacultyEstimation::getAssessor).collect(Collectors.toSet()).contains(user);
+    }
+    
+    public void estimation(FacultyEstimation estimation) {
+        
+        estimations.add(estimation);
     }
     
     public void addTeacher(Teacher teacher) {

@@ -1,11 +1,15 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.FacultyRepository;
+import org.gab.estimateachers.app.repositories.system.FacultyEstimationRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.client.Teacher;
 import org.gab.estimateachers.entities.client.University;
+import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
+import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -33,6 +37,10 @@ public class FacultyService implements CardService<Faculty> {
     @Autowired
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
+    
+    @Autowired
+    @Qualifier("facultyEstimationRepository")
+    private FacultyEstimationRepository facultyEstimationRepository;
     
     public Faculty findById(Long id) {
         
@@ -109,5 +117,18 @@ public class FacultyService implements CardService<Faculty> {
     public void saveAll(List<Faculty> faculties) {
         
         facultyRepository.saveAll(faculties);
+    }
+    
+    public void estimation(Long facultyId, User user, Integer priceRating, Integer educationRating) {
+    
+        priceRating = Objects.isNull(priceRating) ? 0 : priceRating;
+        educationRating = Objects.isNull(educationRating) ? 0 : educationRating;
+    
+        Faculty faculty = facultyRepository.getOne(facultyId);
+        FacultyEstimation estimation = new FacultyEstimation(priceRating, educationRating, user);
+        faculty.estimation(estimation);
+    
+        facultyEstimationRepository.save(estimation);
+        facultyRepository.save(faculty);
     }
 }

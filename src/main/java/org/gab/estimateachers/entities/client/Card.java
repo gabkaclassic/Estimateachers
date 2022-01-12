@@ -1,14 +1,17 @@
 package org.gab.estimateachers.entities.client;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.gab.estimateachers.entities.system.estimations.Estimation;
+import org.gab.estimateachers.entities.system.users.User;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @MappedSuperclass
@@ -37,14 +40,6 @@ public abstract class Card {
     @Setter
     protected Boolean approved;
     
-    @Column(
-            name = "total_rating",
-            columnDefinition = "float8 default 0.0"
-    )
-    @Getter
-    @Setter
-    protected Double totalRating;
-    
     @ElementCollection(
             targetClass = String.class,
             fetch = FetchType.LAZY
@@ -66,5 +61,15 @@ public abstract class Card {
             photos.add(filename);
     }
     
-    protected abstract Double getTotalRating();
+    protected Double round(Double value) {
+        
+        return (double)(Math.round(value*100)/100);
+    }
+    
+    public abstract Double getTotalRating();
+    
+    public abstract Integer getAssessorsCount();
+    
+    public abstract boolean containsAssessor(User user);
+    
 }

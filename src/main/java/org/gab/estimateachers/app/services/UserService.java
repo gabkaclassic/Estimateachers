@@ -4,7 +4,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.gab.estimateachers.app.repositories.system.UserRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
-import org.gab.estimateachers.entities.system.User;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;

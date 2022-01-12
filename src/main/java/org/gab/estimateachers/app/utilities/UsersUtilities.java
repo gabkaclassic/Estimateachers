@@ -1,8 +1,7 @@
 package org.gab.estimateachers.app.utilities;
 
 import org.gab.estimateachers.app.repositories.system.UserRepository;
-import org.gab.estimateachers.entities.system.Roles;
-import org.gab.estimateachers.entities.system.User;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

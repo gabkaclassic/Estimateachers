@@ -1,10 +1,7 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.system.ApplicationRepository;
-import org.gab.estimateachers.entities.client.Dormitory;
-import org.gab.estimateachers.entities.client.Faculty;
-import org.gab.estimateachers.entities.client.Student;
-import org.gab.estimateachers.entities.system.Application;
+import org.gab.estimateachers.entities.system.applications.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 

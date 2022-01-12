@@ -4,7 +4,11 @@ import org.gab.estimateachers.app.services.*;
 import org.gab.estimateachers.app.utilities.ApplicationsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.entities.client.University;
-import org.gab.estimateachers.entities.system.*;
+import org.gab.estimateachers.entities.system.applications.CreatingCardApplication;
+import org.gab.estimateachers.entities.system.applications.RegistrationApplication;
+import org.gab.estimateachers.entities.system.applications.Request;
+import org.gab.estimateachers.entities.system.applications.RequestType;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Controller

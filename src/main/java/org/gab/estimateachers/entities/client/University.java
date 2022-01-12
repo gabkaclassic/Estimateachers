@@ -4,11 +4,16 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.gab.estimateachers.entities.system.estimations.Estimation;
+import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
+import org.gab.estimateachers.entities.system.users.User;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -20,24 +25,6 @@ public class University extends Card {
     @Column(name = "abbreviation")
     private String abbreviation;
     
-    @Column(
-            name = "price_rating",
-            columnDefinition = "float8 default 0.0"
-    )
-    private Double priceRating;
-
-    @Column(
-            name = "complexity_rating",
-            columnDefinition = "float8 default 0.0"
-    )
-    private Double complexityRating;
-
-    @Column(
-            name = "utility_rating",
-            columnDefinition = "float8 default 0.0"
-    )
-    private Double utilityRating;
-
     @Column(
             name = "bachelor",
             columnDefinition = "boolean default 'f'"
@@ -75,7 +62,16 @@ public class University extends Card {
     )
 
     private Set<Teacher> teachers = new HashSet<>();
-
+    
+    @OneToMany(targetEntity = UniversityEstimation.class)
+    @JoinTable(
+            name = "universities_estimations",
+            joinColumns = @JoinColumn(name = "university_id"),
+            inverseJoinColumns = @JoinColumn(name = "estimation_id")
+    
+    )
+    private List<UniversityEstimation> estimations;
+    
     @OneToMany(
             cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER,
@@ -97,9 +93,6 @@ public class University extends Card {
         setBachelor(Objects.nonNull(bachelor));
         setMagistracy(Objects.nonNull(magistracy));
         setSpecialty(Objects.nonNull(specialty));
-        setComplexityRating(0.0);
-        setPriceRating(0.0);
-        setUtilityRating(0.0);
     }
     
     public void addDormitory(Dormitory dormitory) {
@@ -117,14 +110,44 @@ public class University extends Card {
         photos.add(filename);
     }
     
-    protected Double getTotalRating() {
+    public Double getTotalRating() {
         
-        return totalRating = (priceRating + utilityRating + complexityRating) / 3;
+        return round(estimations.stream().mapToDouble(UniversityEstimation::getTotalRating).average().orElse(0));
     }
     
     public void addTeacher(Teacher teacher) {
         
         if(Objects.nonNull(teacher) && Objects.nonNull(teacher.getId()))
             teachers.add(teacher);
+    }
+    
+    public Double getPriceRating() {
+        
+        return estimations.stream().map(UniversityEstimation.class::cast).mapToDouble(UniversityEstimation::getPriceRating).average().orElse(0);
+    }
+    
+    public Double getComplexityRating() {
+        
+        return estimations.stream().map(UniversityEstimation.class::cast).mapToDouble(UniversityEstimation::getComplexityRating).average().orElse(0);
+    }
+    
+    public Double getUtilityRating() {
+        
+        return estimations.stream().mapToDouble(UniversityEstimation::getUtilityRating).average().orElse(0);
+    }
+    
+    public Integer getAssessorsCount() {
+        
+        return estimations.size();
+    }
+    
+    public boolean containsAssessor(User user) {
+        
+        return estimations.stream().map(UniversityEstimation::getAssessor).collect(Collectors.toSet()).contains(user);
+    }
+    
+    public void estimation(UniversityEstimation estimation) {
+    
+            estimations.add(estimation);
     }
 }

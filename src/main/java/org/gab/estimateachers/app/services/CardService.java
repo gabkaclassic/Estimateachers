@@ -1,6 +1,7 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.entities.client.Card;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

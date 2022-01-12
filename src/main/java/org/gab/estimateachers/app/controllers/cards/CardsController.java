@@ -5,8 +5,8 @@ import org.gab.estimateachers.app.utilities.CardsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.app.utilities.UsersUtilities;
 import org.gab.estimateachers.entities.client.*;
-import org.gab.estimateachers.entities.system.CardType;
-import org.gab.estimateachers.entities.system.User;
+import org.gab.estimateachers.entities.client.CardType;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -114,6 +114,57 @@ public class CardsController {
         model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
     
         return "/cards_list";
+    }
+    
+    @PostMapping("/estimation/university")
+    public String estimationUniversity(@AuthenticationPrincipal User user,
+                                       @RequestParam(value = "priceRating", required = false) Integer priceRating,
+                                       @RequestParam(value = "complexityRating", required = false) Integer complexityRating,
+                                       @RequestParam(value = "utilityRating", required = false) Integer utilityRating,
+                                       @RequestParam("cardId") Long universityId,
+                                       Model model) {
+        
+        universityService.estimation(universityId, user, priceRating, complexityRating, utilityRating);
+        
+        return getCard(user, universityId, "university", model);
+    }
+    
+    @PostMapping("/estimation/faculty")
+    public String estimationFaculty(@AuthenticationPrincipal User user,
+                                       @RequestParam(value = "priceRating", required = false) Integer priceRating,
+                                       @RequestParam(value = "educationRating", required = false) Integer educationRating,
+                                       @RequestParam("cardId") Long facultyId,
+                                       Model model) {
+        
+        facultyService.estimation(facultyId, user, priceRating, educationRating);
+        
+        return getCard(user, facultyId, "faculty", model);
+    }
+    
+    @PostMapping("/estimation/dormitory")
+    public String estimationDormitory(@AuthenticationPrincipal User user,
+                                    @RequestParam(value = "cleaningRating", required = false) Integer cleaningRating,
+                                    @RequestParam(value = "roommatesRating", required = false) Integer roommatesRating,
+                                    @RequestParam(value = "capacityRating", required = false) Integer capacityRating,
+                                    @RequestParam("cardId") Long dormitoryId,
+                                    Model model) {
+        
+        dormitoryService.estimation(dormitoryId, user, cleaningRating, roommatesRating, capacityRating);
+        
+        return getCard(user, dormitoryId, "dormitory", model);
+    }
+    
+    @PostMapping("/estimation/teacher")
+    public String estimationTeacher(@AuthenticationPrincipal User user,
+                                    @RequestParam(value = "freebiesRating", required = false) Integer freebiesRating,
+                                    @RequestParam(value = "exactingRating", required = false) Integer exactingRating,
+                                    @RequestParam(value = "severityRating", required = false) Integer severityRating,
+                                    @RequestParam("cardId") Long facultyId,
+                                    Model model) {
+        
+        teacherService.estimation(facultyId, user, freebiesRating, exactingRating, severityRating);
+        
+        return getCard(user, facultyId, "teacher", model);
     }
     
     @GetMapping("/add")
@@ -266,7 +317,6 @@ public class CardsController {
                                  @RequestParam("cardType") String cardType,
                                  Model model) {
         Card card;
-        
         switch (cardType) {
             case "university" -> model.addAttribute("university", card = universityService.findById(cardId));
             case "dormitory" -> model.addAttribute("dormitory", card = dormitoryService.findById(cardId));
@@ -278,10 +328,10 @@ public class CardsController {
         if(Objects.nonNull(card))
             model.addAttribute("numbers", listUtilities.getNumbers(card.getPhotos()));
         model.addAttribute("user", user);
+        model.addAttribute("estimated", card.containsAssessor(user));
         model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
         return "/".concat(cardType).concat("_card");
     }
-    
     
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/edit")

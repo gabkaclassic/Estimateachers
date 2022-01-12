@@ -1,6 +1,7 @@
 <#import "parts/main.ftl" as main>
 <#import "parts/cards_logic.ftl" as cl>
 <#import "parts/users_logic.ftl" as ul>
+<#import "parts/security.ftl" as security>
 
 <@main.page>
 
@@ -20,6 +21,32 @@
             <li class="list-group-item">Rating: <#if teacher.totalRating??> ${teacher.totalRating}<#else>0</#if>/10</li>
         </ul>
     </div>
+
+<div class="modal fade" id="estimationModal" aria-hidden="true" aria-labelledby="estimationModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="estimationModalLabel">Your estimation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form group">
+                    <form method="post" action="/cards/estimation/teacher">
+                        <@cl.estimation title="Severity rating" name="severityRating" />
+                        <@cl.estimation title="Exacting rating" name="exactingRating" />
+                        <@cl.estimation title="Freebies rating" name="freebiesRating" />
+                        <input type="hidden" value="${teacher.id}" name="cardId" />
+                        <@security.token />
+                        <button class="btn-primary" type="submit">Estimate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<#if !estimated && !isAdmin>
+    <a class="btn btn-primary mt-2" data-bs-toggle="modal" href="#estimationModal" role="button">Estimate this card</a>
+</#if>
     <div class="row mt-3">
         Excuses:
         <#if teacher.excuses?has_content><@ul.foreach collection=teacher.excuses /> <#else>None</#if>

@@ -93,7 +93,7 @@
                     <#if isAdmin>
                         <p>№${card.id}</p>
                     </#if>
-                    <p>Rating: ${(card.totalRating)!'-'}</p>
+                    <p>Rating: ${(card.totalRating)!'-'}/5</p>
                 </p>
                         <form method = "get" action = "/cards/get">
                             <input type="hidden" name = "cardType" value = "${cardType}" />
@@ -113,4 +113,22 @@
         </div>
 </#if>
 
+</#macro>
+
+<#macro estimation title="" name="">
+    <label>${title}</label>
+    <div class="star-rating mt-1">
+        <div class="star-rating__wrap">
+            <input class="star-rating__input" id="${title}-star-5" type="radio" name="${name}" value="5">
+            <label class="star-rating__ico fa fa-star-o fa-lg" for="${title}-star-5" title="Great"></label>
+            <input class="star-rating__input" id="${title}-star-4" type="radio" name="${name}" value="4">
+            <label class="star-rating__ico fa fa-star-o fa-lg" for="${title}-star-4" title="Good"></label>
+            <input class="star-rating__input" id="${title}-star-3" type="radio" name="${name}" value="3">
+            <label class="star-rating__ico fa fa-star-o fa-lg" for="${title}-star-3" title="Satisfactory"></label>
+            <input class="star-rating__input" id="${title}-star-2" type="radio" name="${name}" value="2">
+            <label class="star-rating__ico fa fa-star-o fa-lg" for="${title}-star-2" title="Badly"></label>
+            <input class="star-rating__input" id="${title}-star-1" type="radio" name="${name}" value="1">
+            <label class="star-rating__ico fa fa-star-o fa-lg" for="${title}-star-1" title="Terribly"></label>
+        </div>
+    </div>
 </#macro>

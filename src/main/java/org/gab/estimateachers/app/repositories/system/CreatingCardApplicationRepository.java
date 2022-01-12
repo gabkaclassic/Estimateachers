@@ -1,10 +1,7 @@
 package org.gab.estimateachers.app.repositories.system;
 
-import org.gab.estimateachers.entities.system.CreatingCardApplication;
-import org.gab.estimateachers.entities.system.RegistrationApplication;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.gab.estimateachers.entities.system.applications.CreatingCardApplication;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

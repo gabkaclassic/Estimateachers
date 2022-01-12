@@ -1,18 +1,10 @@
 package org.gab.estimateachers.app.controllers.users;
 
-import org.gab.estimateachers.app.services.CreatingCardApplicationService;
-import org.gab.estimateachers.app.services.RegistrationApplicationService;
-import org.gab.estimateachers.app.services.UniversityService;
 import org.gab.estimateachers.app.services.UserService;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.app.utilities.UsersUtilities;
-import org.gab.estimateachers.entities.client.University;
-import org.gab.estimateachers.entities.system.Application;
-import org.gab.estimateachers.entities.system.CreatingCardApplication;
-import org.gab.estimateachers.entities.system.RegistrationApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWarDeployment;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

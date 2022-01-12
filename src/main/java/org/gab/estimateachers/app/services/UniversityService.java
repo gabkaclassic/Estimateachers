@@ -1,12 +1,16 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.UniversityRepository;
+import org.gab.estimateachers.app.repositories.system.UniversityEstimationRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.University;
+import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +24,10 @@ public class UniversityService implements CardService<University> {
     @Autowired
     @Qualifier("universityRepository")
     private UniversityRepository<Card, Long> universityRepository;
+    
+    @Autowired
+    @Qualifier("universityEstimationRepository")
+    private UniversityEstimationRepository universityEstimationRepository;
     
     @Autowired
     @Qualifier("filesUtilities")
@@ -97,5 +105,19 @@ public class UniversityService implements CardService<University> {
     public void saveAll(List<University> universities) {
         
         universityRepository.saveAll(universities);
+    }
+    
+    public void estimation(Long universityId, User user, Integer priceRating, Integer complexityRating, Integer utilityRating) {
+    
+        priceRating = Objects.isNull(priceRating) ? 0 : priceRating;
+        complexityRating = Objects.isNull(complexityRating) ? 0 : complexityRating;
+        utilityRating = Objects.isNull(utilityRating) ? 0 : utilityRating;
+        
+        University university = universityRepository.getOne(universityId);
+        UniversityEstimation estimation = new UniversityEstimation(priceRating, complexityRating, utilityRating, user);
+        university.estimation(estimation);
+        
+        universityEstimationRepository.save(estimation);
+        universityRepository.save(university);
     }
 }

@@ -1,6 +1,6 @@
 package org.gab.estimateachers.app.repositories.system;
 
-import org.gab.estimateachers.entities.system.Request;
+import org.gab.estimateachers.entities.system.applications.Request;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

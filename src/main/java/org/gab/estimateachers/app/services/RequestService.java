@@ -1,23 +1,18 @@
 package org.gab.estimateachers.app.services;
 
-import org.gab.estimateachers.app.repositories.system.ApplicationRepository;
 import org.gab.estimateachers.app.repositories.system.RequestRepository;
-import org.gab.estimateachers.app.utilities.ApplicationsUtilities;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
-import org.gab.estimateachers.entities.client.Card;
-import org.gab.estimateachers.entities.system.Request;
-import org.gab.estimateachers.entities.system.RequestType;
-import org.gab.estimateachers.entities.system.User;
+import org.gab.estimateachers.entities.system.applications.Request;
+import org.gab.estimateachers.entities.system.applications.RequestType;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service("requestService")
 public class RequestService extends ApplicationService<Request, RequestRepository> {

@@ -1,6 +1,6 @@
 package org.gab.estimateachers.app.services;
 
-import org.gab.estimateachers.entities.system.User;
+import org.gab.estimateachers.entities.system.users.User;
 import org.junit.gen5.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Service("mailService")
 public class MailService {
