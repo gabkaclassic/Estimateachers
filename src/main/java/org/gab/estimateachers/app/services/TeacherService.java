@@ -4,11 +4,7 @@ import org.gab.estimateachers.app.repositories.client.TeacherRepository;
 import org.gab.estimateachers.app.repositories.system.TeacherEstimationRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
-import org.gab.estimateachers.entities.client.Dormitory;
-import org.gab.estimateachers.entities.client.Faculty;
-import org.gab.estimateachers.entities.client.Teacher;
-import org.gab.estimateachers.entities.client.University;
-import org.gab.estimateachers.entities.system.estimations.DormitoryEstimation;
+import org.gab.estimateachers.entities.client.*;
 import org.gab.estimateachers.entities.system.estimations.TeacherEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("teacherService")
 public class TeacherService implements CardService<Teacher> {
@@ -53,9 +50,12 @@ public class TeacherService implements CardService<Teacher> {
         teacherRepository.save(teacher);
     }
     
-    public List<Teacher> findAllApproved() {
+    public List<Card> findAllApproved() {
         
-        return teacherRepository.findAllApproved();
+        return teacherRepository.findAllApproved()
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
     }
     
     public List<Teacher> findAll() {
@@ -112,9 +112,12 @@ public class TeacherService implements CardService<Teacher> {
         teacherRepository.save(card);
     }
     
-    public List<Teacher> findByTitlePattern(String pattern) {
+    public List<Card> findByTitlePattern(String pattern) {
         
-        return teacherRepository.findByTitlePattern(pattern);
+        return teacherRepository.findByTitlePattern(pattern)
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
     }
     
     public List<String> getTitles() {

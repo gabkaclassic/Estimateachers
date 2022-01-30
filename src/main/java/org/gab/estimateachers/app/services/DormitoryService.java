@@ -4,10 +4,10 @@ import org.gab.estimateachers.app.repositories.client.DormitoryRepository;
 import org.gab.estimateachers.app.repositories.system.DormitoryEstimationRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
+import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.University;
 import org.gab.estimateachers.entities.system.estimations.DormitoryEstimation;
-import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("dormitoryService")
 public class DormitoryService implements CardService<Dormitory>  {
@@ -66,14 +67,20 @@ public class DormitoryService implements CardService<Dormitory>  {
         dormitoryRepository.save(card);
     }
     
-    public List<Dormitory> findByTitlePattern(String pattern) {
+    public List<Card> findByTitlePattern(String pattern) {
         
-        return dormitoryRepository.findByTitlePattern(pattern);
+        return dormitoryRepository.findByTitlePattern(pattern)
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
     }
     
-    public List<Dormitory> findAllApproved() {
+    public List<Card> findAllApproved() {
         
-        return dormitoryRepository.findAllApproved();
+        return dormitoryRepository.findAllApproved()
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
     }
     
     public List<Dormitory> findAll() {

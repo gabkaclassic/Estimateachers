@@ -10,13 +10,13 @@ import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("universityService")
 public class UniversityService implements CardService<University> {
@@ -51,9 +51,12 @@ public class UniversityService implements CardService<University> {
         return university;
     }
     
-    public List<University> findAllApproved() {
+    public List<Card> findAllApproved() {
         
-        return universityRepository.findAllApproved();
+        return universityRepository.findAllApproved()
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
     }
     
     public List<University> findAll() {
@@ -82,9 +85,12 @@ public class UniversityService implements CardService<University> {
         universityRepository.save(card);
     }
     
-    public List<University> findByTitlePattern(String pattern) {
+    public List<Card> findByTitlePattern(String pattern) {
         
-        return universityRepository.findByTitlePattern(pattern);
+        return universityRepository.findByTitlePattern(pattern)
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
     }
     
     public University findByAbbreviation(String abbreviation) {
@@ -119,5 +125,10 @@ public class UniversityService implements CardService<University> {
         
         universityEstimationRepository.save(estimation);
         universityRepository.save(university);
+    }
+    
+    public List<String> findAllAbbreviationApproved() {
+        
+        return universityRepository.findAllAbbreviationApproved();
     }
 }

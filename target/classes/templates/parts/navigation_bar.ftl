@@ -26,12 +26,15 @@
                                     Cards
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href = "/cards/list/universities">Universities</a></li>
-                                    <li> <a class="dropdown-item" href = "/cards/list/dormitories">Dormitories</a></li>
-                                    <li> <a class="dropdown-item" href = "/cards/list/faculties">Faculties</a></li>
-                                    <li><a class="dropdown-item" href = "/cards/list/teachers">Teachers</a></li>
+                                    <li><a class="dropdown-item" href = "/cards/list/UNIVERSITY">Universities</a></li>
+                                    <li> <a class="dropdown-item" href = "/cards/list/DORMITORY">Dormitories</a></li>
+                                    <li> <a class="dropdown-item" href = "/cards/list/FACULTY">Faculties</a></li>
+                                    <li><a class="dropdown-item" href = "/cards/list/TEACHER">Teachers</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <#if known><li><a class="dropdown-item" href = "/cards/add">Add new card</a></li></#if>
+                                    <#if known>
+                                        <li><a class="dropdown-item" href = "/cards/add">Add new card</a></li>
+                                        <li><a class="dropdown-item" href = "/cards/collection">My cards</a></li>
+                                    </#if>
                                 </ul>
                             </li>
                         </ul>

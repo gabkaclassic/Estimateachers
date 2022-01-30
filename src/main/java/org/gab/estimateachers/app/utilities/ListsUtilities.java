@@ -13,11 +13,9 @@ import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,17 +26,23 @@ public class ListsUtilities {
             .map(Genders::name)
             .collect(Collectors.toList());
     
-    @Autowired
-    @Qualifier("universityRepository")
-    private UniversityRepository<Card, Number> universityRepository;  //Заменить на сервисы
+    private static final String UNIVERSITY_LIST_NAME = "Universities";
+    private static final String DORMITORY_LIST_NAME = "Dormitories";
+    private static final String FACULTY_LIST_NAME = "Faculties";
+    private static final String TEACHERS_LIST_NAME = "Teachers";
+    private static final String UNKNOWN_LIST_NAME = "Unknown";
     
     @Autowired
-    @Qualifier("dormitoryRepository")
-    private DormitoryRepository dormitoryRepository;
+    @Qualifier("universityService")
+    private UniversityService universityService;
     
     @Autowired
-    @Qualifier("facultyRepository")
-    private FacultyRepository facultyRepository;
+    @Qualifier("dormitoryService")
+    private DormitoryService dormitoryService;
+    
+    @Autowired
+    @Qualifier("facultyService")
+    private FacultyService facultyService;
     
     @Autowired
     @Qualifier("creatingCardApplicationService")
@@ -72,12 +76,12 @@ public class ListsUtilities {
     
      public List<String> getUniversitiesAbbreviationsList() {
     
-        return universityRepository.findAllAbbreviationApproved();
+        return universityService.findAllAbbreviationApproved();
     }
     
     public List<String> getDormitoriesTitlesList(University university) {
         
-        return universityRepository.getOne(university.getId()).getDormitories()
+        return universityService.findById((university.getId())).getDormitories()
                 .stream()
                 .filter(Dormitory::getApproved)
                 .map(Dormitory::getTitle)
@@ -87,7 +91,7 @@ public class ListsUtilities {
     
     public List<String> getFacultiesTitlesList(University university) {
         
-        return universityRepository.getOne(university.getId()).getFaculties()
+        return universityService.findById(university.getId()).getFaculties()
                 .stream()
                 .filter(Faculty::getApproved)
                 .map(Faculty::getTitle)
@@ -117,7 +121,7 @@ public class ListsUtilities {
     
     public List<String> getAllFacultiesTitlesList() {
         
-        return facultyRepository.findAllTitle().stream().sorted().collect(Collectors.toList());
+        return facultyService.findAllTitles().stream().sorted().collect(Collectors.toList());
     }
     
     public Object getNumbers(Collection<?> list) {
@@ -139,4 +143,78 @@ public class ListsUtilities {
         return requestService.findAllService();
     }
     
+    public void findAllApproved(String cardType, Model model) {
+    
+        List<Card> list;
+        String cardsType;
+        
+        switch (CardType.valueOf(cardType)) {
+            case UNIVERSITY -> {
+                list = universityService.findAllApproved();
+                cardsType = UNIVERSITY_LIST_NAME;
+            }
+            case DORMITORY -> {
+                list = dormitoryService.findAllApproved();
+                cardsType = DORMITORY_LIST_NAME;
+            }
+            case FACULTY -> {
+                list = facultyService.findAllApproved();
+                cardsType = FACULTY_LIST_NAME;
+            }
+            case TEACHER -> {
+                list = teacherService.findAllApproved();
+                cardsType = TEACHERS_LIST_NAME;
+            }
+            default -> {
+                list = universityService.findAllApproved();
+                list.addAll(dormitoryService.findAllApproved());
+                list.addAll(facultyService.findAllApproved());
+                list.addAll(teacherService.findAllApproved());
+                cardsType = "All cards";
+            }
+        }
+    
+        model.addAttribute("numbers", Stream.iterate(1, n -> n+1).limit(list.size()).collect(Collectors.toList()));
+        model.addAttribute("cardType", cardType);
+        model.addAttribute("cards", list);
+        model.addAttribute("listName", cardsType);
+    }
+    
+    public void findByTitlePattern(String title, String cardType, Model model) {
+        
+        List<Card> list;
+        String cardsType;
+        
+        switch (CardType.valueOf(cardType)) {
+            case UNIVERSITY -> {
+                list = universityService.findByTitlePattern(title);
+                cardsType = UNIVERSITY_LIST_NAME;
+            }
+            case DORMITORY -> {
+                list = dormitoryService.findByTitlePattern(title);
+                cardsType = DORMITORY_LIST_NAME;
+            }
+            case FACULTY -> {
+                list = facultyService.findByTitlePattern(title);
+                cardsType = FACULTY_LIST_NAME;
+            }
+            case TEACHER -> {
+                list = teacherService.findByTitlePattern(title);
+                cardsType = TEACHERS_LIST_NAME;
+            }
+            default -> {
+                list = universityService.findByTitlePattern(title);
+                list.addAll(dormitoryService.findByTitlePattern(title));
+                list.addAll(facultyService.findByTitlePattern(title));
+                list.addAll(teacherService.findByTitlePattern(title));
+                cardsType = "All cards";
+            }
+        }
+    
+        model.addAttribute("listName", cardsType.substring(0, 1).toUpperCase().concat(cardsType.substring(1)));
+        model.addAttribute("cardType", cardType);
+        model.addAttribute("numbers", Stream.iterate(1, n -> n + 1).limit(list.size()).collect(Collectors.toList()));
+        model.addAttribute("title", title);
+        model.addAttribute("cards", list);
+    }
 }

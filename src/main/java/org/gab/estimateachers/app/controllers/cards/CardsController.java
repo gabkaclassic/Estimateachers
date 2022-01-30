@@ -56,28 +56,14 @@ public class CardsController {
     @Qualifier("cardsUtilities")
     private CardsUtilities cardsUtilities;
     
-    @GetMapping("/list/{cardsType}")
+    @GetMapping("/list/{cardType}")
     public String cardsList(@AuthenticationPrincipal User user,
-                            @PathVariable("cardsType") String cardsType,
+                            @PathVariable("cardType") String cardType,
                             Model model) {
         
-        model.addAttribute("listName", cardsType.substring(0, 1).toUpperCase().concat(cardsType.substring(1)));
         model.addAttribute("user", user);
         model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
-        String cardType = (cardsType.equals("teachers")) ? cardsType.substring(0, cardsType.length()-1) : cardsType.replace("ies", "y");
-        List<? extends Card> list;
-        
-        switch (cardsType) {
-            case "universities" -> list = universityService.findAllApproved();
-            case "dormitories" -> list = dormitoryService.findAllApproved();
-            case "faculties" -> list = facultyService.findAllApproved();
-            case "teachers" -> list = teacherService.findAllApproved();
-            default -> list = Collections.emptyList();
-        }
-        
-        model.addAttribute("numbers", Stream.iterate(1, n -> n+1).limit(list.size()).collect(Collectors.toList()));
-        model.addAttribute("cardType", cardType);
-        model.addAttribute("cards", list);
+        listUtilities.findAllApproved(cardType, model);
         
         return "/cards_list";
     }
@@ -85,30 +71,15 @@ public class CardsController {
     @PostMapping("/search/title")
     public String findByTitle(@AuthenticationPrincipal User user,
                               @RequestParam(value = "title", required = false) String title,
-                              @RequestParam("cardsType") String cardType,
+                              @RequestParam(value = "cardType") String cardType,
                               Model model) {
-    
-        String cardsType = (cardType.equals("teacher")) ? cardType.concat("s") : cardType.replace("y", "ies");
-        List<? extends Card> list = Collections.emptyList();
         
-        if(Objects.nonNull(title) && !title.isEmpty()) {
-        
-            switch (cardsType) {
-                case "universities" -> list = universityService.findByTitlePattern(title);
-                case "dormitories" -> list = dormitoryService.findByTitlePattern(title);
-                case "faculties" -> list = facultyService.findByTitlePattern(title);
-                case "teachers" -> list = teacherService.findByTitlePattern(title);
-                default -> {}
-            }
-        
-            model.addAttribute("listName", cardsType.substring(0, 1).toUpperCase().concat(cardsType.substring(1)));
-            model.addAttribute("cardType", cardType);
-            model.addAttribute("numbers", Stream.iterate(1, n -> n + 1).limit(list.size()).collect(Collectors.toList()));
-            model.addAttribute("title", title);
-            model.addAttribute("cards", list);
+Ч        if(Objects.nonNull(title) && !title.isEmpty()) {
+            
+            listUtilities.findByTitlePattern(title, cardType, model);
         }
         else
-            return "redirect:/cards/list/".concat(cardsType);
+            return "redirect:/cards/list/".concat("ALL");
     
         model.addAttribute("user", user);
         model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
@@ -316,12 +287,13 @@ public class CardsController {
                                  @RequestParam("id") Long cardId,
                                  @RequestParam("cardType") String cardType,
                                  Model model) {
+        
         Card card;
-        switch (cardType) {
-            case "university" -> model.addAttribute("university", card = universityService.findById(cardId));
-            case "dormitory" -> model.addAttribute("dormitory", card = dormitoryService.findById(cardId));
-            case "faculty" -> model.addAttribute("faculty", card = facultyService.findById(cardId));
-            case "teacher" -> model.addAttribute("teacher", card = teacherService.findById(cardId));
+        switch (CardType.valueOf(cardType)) {
+            case UNIVERSITY -> model.addAttribute("university", card = universityService.findById(cardId));
+            case DORMITORY -> model.addAttribute("dormitory", card = dormitoryService.findById(cardId));
+            case FACULTY -> model.addAttribute("faculty", card = facultyService.findById(cardId));
+            case TEACHER -> model.addAttribute("teacher", card = teacherService.findById(cardId));
             default -> throw new IllegalStateException("Unexpected value: " + cardType);
         }
             
@@ -342,16 +314,25 @@ public class CardsController {
                            @RequestParam(value = "files", required = false) Set<MultipartFile> files,
                            Model model) {
         
-        switch (cardType) {
-            case "university" -> universityService.edit(cardId, cardTitle, files);
-            case "dormitory" -> dormitoryService.edit(cardId, cardTitle, files);
-            case "faculty" -> facultyService.edit(cardId, cardTitle, files);
-            case "teacher" -> teacherService.edit(cardId, cardTitle, files);
+        switch (CardType.valueOf(cardType)) {
+            case UNIVERSITY -> universityService.edit(cardId, cardTitle, files);
+            case DORMITORY -> dormitoryService.edit(cardId, cardTitle, files);
+            case FACULTY -> facultyService.edit(cardId, cardTitle, files);
+            case TEACHER -> teacherService.edit(cardId, cardTitle, files);
             default -> throw new IllegalStateException("Unexpected value: " + cardType);
             
         }
         
         return getCard(user, cardId, cardType, model);
+    }
+    
+    @GetMapping
+    public String userCollectionCards(@AuthenticationPrincipal User user,
+                                      Model model) {
+        
+//        model.addAttribute("cards", user.getCardsCollection());
+        
+        return "cards_list";
     }
     
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -361,15 +342,13 @@ public class CardsController {
                              @RequestParam("type") String cardType,
                              Model model) {
     
-        switch (cardType) {
-            case "university" -> universityService.deleteById(cardId);
-            case "dormitory" -> dormitoryService.deleteById(cardId);
-            case "faculty" -> facultyService.deleteById(cardId);
-            case "teacher" -> teacherService.deleteById(cardId);
+        switch (CardType.valueOf(cardType)) {
+            case UNIVERSITY -> universityService.deleteById(cardId);
+            case DORMITORY -> dormitoryService.deleteById(cardId);
+            case FACULTY -> facultyService.deleteById(cardId);
+            case TEACHER -> teacherService.deleteById(cardId);
             default -> throw new IllegalStateException("Unexpected value: " + cardType);
         }
-        
-        cardType = (cardType.equals("teacher")) ? cardType.concat("s") : cardType.replace("y", "ies");
         
         return cardsList(user, cardType, model);
     }

@@ -96,14 +96,14 @@
                     <p>Rating: ${(card.totalRating)!'-'}/5</p>
                 </p>
                         <form method = "get" action = "/cards/get">
-                            <input type="hidden" name = "cardType" value = "${cardType}" />
+                            <input type="hidden" name = "cardType" value = "${card.getCardType()}" />
                             <input type="hidden" name = "id" value = ${card.id} />
                             <@security.token />
                             <button class="btn btn-primary" type="submit">To consider...</button>
                         </form>
                     <#if isAdmin>
                             <form method = "post" action = "/cards/delete">
-                                <input type="hidden" name = "type" value = "${cardType}" />
+                                <input type="hidden" name = "type" value = "${card.getCardType()}" />
                                 <input type="hidden" name = "id" value = ${card.id} />
                                 <@security.token />
                                 <button class="btn btn-danger" type="submit">Delete</button>

@@ -57,6 +57,7 @@ public class Dormitory extends Card {
         
         super(title);
         setUniversity(university);
+        setCardType(CardType.DORMITORY);
     }
     
     public void estimation(DormitoryEstimation estimation) {

@@ -20,5 +20,5 @@ public interface CardService<T extends Card> extends Service<T> {
     
     void edit(Long id, String title, Set<MultipartFile> files);
     
-    List<T> findByTitlePattern(String pattern);
+    List<Card> findByTitlePattern(String pattern);
 }

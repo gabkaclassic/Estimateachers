@@ -4,11 +4,11 @@ import org.gab.estimateachers.app.repositories.client.FacultyRepository;
 import org.gab.estimateachers.app.repositories.system.FacultyEstimationRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
+import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.client.Teacher;
 import org.gab.estimateachers.entities.client.University;
 import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
-import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("facultyService")
 public class FacultyService implements CardService<Faculty> {
@@ -52,9 +53,12 @@ public class FacultyService implements CardService<Faculty> {
         facultyRepository.save(faculty);
     }
     
-    public List<Faculty> findAllApproved() {
+    public List<Card> findAllApproved() {
         
-        return facultyRepository.findAllApproved();
+        return facultyRepository.findAllApproved()
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
     }
     
     public List<Faculty> findAll() {
@@ -88,8 +92,12 @@ public class FacultyService implements CardService<Faculty> {
         facultyRepository.save(card);
     }
     
-    public List<Faculty> findByTitlePattern(String pattern) {
-        return facultyRepository.findByTitlePattern(pattern);
+    public List<Card> findByTitlePattern(String pattern) {
+        
+        return facultyRepository.findByTitlePattern(pattern)
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
     }
     
     public Faculty create(String facultyTitle, University university, Set<String> teachersTitles, Set<MultipartFile> files, boolean approved) {
@@ -130,5 +138,10 @@ public class FacultyService implements CardService<Faculty> {
     
         facultyEstimationRepository.save(estimation);
         facultyRepository.save(faculty);
+    }
+    
+    public List<String> findAllTitles() {
+        
+        return facultyRepository.findAllTitle();
     }
 }

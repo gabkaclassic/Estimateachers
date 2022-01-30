@@ -64,6 +64,7 @@ public class Faculty extends Card {
         setTitle(String.format("%s(%s)", title.substring(0, 1).toUpperCase().concat(title.substring(1)), university.getAbbreviation()));
         photos = new HashSet<>();
         setUniversity(university);
+        setCardType(CardType.FACULTY);
     }
     
     public Double getPriceRating() {

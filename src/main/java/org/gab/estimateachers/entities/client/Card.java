@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.gab.estimateachers.entities.system.estimations.Estimation;
 import org.gab.estimateachers.entities.system.users.User;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -31,6 +32,15 @@ public abstract class Card {
             nullable = false
     )
     protected String title;
+    
+    @Getter
+    @Setter
+    @Column(
+            name = "card_type",
+            nullable = false
+    )
+    @Enumerated(EnumType.STRING)
+    protected CardType cardType;
     
     @Column(
             name = "approved",
@@ -71,5 +81,10 @@ public abstract class Card {
     public abstract Integer getAssessorsCount();
     
     public abstract boolean containsAssessor(User user);
+    
+    public String getCardType() {
+        
+        return cardType.name();
+    }
     
 }

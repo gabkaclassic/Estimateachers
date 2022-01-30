@@ -93,6 +93,7 @@ public class University extends Card {
         setBachelor(Objects.nonNull(bachelor));
         setMagistracy(Objects.nonNull(magistracy));
         setSpecialty(Objects.nonNull(specialty));
+        setCardType(CardType.UNIVERSITY);
     }
     
     public void addDormitory(Dormitory dormitory) {
