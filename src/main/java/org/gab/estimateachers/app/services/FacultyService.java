@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -98,6 +99,16 @@ public class FacultyService implements CardService<Faculty> {
                 .stream()
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
+    }
+    
+    public Collection<? extends Card> findByListId(Set<Long> facultiesId) {
+        
+        return facultyRepository.findByListId(facultiesId);
+    }
+    
+    public Collection<? extends Card> findByListIdAndPattern(Set<Long> facultiesId, String pattern) {
+        
+        return facultyRepository.findByListIdAndPattern(facultiesId, pattern);
     }
     
     public Faculty create(String facultyTitle, University university, Set<String> teachersTitles, Set<MultipartFile> files, boolean approved) {

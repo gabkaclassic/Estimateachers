@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -118,6 +119,16 @@ public class TeacherService implements CardService<Teacher> {
                 .stream()
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
+    }
+    
+    public Collection<? extends Card> findByListId(Set<Long> teachersId) {
+        
+        return teacherRepository.findByListId(teachersId);
+    }
+    
+    public Collection<? extends Card> findByListIdAndPattern(Set<Long> teachersId, String pattern) {
+        
+        return teacherRepository.findByListIdAndPattern(teachersId, pattern);
     }
     
     public List<String> getTitles() {

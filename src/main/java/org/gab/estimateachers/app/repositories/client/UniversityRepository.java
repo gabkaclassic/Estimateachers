@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public interface UniversityRepository<U extends Card, Long> extends CrudReposito
     University findByAbbreviation(String abbreviationUniversity);
     
     @Query(
-            value = "select abbreviation from universities;",
+            value = "select abbreviation from universities order by abbreviations;",
             nativeQuery = true
     )
     List<String> findAllAbbreviation();
@@ -32,16 +33,37 @@ public interface UniversityRepository<U extends Card, Long> extends CrudReposito
     boolean existsByTitle(String title);
     
     @Query(
-            value = "select abbreviation from universities where approved = 't';",
+            value = "select abbreviation from universities where approved = 't' order by abbreviation;",
             nativeQuery = true
     )
     List<String> findAllAbbreviationApproved();
     
-    @Query(value = "SELECT u FROM University u WHERE u.approved = true")
+    @Query(value = "select u from University u where u.approved = true order by title")
     List<University> findAllApproved();
     
     @Query(
-            value = "select u from University u where lower(u.title) like lower(concat('%', :title, '%'))"
+            value = "select u from University u where lower(u.title) like lower(concat('%', :title, '%')) order by title"
     )
     List<University> findByTitlePattern(@Param("title") String pattern);
+    
+    @Query(
+            value = "select u from University u where lower(u.abbreviation) like lower(concat('%', :title, '%')) order by title"
+    )
+    List<University> findByAbbreviationPattern(@Param("title") String pattern);
+    
+    @Query(
+            value = "select u from University u where lower(u.abbreviation) like lower(concat('%', :title, '%')) or lower(u.title) like lower(concat('%', :title, '%')) order by title"
+    )
+    List<University> findByPattern(@Param("title") String pattern);
+    
+    @Query(
+            value = "select u from University u where u.id in :list"
+    )
+    List<University> findByListId(@Param("list") Set<Long> universitiesId);
+    
+    @Query(
+            value = "select u from University u where u.id in :list " +
+                    "and (lower(u.abbreviation) like lower(concat('%', :title, '%')) or lower(u.title) like lower(concat('%', :title, '%'))) order by title"
+    )
+    List<University> findByListIdAndPattern(@Param("list") Set<Long> universitiesId, @Param("title") String pattern);
 }

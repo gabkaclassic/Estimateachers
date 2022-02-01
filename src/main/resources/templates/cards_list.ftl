@@ -11,7 +11,12 @@
         <div class="col-3 w-80 ml-12 mt-5 sticky-top">
             <form class="d-flex" method="post" action="/cards/search/title">
                 <input class="form-control me-2" value="${title!''}" name="title" type="search" placeholder="Card's title" aria-label="Search">
-                <input type="hidden" name="cardType" value="${cardType}" />
+                <#if collection??>
+                    <input type="hidden" name="cardType" value="ALL" />
+                    <input type="hidden" name="collection" value="${collection?c}" />
+                <#else>
+                    <input type="hidden" name="cardType" value="${cardType}" />
+                </#if>
                 <button class="btn btn-outline-success" type="submit">Search</button>
                 <@security.token />
             </form>

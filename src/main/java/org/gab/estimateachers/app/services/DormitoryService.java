@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -73,6 +74,16 @@ public class DormitoryService implements CardService<Dormitory>  {
                 .stream()
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
+    }
+    
+    public Collection<? extends Card> findByListId(Set<Long> dormitoriesId) {
+        
+        return dormitoryRepository.findByListId(dormitoriesId);
+    }
+    
+    public Collection<? extends Card> findByListIdAndPattern(Set<Long> dormitoriesId, String pattern) {
+        
+        return dormitoryRepository.findByListIdAndPattern(dormitoriesId, pattern);
     }
     
     public List<Card> findAllApproved() {

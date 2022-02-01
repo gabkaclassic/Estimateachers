@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -88,6 +89,32 @@ public class UniversityService implements CardService<University> {
     public List<Card> findByTitlePattern(String pattern) {
         
         return universityRepository.findByTitlePattern(pattern)
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
+    }
+    
+    public Collection<? extends Card> findByListId(Set<Long> universitiesId) {
+        
+        return universityRepository.findByListId(universitiesId);
+    }
+    
+    public Collection<? extends Card> findByListIdAndPattern(Set<Long> universitiesId, String pattern) {
+        
+        return universityRepository.findByListIdAndPattern(universitiesId, pattern);
+    }
+    
+    public List<Card> findByAbbreviationPattern(String pattern) {
+        
+        return universityRepository.findByAbbreviationPattern(pattern)
+                .stream()
+                .map(Card.class::cast)
+                .collect(Collectors.toList());
+    }
+    
+    public List<Card> findByPattern(String pattern) {
+        
+        return universityRepository.findByPattern(pattern)
                 .stream()
                 .map(Card.class::cast)
                 .collect(Collectors.toList());

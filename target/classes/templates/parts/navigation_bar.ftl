@@ -26,6 +26,7 @@
                                     Cards
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href = "/cards/list/ALL">All cards</a></li>
                                     <li><a class="dropdown-item" href = "/cards/list/UNIVERSITY">Universities</a></li>
                                     <li> <a class="dropdown-item" href = "/cards/list/DORMITORY">Dormitories</a></li>
                                     <li> <a class="dropdown-item" href = "/cards/list/FACULTY">Faculties</a></li>

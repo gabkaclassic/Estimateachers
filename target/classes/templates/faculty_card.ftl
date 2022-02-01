@@ -5,7 +5,28 @@
 
 <@main.page>
 
-<@cl.title card=faculty type="faculty" />
+<div class="row mt-3">
+    <div class="col-3">
+        <@cl.title card=faculty type="faculty" />
+    </div>
+    <div class="col-2 mt-5">
+
+        <form method="post" action="/cards/collection/add">
+            <input type="hidden" value="${faculty.id}" name="cardId" />
+            <input type="hidden" value="${faculty.getCardType()}" name="cardType" />
+            <input type="hidden" value="${inCollection?c}" name="inCollection" />
+            <@security.token />
+            <button class="btn btn-primary" type="submit">
+                <#if inCollection??>
+                <#if inCollection><i class="fa fa-close"></i><#else><i class="fa fa-folder"></i></#if>
+                <#else>
+                <i class="fa fa-folder"></i>
+            </#if>
+            </button>
+        </form>
+    </div>
+</div>
+</div>
 
 <div class="row mt-5">
     <@cl.images number=0 photos=faculty.photos size=faculty.photos?size />

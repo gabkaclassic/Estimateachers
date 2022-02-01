@@ -269,15 +269,14 @@ public class ApplicationController {
     @PostMapping("/requests/success/{id}")
     public String successRequest(@PathVariable("id") Long requestId,
                              Model model) {
-        
+    
         RequestType type = requestService.findById(requestId).getRequestType();
         requestService.apply(requestId);
     
-        switch (type) {
-            case CHANGING_CARDS -> { return "redirect:/applications/requests/cards";}
-            case OPERATIONS_SERVICE -> { return "redirect:/applications/requests/service"; }
-            default -> { return "redirect:/"; }
-        }
+        return switch (type) {
+            case CHANGING_CARDS -> "redirect:/applications/requests/cards";
+            case OPERATIONS_SERVICE -> "redirect:/applications/requests/service";
+        };
     }
     
     @PostMapping("/requests/reject/{id}")
@@ -288,11 +287,10 @@ public class ApplicationController {
         RequestType type = requestService.findById(requestId).getRequestType();
         requestService.reject(requestId, reason);
         
-        switch (type) {
-            case CHANGING_CARDS -> { return "redirect:/applications/requests/cards";}
-            case OPERATIONS_SERVICE -> { return "redirect:/applications/requests/service"; }
-            default -> { return "redirect:/"; }
-        }
+        return switch (type) {
+            case CHANGING_CARDS -> "redirect:/applications/requests/cards";
+            case OPERATIONS_SERVICE -> "redirect:/applications/requests/service";
+        };
     }
     
     

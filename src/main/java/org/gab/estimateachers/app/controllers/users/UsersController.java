@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -122,6 +123,15 @@ public class UsersController {
         return "/login";
     }
     
+    @PostMapping("/login")
+    public String signIn(@AuthenticationPrincipal User user,
+                         HttpServletRequest request) {
+    
+        user.setOnline(true);
+        userService.save(user);
+        return "redirect:"+ request.getHeader("Referer");
+    }
+    
     @PostMapping("/logout")
     public String logout(@AuthenticationPrincipal User user) {
         
@@ -129,15 +139,6 @@ public class UsersController {
         userService.save(user);
         
         return "redirect:/users/logout";
-    }
-    
-    @PostMapping("/login")
-    public String signIn(@AuthenticationPrincipal User user) {
-    
-        user.setOnline(true);
-        userService.save(user);
-    
-        return "redirect:/users/login";
     }
     
     @GetMapping("/edit/{id}")

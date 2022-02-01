@@ -1,12 +1,15 @@
 package org.gab.estimateachers.app.repositories.client;
 
+import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.Teacher;
+import org.gab.estimateachers.entities.client.University;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +20,7 @@ public interface TeacherRepository extends CrudRepository<Teacher, Long>,
     boolean existsByTitle(String title);
     
     @Query(
-            value = "select title from teachers where approved = 't';",
+            value = "select title from teachers where approved = 't' order by title;",
             nativeQuery = true
     )
     List<String> getTitles();
@@ -27,11 +30,23 @@ public interface TeacherRepository extends CrudRepository<Teacher, Long>,
     )
     List<Teacher> findByTitles(@Param("titles") Set<String> teachersTitles);
     
-    @Query(value = "SELECT t FROM Teacher t WHERE t.approved = true")
+    @Query(
+            value = "select t from Teacher t where t.approved = true order by title"
+    )
     List<Teacher> findAllApproved();
     
     @Query(
-            value = "select t from Teacher t where lower(t.title) like lower(concat('%', :title, '%'))"
+            value = "select t from Teacher t where lower(t.title) like lower(concat('%', :title, '%')) order by title"
     )
     List<Teacher> findByTitlePattern(@Param("title") String pattern);
+    
+    @Query(
+            value = "select t from Teacher t where t.id in :list"
+    )
+    List<Teacher> findByListId(@Param("list") Set<Long> teachersId);
+    
+    @Query(
+            value = "select t from Teacher t where t.id in :list and lower(t.title) like lower(concat('%', :title, '%')) order by title"
+    )
+    List<Teacher> findByListIdAndPattern(@Param("list") Set<Long> teachersId, @Param("title") String pattern);
 }
