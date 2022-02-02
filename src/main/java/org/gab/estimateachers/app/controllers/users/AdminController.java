@@ -3,6 +3,7 @@ package org.gab.estimateachers.app.controllers.users;
 import org.gab.estimateachers.app.services.UserService;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.app.utilities.UsersUtilities;
+import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +33,15 @@ public class AdminController {
     @Autowired
     @Qualifier("userService")
     private UserService userService;
+    
+    @GetMapping(value = {
+            "/search/id",
+            "/search/login"
+    })
+    public String plug(HttpServletRequest request) {
+        
+        return "redirect:" + request.getHeader("Referer");
+    }
     
     @GetMapping("/allUsers")
     public String showAllUsers(Model model) {
@@ -58,7 +70,8 @@ public class AdminController {
                                   Model model) {
     
         if(Objects.nonNull(id)) {
-            model.addAttribute("users", List.of(userService.findById(id)));
+            User user = userService.findById(id);
+            model.addAttribute("users", (Objects.isNull(user)) ? Collections.emptyList() : List.of(user));
             model.addAttribute("id", id);
         }
         else

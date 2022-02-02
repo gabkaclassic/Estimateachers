@@ -53,12 +53,6 @@ public class CreatingCardApplicationService extends ApplicationService<CreatingC
         applicationRepository.deleteById(applicationId);
     }
     
-    
-    public void apply(Long requestId) {
-    
-    
-    }
-    
     public void reject(Long applicationId, String reason) {
     
         CreatingCardApplication application = findById(applicationId);

@@ -18,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -62,6 +64,17 @@ public class ApplicationController {
     @Autowired
     @Qualifier("dormitoryService")
     private DormitoryService dormitoryService;
+    
+    @GetMapping(value = {
+            "/requests/reject/{id}",
+            "/requests/success/{id}",
+            "/reject/card/{id}",
+            "/reject/registry/{id}"
+    })
+    public String plug(HttpServletRequest request) {
+        
+        return "redirect:" + request.getHeader("Referer");
+    }
     
     @GetMapping("/users")
     public String newUserApplications(Model model) {
@@ -270,8 +283,9 @@ public class ApplicationController {
     public String successRequest(@PathVariable("id") Long requestId,
                              Model model) {
     
-        RequestType type = requestService.findById(requestId).getRequestType();
-        requestService.apply(requestId);
+        Request request = requestService.findById(requestId);
+        RequestType type = request.getRequestType();
+        requestService.apply(request);
     
         return switch (type) {
             case CHANGING_CARDS -> "redirect:/applications/requests/cards";
@@ -292,6 +306,4 @@ public class ApplicationController {
             case OPERATIONS_SERVICE -> "redirect:/applications/requests/service";
         };
     }
-    
-    
 }

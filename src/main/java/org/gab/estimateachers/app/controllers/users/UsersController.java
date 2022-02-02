@@ -46,6 +46,14 @@ public class UsersController {
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
     
+    @GetMapping(value = {
+            "/logout"
+    })
+    public String plug(HttpServletRequest request) {
+        
+        return "redirect:" + request.getHeader("Referer");
+    }
+    
     @GetMapping("/registry")
     public String registryPage(Model model) {
 

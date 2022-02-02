@@ -28,12 +28,11 @@ public class RequestService extends ApplicationService<Request, RequestRepositor
         super.setApplicationRepository(repository);
     }
     
-    public void apply(Long requestId) {
+    public void apply(Request request) {
     
-        Request request = findById(requestId);
         mailService.applyRequest(request.getStudent().getAccount());
     
-        deleteById(requestId);
+        applicationRepository.delete(request);
     }
     
     public void reject(Long requestId, String reason) {

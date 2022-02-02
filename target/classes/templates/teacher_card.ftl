@@ -74,10 +74,10 @@
     </div>
     <div class="row mt-3">
         Universities:
-        <@cl.links cards=teacher.universities cardType="university" />
+        <@cl.links cards=teacher.universities />
     </div>
     <div class="row mt-3">
         Faculties:
-        <@cl.links cards=teacher.faculties cardType="faculty" />
+        <@cl.links cards=teacher.faculties />
     </div>
 </@main.page>

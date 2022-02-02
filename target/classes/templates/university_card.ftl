@@ -73,19 +73,19 @@
 <div class="row mt-3">
     <div class="col-4">
         <h5>Faculties:</h5>
-        <@cl.links cards=university.faculties cardType="faculty" />
+        <@cl.links cards=university.faculties" />
     </div>
 </div>
 <div class="row mt-3">
     <div class="col-4">
         <h5>Dormitories:</h5>
-        <@cl.links cards=university.dormitories cardType="dormitory" />
+        <@cl.links cards=university.dormitories />
     </div>
 </div>
 <div class="row mt-4">
     <div class="col-5">
         <h5>Teachers:</h5>
-        <@cl.links cards=university.teachers cardType="teacher" />
+        <@cl.links cards=university.teachers />
     </div>
 </div>
 </@main.page>

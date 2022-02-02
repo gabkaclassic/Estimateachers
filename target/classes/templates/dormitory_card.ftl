@@ -68,7 +68,7 @@
 <div class="row mt-3">
     University:
     <form method = "get" action = "/cards/get">
-        <input type="hidden" name = "cardType" value = "university" />
+        <input type="hidden" name = "cardType" value = "${dormitory.university.getCardType()}" />
         <input type="hidden" name = "id" value = ${dormitory.university.id} />
         <button class="btn btn-second" type="submit"> ${dormitory.university.title}</button>
     </form>

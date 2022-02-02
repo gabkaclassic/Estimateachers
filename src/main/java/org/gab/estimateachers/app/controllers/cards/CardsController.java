@@ -4,9 +4,8 @@ import org.gab.estimateachers.app.services.*;
 import org.gab.estimateachers.app.utilities.CardsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.app.utilities.UsersUtilities;
-import org.gab.estimateachers.entities.client.*;
+import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.CardType;
-import org.gab.estimateachers.entities.system.users.CardCollection;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,9 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/cards")
@@ -61,6 +61,26 @@ public class CardsController {
     @Autowired
     @Qualifier("cardCollectionService")
     private CardCollectionService cardCollectionService;
+    
+    @GetMapping(value = {
+            "/search/title",
+            "/delete",
+            "/collection/add",
+            "/edit",
+            "/add/teacher",
+            "/add/faculty",
+            "/add/dormitory",
+            "/add/university",
+            "/estimation/teacher",
+            "/estimation/dormitory",
+            "/estimation/faculty",
+            "/estimation/university"
+            
+    })
+    public String plug(HttpServletRequest request) {
+        
+        return "redirect:" + request.getHeader("Referer");
+    }
     
     @GetMapping("/list/{cardType}")
     public String cardsList(@AuthenticationPrincipal User user,

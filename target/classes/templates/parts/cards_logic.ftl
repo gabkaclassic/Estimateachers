@@ -69,7 +69,7 @@
     </#if>
 </#macro>
 
-<#macro links cardType cards=[]>
+<#macro links cards=[]>
 
     <#if cards??>
     <#if cards?has_content>

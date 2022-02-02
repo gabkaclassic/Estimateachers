@@ -69,7 +69,7 @@
     <div class="col-4">
         <h5>University:</h5>
         <form method = "get" action = "/cards/get">
-            <input type="hidden" name = "cardType" value = "university" />
+            <input type="hidden" name = "cardType" value = "${faculty.university.getCardType()}" />
             <input type="hidden" name = "id" value = ${faculty.university.id} />
             <button class="btn" type="submit">${faculty.university.title}</button>
         </form>
@@ -78,7 +78,7 @@
 <div class="row mt-3">
     <div class="col-4">
         <h5>Teachers:</h5>
-        <@cl.links cards=faculty.teachers cardType="teacher" />
+        <@cl.links cards=faculty.teachers />
     </div>
 </div>
 </@main.page>

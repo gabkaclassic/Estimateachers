@@ -62,7 +62,7 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
     
     public User findById(Long id) {
         
-        return userRepository.findById(id).orElseThrow(NullPointerException::new); //TO DO
+        return userRepository.findById(id).orElse(null);
     }
     
     public void save(User user) {

@@ -57,6 +57,4 @@ public abstract class ApplicationService<T extends Application, R extends Applic
     }
     
     public abstract void reject(Long applicationId, String reason);
-    
-    public abstract void apply(Long requestId);
 }
