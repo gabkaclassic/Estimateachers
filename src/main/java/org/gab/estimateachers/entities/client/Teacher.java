@@ -84,7 +84,7 @@ public class Teacher extends Card {
     )
     private List<TeacherEstimation> estimations;
     
-    public Teacher(String firstName, String lastName, String patronymic) {
+    public Teacher(String firstName, String lastName, String patronymic, Set<String> excuses) {
         
         super(String.format(FORMAT_TITLE,
                 lastName,
@@ -95,6 +95,7 @@ public class Teacher extends Card {
         setFirstName(firstName);
         setLastName(lastName);
         setPatronymic(patronymic);
+        setExcuses(excuses);
         setCardType(CardType.TEACHER);
     }
     

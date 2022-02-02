@@ -50,6 +50,8 @@ public abstract class Card {
     @Setter
     protected Boolean approved;
     
+//    protected Chat
+    
     @ElementCollection(
             targetClass = String.class,
             fetch = FetchType.LAZY

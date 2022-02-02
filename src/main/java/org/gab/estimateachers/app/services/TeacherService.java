@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service("teacherService")
@@ -77,6 +74,7 @@ public class TeacherService implements CardService<Teacher> {
     public Teacher create(String firstname,
                           String lastname,
                           String patronymic,
+                          String excuses,
                           Set<String> universitiesAbbreviation,
                           Set<String> facultiesTitles,
                           Set<MultipartFile> files,
@@ -84,7 +82,8 @@ public class TeacherService implements CardService<Teacher> {
         
         List<University> universities = universityService.findByAbbreviations(universitiesAbbreviation);
         List<Faculty> faculties = facultyService.findByTitles(facultiesTitles);
-        Teacher teacher = new Teacher(firstname, lastname, patronymic);
+        Set<String> excusesList = Arrays.stream(excuses.split(";")).collect(Collectors.toSet());
+        Teacher teacher = new Teacher(firstname, lastname, patronymic, excusesList);
         teacher.setApproved(approved);
         teacher.setUniversities(Set.copyOf(universities));
         teacher.setFaculties(Set.copyOf(faculties));
@@ -102,8 +101,21 @@ public class TeacherService implements CardService<Teacher> {
         return teacher;
     }
     
-    public void edit(Long id, String title, Set<MultipartFile> files) {
+    public void edit(Long id, String title, Set<MultipartFile> files, String excuses) {
         
+        Teacher card = teacherRepository.getOne(id);
+        Set<String> excusesList = Arrays.stream(excuses.split(";")).collect(Collectors.toSet());
+        card.setTitle(title);
+        card.setExcuses(excusesList);
+        files.stream()
+                .map(f -> filesUtilities.registrationFile(f, RegistrationType.OTHER))
+                .forEach(card::addPhoto);
+    
+        teacherRepository.save(card);
+    }
+    
+    public void edit(Long id, String title, Set<MultipartFile> files) {
+    
         Teacher card = teacherRepository.getOne(id);
         card.setTitle(title);
         files.stream()

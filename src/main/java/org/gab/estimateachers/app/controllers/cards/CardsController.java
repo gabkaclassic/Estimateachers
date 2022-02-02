@@ -270,6 +270,7 @@ public class CardsController {
                              @RequestParam("faculties") Set<String> facultiesTitles,
                              @RequestParam("date") String dateSending,
                              @RequestParam("files") Set<MultipartFile> files,
+                             @RequestParam("excuses") String excuses,
                              Model model) {
     
         List<String> remarks = new ArrayList<>();
@@ -283,11 +284,11 @@ public class CardsController {
         }
     
         if(user.isAdmin())
-            teacherService.create(firstname, lastname, patronymic, universitiesAbbreviation, facultiesTitles, files, user.isAdmin());
+            teacherService.create(firstname, lastname, patronymic, excuses, universitiesAbbreviation, facultiesTitles, files, user.isAdmin());
         else
             creatingCardApplicationService.create(
                     CardType.TEACHER,
-                    teacherService.create(firstname, lastname, patronymic, universitiesAbbreviation, facultiesTitles, files, user.isAdmin()),
+                    teacherService.create(firstname, lastname, patronymic, excuses, universitiesAbbreviation, facultiesTitles, files, user.isAdmin()),
                     user,
                     dateSending
             );
@@ -328,6 +329,7 @@ public class CardsController {
                            @RequestParam("title") String cardTitle,
                            @RequestParam("type") String cardType,
                            @RequestParam("id") Long cardId,
+                           @RequestParam(value = "excuses", required = false) String excuses,
                            @RequestParam(value = "files", required = false) Set<MultipartFile> files,
                            Model model) {
         
@@ -335,7 +337,7 @@ public class CardsController {
             case UNIVERSITY -> universityService.edit(cardId, cardTitle, files);
             case DORMITORY -> dormitoryService.edit(cardId, cardTitle, files);
             case FACULTY -> facultyService.edit(cardId, cardTitle, files);
-            case TEACHER -> teacherService.edit(cardId, cardTitle, files);
+            case TEACHER -> teacherService.edit(cardId, cardTitle, files, excuses);
             default -> {}
             
         }

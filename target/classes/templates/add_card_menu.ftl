@@ -134,6 +134,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Excuses: </label>
+                                    <div class="col-sm-4">
+                                        <input type = "text" id = "excuses" name = "excuses" placeholder = "Teacher excuses" class="form-control"/>
+                                        <div id="excusesHelpBlock" class="form-text">
+                                            Enter excuses using the ';' symbol
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <span> Universities: <@ul.m_select enum = universities name = "universities" /> </span>
                                 </div>
                                 <div class="form-group row">

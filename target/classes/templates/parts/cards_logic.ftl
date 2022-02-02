@@ -35,17 +35,28 @@
         <div class="row mt-5">
             <form class="d-block w-100 mt-3" method = "post" enctype="multipart/form-data" action = "/cards/edit">
                 <input name = "title" type = "text" placeholder = "title" value="${card.title}"/> <br>
-                <label for="formFileMultiple" class="form-label">Photos</label>
-                <input class="form-control" name="files" type="file" id="formFileMultiple" multiple />
+                <label for="formFileMultiple" class="form-label mt-3">Photos</label>
+                <input class="form-control mt-2" name="files" type="file" id="formFileMultiple" multiple />
                 <input type="hidden" name="id" value="${card.id}" />
-                <input type="hidden" name="type" value="${type}" />
+                <input type="hidden" name="type" value="${card.getCardType()}" />
+                <#if card.getCardType()=='TEACHER'>
+                    <div class="form-group row mt-3">
+                        <label class="col-3 col-form-label">Excuses: </label>
+                        <div class="col w-30">
+                            <input type = "text" id = "excuses" name = "excuses" placeholder = "Teacher excuses" class="form-control"/>
+                            <div id="excusesHelpBlock" class="form-text">
+                                Enter excuses using the ';' symbol
+                            </div>
+                        </div>
+                    </div>
+                </#if>
                 <@security.token />
                 <button type = "submit" class="btn btn-primary mt-1">Edit</button>
             </form>
         </div>
         <div class="row mt-1">
             <form method = "post" action = "/cards/delete">
-                <input type="hidden" name = "type" value = "${type}" />
+                <input type="hidden" name = "type" value = "${card.getCardType()}" />
                 <input type="hidden" name = "id" value = ${card.id} />
                 <@security.token />
                 <button class="btn btn-danger" type="submit">Delete</button>
@@ -61,15 +72,19 @@
 <#macro links cardType cards=[]>
 
     <#if cards??>
+    <#if cards?has_content>
         <#list cards as card>
             <li class="list-group-item mt-3">
                 <form method = "get" action = "/cards/get">
                     <button class="btn btn-link" type="submit">${card.title}</button>
-                    <input type="hidden" name = "cardType" value = ${cardType} />
+                    <input type="hidden" name = "cardType" value = ${card.getCardType()} />
                     <input type="hidden" name = "id" value = ${card.id} />
                 </form>
             </li>
         </#list>
+    <#else>
+        None
+    </#if>
     <#else>
         None
     </#if>
