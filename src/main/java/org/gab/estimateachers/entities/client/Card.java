@@ -3,16 +3,13 @@ package org.gab.estimateachers.entities.client;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.gab.estimateachers.entities.system.estimations.Estimation;
+import org.gab.estimateachers.entities.system.discussions.Discussion;
 import org.gab.estimateachers.entities.system.users.User;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @MappedSuperclass
@@ -50,8 +47,6 @@ public abstract class Card {
     @Setter
     protected Boolean approved;
     
-//    protected Chat
-    
     @ElementCollection(
             targetClass = String.class,
             fetch = FetchType.LAZY
@@ -59,6 +54,12 @@ public abstract class Card {
     @Getter
     @Setter
     protected Set<String> photos;
+    
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "discussion_id")
+    protected Discussion discussion;
     
     public Card(String title) {
     

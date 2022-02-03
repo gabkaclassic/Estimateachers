@@ -2,11 +2,8 @@ package org.gab.estimateachers.entities.system.users;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.Student;
-import org.gab.estimateachers.entities.system.messages.Chat;
-import org.gab.estimateachers.entities.system.messages.Comment;
-import org.gab.estimateachers.entities.system.messages.Message;
+import org.gab.estimateachers.entities.system.discussions.Comment;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -72,19 +69,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Roles> roles = new HashSet<>();
     
-    @ManyToMany(
-          cascade = CascadeType.PERSIST,
-          fetch = FetchType.EAGER,
-          mappedBy = "participants"
-    )
-    private Set<Chat> chats = new HashSet<>();
-
-    @OneToMany(
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
-    )
-    private Set<Message> messages = new HashSet<>();
-
     @OneToMany(
             fetch = FetchType.EAGER,
             cascade = CascadeType.ALL

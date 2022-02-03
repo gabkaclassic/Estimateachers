@@ -1,10 +1,8 @@
 package org.gab.estimateachers.entities.client;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.gab.estimateachers.entities.system.estimations.Estimation;
 import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 
@@ -42,7 +40,7 @@ public class University extends Card {
             columnDefinition = "boolean default 'f'"
     )
     private Boolean specialty;
-
+    
     @OneToMany(
             orphanRemoval = true,
             cascade = CascadeType.PERSIST,
@@ -60,7 +58,6 @@ public class University extends Card {
             joinColumns = {@JoinColumn(name = "university_id")},
             inverseJoinColumns = {@JoinColumn(name = "teacher_id")}
     )
-
     private Set<Teacher> teachers = new HashSet<>();
     
     @OneToMany(targetEntity = UniversityEstimation.class)
@@ -68,7 +65,6 @@ public class University extends Card {
             name = "universities_estimations",
             joinColumns = @JoinColumn(name = "university_id"),
             inverseJoinColumns = @JoinColumn(name = "estimation_id")
-    
     )
     private List<UniversityEstimation> estimations;
     

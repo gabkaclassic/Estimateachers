@@ -77,9 +77,6 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/users/edit/${user.id}">Edit profile</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/chats/">Chats</a>
-                    </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="/admin/applications/users" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="true">
                                 Requests

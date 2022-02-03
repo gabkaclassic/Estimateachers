@@ -1,12 +1,9 @@
 package org.gab.estimateachers.entities.client;
 
 import lombok.*;
-import org.gab.estimateachers.entities.system.estimations.Estimation;
 import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
-import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -22,7 +19,7 @@ import java.util.stream.Collectors;
         uniqueConstraints = @UniqueConstraint(columnNames = {"title"})
 )
 public class Faculty extends Card {
-
+    
     @ManyToOne(
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
