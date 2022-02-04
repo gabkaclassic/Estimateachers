@@ -69,12 +69,6 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Roles> roles = new HashSet<>();
     
-    @OneToMany(
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
-    )
-    private Set<Comment> comments = new HashSet<>();
-    
     public User(String username, String password, String email) {
         
         setUsername(username);

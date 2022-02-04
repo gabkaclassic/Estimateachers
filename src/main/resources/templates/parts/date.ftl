@@ -21,8 +21,9 @@
                     var year = current_datetime.getFullYear();
                     var hours = zero_first_format(current_datetime.getHours());
                     var minutes = zero_first_format(current_datetime.getMinutes());
+                    var seconds = zero_first_format(current_datetime.getSeconds());
 
-                    return day+"."+month+"."+year+" "+hours+":"+minutes;
+                    return day+"."+month+"."+year+" "+hours+":"+minutes+":"+seconds;
                 }
                 document.getElementById('date').value = date_time();
             </script>

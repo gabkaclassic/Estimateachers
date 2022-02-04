@@ -28,8 +28,9 @@ public class Discussion {
     private String title;
     
     @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
+            cascade = CascadeType.REMOVE,
+            fetch = FetchType.EAGER,
+            mappedBy = "discussion"
     )
     private List<Comment> comments;
     
@@ -37,5 +38,10 @@ public class Discussion {
         
         setTitle(String.format(TITLE_PATTERN, card.getTitle()));
         setComments(Collections.emptyList());
+    }
+    
+    public void addComment(Comment comment) {
+        
+        comments.add(comment);
     }
 }

@@ -110,21 +110,29 @@
                     </#if>
                     <p>Rating: ${(card.totalRating)!'-'}/5</p>
                 </p>
-                <form method = "get" action = "/cards/get">
-                    <input type="hidden" name = "cardType" value = "${card.getCardType()}" />
-                    <input type="hidden" name = "id" value = ${card.id} />
-                    <@security.token />
-                    <button class="btn btn-primary" type="submit">To consider...</button>
-                </form>
-
-                <#if isAdmin>
+                <div class="col">
+                    <form method = "get" action = "/cards/get">
+                        <input type="hidden" name = "cardType" value = "${card.getCardType()}" />
+                        <input type="hidden" name = "id" value = ${card.id} />
+                        <@security.token />
+                        <button class="btn btn-primary" type="submit">To consider...</button>
+                    </form>
+                </div>
+                <div class="col">
+                    <form method = "get" action = "/discussions/get/${card.discussion.id}">
+                        <button class="btn btn-secondary" type="submit">To discussion...</button>
+                    </form>
+                </div>
+                <div class="col">
+                    <#if isAdmin>
                         <form method = "post" action = "/cards/delete">
                             <input type="hidden" name = "type" value = "${card.getCardType()}" />
                             <input type="hidden" name = "id" value = ${card.id} />
                             <@security.token />
                             <button class="btn btn-danger" type="submit">Delete</button>
                         </form>
-                </#if>
+                    </#if>
+                </div>
             </div>
         </div>
 </#if>
