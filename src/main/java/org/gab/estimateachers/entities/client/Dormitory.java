@@ -2,62 +2,81 @@ package org.gab.estimateachers.entities.client;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.Type;
+import org.gab.estimateachers.entities.system.estimations.DormitoryEstimation;
+import org.gab.estimateachers.entities.system.estimations.Estimation;
+import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
+import org.gab.estimateachers.entities.system.users.User;
 
 import javax.persistence.*;
-import java.awt.image.BufferedImage;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "dormitories")
-public class Dormitory {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-    
-    @Column(
-            name = "title",
-            nullable = false,
-            unique = true
-    )
-    private String title;
-    
-    @Column(name = "total_rating")
-    private double totalRating;
-    
-    @Column(name = "cleaning_rating")
-    private double cleaningRating;
-    
-    @Column(name = "roommates_rating")
-    private double roommatesRating;
-    
-    @Column(name = "capacity_rating")
-    private double capacityRating;
-    
-    // TO DO
-    @Column(name = "photos")
-    @Type(type = "org.hibernate.type.BlobType")
-    private Set<BufferedImage> photos = new HashSet<>();;
-    
+public class Dormitory extends Card {
     
     @ManyToOne(
             cascade = CascadeType.ALL,
-            targetEntity = University.class,
             fetch = FetchType.LAZY
+    )
+    @JoinTable(
+            name = "university_dormitories",
+            joinColumns = {@JoinColumn(name = "dormitory_id")},
+            inverseJoinColumns = {@JoinColumn(name = "university_id")}
     )
     private University university;
     
-    @OneToMany(
-            targetEntity = Student.class,
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "dormitory"
+    @OneToMany
+    @JoinTable(
+            name = "dormitories_estimations",
+            joinColumns = @JoinColumn(name = "dormitory_id"),
+            inverseJoinColumns = @JoinColumn(name = "estimation_id")
     )
-    private Set<Student> students = new HashSet<>();;
+    private List<DormitoryEstimation> estimations;
+    
+    public Double getCapacityRating() {
+        
+        return estimations.stream().map(DormitoryEstimation.class::cast).mapToDouble(DormitoryEstimation::getCapacityRating).average().orElse(0);
+    }
+    
+    public Double getRoommatesRating() {
+        
+        return estimations.stream().map(DormitoryEstimation.class::cast).mapToDouble(DormitoryEstimation::getRoommatesRating).average().orElse(0);
+    }
+    
+    public Double getCleaningRating() {
+        
+        return estimations.stream().map(DormitoryEstimation.class::cast).mapToDouble(DormitoryEstimation::getCleaningRating).average().orElse(0);
+    }
+    
+    public Dormitory(String title, University university) {
+        
+        super(title);
+        setUniversity(university);
+        setCardType(CardType.DORMITORY);
+    }
+    
+    public void estimation(DormitoryEstimation estimation) {
+        
+        estimations.add(estimation);
+    }
+    
+    public Double getTotalRating() {
+        
+        return round(estimations.stream().mapToDouble(DormitoryEstimation::getTotalRating).average().orElse(0));
+    }
+    
+    public Integer getAssessorsCount() {
+        
+        return estimations.size();
+    }
+    
+    public boolean containsAssessor(User user) {
+        
+        return estimations.stream().map(DormitoryEstimation::getAssessor).collect(Collectors.toSet()).contains(user);
+    }
 }
