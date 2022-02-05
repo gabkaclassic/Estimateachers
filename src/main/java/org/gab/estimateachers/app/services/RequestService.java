@@ -30,7 +30,8 @@ public class RequestService extends ApplicationService<Request, RequestRepositor
     
     public void apply(Request request) {
     
-        mailService.applyRequest(request.getStudent().getAccount());
+        mailService.applyRequest(request.getStudent()
+                .getAccount());
     
         applicationRepository.delete(request);
     }

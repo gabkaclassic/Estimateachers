@@ -26,11 +26,15 @@
         </div>
         <div class="col-3 w-80 ml-12 mt-5 sticky-top" style="position: fixed; top: 150px; left: 20px;">
             <form class="d-flex w-30" method="get" action="/discussions/sorted/asc/${discussion.id}">
-                <button class="btn btn-outline-danger" type="submit"> &#11015; Order by rating</button>
+                <button class="btn btn-danger" type="submit"> &#11015; Get seconds first with a low rating</button>
                 <@security.token />
             </form>
             <form class="d-flex w-30" method="get" action="/discussions/sorted/desc/${discussion.id}">
-                <button class="btn btn-outline-success" type="submit"> &#11014; Order by rating</button>
+                <button class="btn btn-success" type="submit"> &#11014; Get seconds first with a high rating</button>
+                <@security.token />
+            </form>
+            <form class="d-flex w-30" method="get" action="/discussions/get/${discussion.id}">
+                <button class="btn btn-secondary" type="submit"> &#9719; By date sending</button>
                 <@security.token />
             </form>
         </div>

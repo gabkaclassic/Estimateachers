@@ -112,7 +112,7 @@
             </div>
         </#if>
             <@security.token />
-        <button type = "submit" class="btn btn-primary">${textButton}</button>
+        <button type = "submit" class="btn btn-primary"> <#if edit> &#9998; <#elseif registry> &#9745; </#if> ${textButton}</button>
     </form>
 </div>
 
