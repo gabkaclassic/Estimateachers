@@ -1,6 +1,7 @@
 package org.gab.estimateachers.app.controllers.users;
 
 import lombok.extern.slf4j.Slf4j;
+import org.gab.estimateachers.app.configuration.CaptchaResponseDTO;
 import org.gab.estimateachers.app.services.StudentService;
 import org.gab.estimateachers.app.services.UserService;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
@@ -10,14 +11,17 @@ import org.gab.estimateachers.entities.system.users.Genders;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +29,16 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/users")
 public class UsersController {
+    
+    @Value("${captcha.secret}")
+    private String secret;
+    
+    @Value("${captcha.url}")
+    private String url;
+    
+    @Autowired
+    @Qualifier("restTemplate")
+    private RestTemplate restTemplate;
     
     @Autowired
     @Qualifier("userService")
@@ -78,12 +92,20 @@ public class UsersController {
             @RequestParam(name = "profilePhoto") MultipartFile profilePhoto,
             @RequestParam(name = "cardPhoto") MultipartFile cardPhoto,
             @RequestParam(name = "date") String date,
+            @RequestParam(name = "g-recaptcha-response") String response,
             Model model
     ) {
-    
+        response = response.substring(0, response.length()-1);
+        List<String> remarks = new ArrayList<>();
+        String templateUrl = String.format(url, secret, response);
+        CaptchaResponseDTO responseDTO = restTemplate.postForObject(templateUrl, Collections.emptyList(), CaptchaResponseDTO.class);
+        
+        if(Objects.nonNull(responseDTO) && !responseDTO.isSuccess())
+            remarks.addAll(responseDTO.getErrorCodes());
+        
         log.trace("User registration process");
         
-        List<String> remarks = new ArrayList<>();
+        
         boolean isCorrectData = usersUtilities.checkUserDataFromRegistration(
                 firstName,
                 lastName,

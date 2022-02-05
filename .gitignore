@@ -4,4 +4,6 @@
 *.war
 *.jpg
 *.png
+*.sh
+*.txt
 /src/main/resources/db/migration/V2__Add_admin.sql
