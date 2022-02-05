@@ -40,6 +40,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/users/login")
                 .permitAll()
                 .and()
+                .rememberMe()
+                .and()
                 .logout()
                 .logoutUrl("/users/logout")
                 .invalidateHttpSession(true)
