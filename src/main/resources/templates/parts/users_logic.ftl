@@ -4,7 +4,7 @@
 <#macro data_form registry=false edit=false textButton = "Submit">
 
 <div class="row mt-2">
-    <form method = "post" enctype = "multipart/form-data">
+    <form id="form" method = "post" enctype = "multipart/form-data">
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Login: </label>
             <div class="col-sm-6">
@@ -112,7 +112,11 @@
             </div>
         </#if>
             <@security.token />
-        <button type = "submit" class="btn btn-primary"> <#if edit> &#9998; <#elseif registry> &#9745; </#if> ${textButton}</button>
+
+            <#if registry>
+                <@security.captcha /> <br>
+            </#if>
+        <button type = "submit" class="btn btn-primary mt-3"> <#if edit> &#9998; <#elseif registry> &#9745; </#if> ${textButton}</button>
     </form>
     <#if delete??>
         <form method = "post" action = "/admin/delete">
