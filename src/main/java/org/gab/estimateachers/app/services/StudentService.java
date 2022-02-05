@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service("studentService")
 public class StudentService implements org.gab.estimateachers.app.services.Service<Student> {
@@ -34,6 +35,10 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
     @Autowired
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
+    
+    @Autowired
+    @Qualifier("mailService")
+    protected MailService mailService;
     
     public Student findById(Long id) {
         
@@ -63,7 +68,8 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
                               MultipartFile cardPhoto,
                               String date,
                               User user) {
-    
+        
+        user.setActivationCode(UUID.randomUUID().toString());
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
         Student student = new Student(
                 firstName,
@@ -75,6 +81,8 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
         user.setOwner(student);
         userRepository.save(user);
     
+        mailService.sendConfirmEmail(user);
+        
         RegistrationApplication application = new RegistrationApplication(
                 student,
                 date,

@@ -16,6 +16,9 @@ public class MailService {
     
     private static final String URL = "";
     
+    @Value("${spring.mail.confirmEmailLink}")
+    private String LINK_CONFIRM_EMAIL;
+    
     @Value("${spring.mail.username}")
     private String from;
     private static final String SUCCESS_REGISTRATION = """
@@ -54,6 +57,13 @@ public class MailService {
     (on %s)
     Thank you for helping our service work
     """;
+    private static final String CONFIRM_EMAIL = """
+    Dear %s, (%s) сonfirm the email address: %s
+    (if your email address is not specified, ignore this email)
+    to continue the registration process follow the link:
+    %s
+    """;
+    
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     
     @Autowired
@@ -161,6 +171,22 @@ public class MailService {
                             user.getOwner().getTitle(),
                             user.getUsername(),
                             LocalDateTime.now().format(DATE_FORMATTER)
+                    )
+            );
+    }
+    
+    public void sendConfirmEmail(User user) {
+    
+        if(!StringUtils.isEmpty(user.getEmail()) && !StringUtils.isEmpty(user.getActivationCode()))
+            send(
+                    user.getEmail(),
+                    from,
+                    String.format(
+                            CONFIRM_EMAIL,
+                            user.getOwner().getTitle(),
+                            user.getUsername(),
+                            user.getEmail(),
+                            LINK_CONFIRM_EMAIL.concat(user.getActivationCode())
                     )
             );
     }

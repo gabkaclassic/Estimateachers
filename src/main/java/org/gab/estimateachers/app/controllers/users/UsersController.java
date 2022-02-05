@@ -47,7 +47,9 @@ public class UsersController {
     private FilesUtilities filesUtilities;
     
     @GetMapping(value = {
-            "/logout"
+            "/logout",
+            "/signout",
+            "/signout/cancel"
     })
     public String plug(HttpServletRequest request) {
         
@@ -124,7 +126,9 @@ public class UsersController {
     }
     
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(Model model) {
+        
+        model.addAttribute("isAdmin", false);
         
         log.trace("Get query login page");
         
@@ -137,16 +141,30 @@ public class UsersController {
     
         user.setOnline(true);
         userService.save(user);
+        
         return "redirect:"+ request.getHeader("Referer");
     }
     
-    @PostMapping("/logout")
-    public String logout(@AuthenticationPrincipal User user) {
+    @PostMapping("/signout")
+    public String logout(@AuthenticationPrincipal User user,
+                         HttpServletRequest request,
+                         Model model) {
         
         user.setOnline(false);
         userService.save(user);
+        model.addAttribute("link", request.getHeader("Referer"));
         
-        return "redirect:/users/logout";
+        return "/logout_process";
+    }
+    
+    @PostMapping("/signout/cancel")
+    public String logoutCancel(@AuthenticationPrincipal User user,
+                               @RequestParam("link") String link) {
+        
+        user.setOnline(true);
+        userService.save(user);
+        
+        return "redirect:" + link;
     }
     
     @GetMapping("/edit/{id}")
@@ -172,6 +190,8 @@ public class UsersController {
             model.addAttribute("userRole", user.isUser());
             model.addAttribute("lockedRole", user.isLocked());
         }
+        
+        model.addAttribute("delete", (currentUser.isAdmin() && user.getId().equals(currentUser.getId())));
         
         return "/user_edit";
     }

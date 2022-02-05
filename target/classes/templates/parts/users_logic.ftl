@@ -114,14 +114,21 @@
             <@security.token />
         <button type = "submit" class="btn btn-primary"> <#if edit> &#9998; <#elseif registry> &#9745; </#if> ${textButton}</button>
     </form>
+    <#if delete??>
+        <form method = "post" action = "/admin/delete">
+            <input type="hidden" name = "userId" value = ${user.id} />
+            <@security.token />
+            <button class="btn btn-danger" type="submit"> &#10006; Delete</button>
+        </form>
+    </#if>
 </div>
 
 </#macro>
 
 <#macro logout>
 
-    <form action = "/users/logout" method = "post">
-        <input type = "submit" value = "Sign out" class="btn btn-dark"/>
+    <form  action = "/users/signout" method = "post">
+        <input type = "submit" value = "Sign out" class="btn btn-dark">
         <@security.token />
     </form>
 
@@ -172,11 +179,11 @@
 <#macro m_select enum=[] name="">
 
 <#if enum??>
-<select class="form-select" multiple true name="${name}">
-    <#list enum as element>
-    <option value="${element}">${element}</option>
-</#list>
-</select>
+    <select class="form-select" multiple true name="${name}">
+        <#list enum as element>
+        <option value="${element}">${element}</option>
+    </#list>
+    </select>
 </#if>
 
 </#macro>

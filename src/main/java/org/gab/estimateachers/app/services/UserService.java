@@ -112,5 +112,17 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         
         userRepository.save(user);
     }
+    
+    public boolean confirmEmail(String activationCode) {
+        
+        User user = userRepository.findByActivationCode(activationCode);
+        boolean isNonNullUser = Objects.nonNull(user);
+        if(isNonNullUser) {
+            user.confirmEmail();
+            userRepository.save(user);
+        }
+        
+        return isNonNullUser;
+    }
 }
 

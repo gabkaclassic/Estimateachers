@@ -25,6 +25,11 @@
                                     <@ul.foreach collection = usr.roles![] status="light" />
                                 </p>
                             </p>
+                            <form method = "post" action = "/admin/delete">
+                                <input type="hidden" name = "userId" value = ${usr.id} />
+                                <@security.token />
+                                <button class="btn btn-danger" type="submit"> &#10006; Delete</button>
+                            </form>
                         </div>
                     </div>
               </#list>

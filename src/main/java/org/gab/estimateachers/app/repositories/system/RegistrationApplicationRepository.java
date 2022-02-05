@@ -10,8 +10,7 @@ import java.util.List;
 public interface RegistrationApplicationRepository extends ApplicationRepository<RegistrationApplication>{
     
     @Query(
-            value = "select * from registration_applications where viewed = 'f'",
-            nativeQuery = true
+            value = "select ra from RegistrationApplication ra where ra.viewed = 'f'"
     )
     List<RegistrationApplication> findAllNotViewed();
 }

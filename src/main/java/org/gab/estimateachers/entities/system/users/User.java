@@ -49,6 +49,12 @@ public class User implements UserDetails {
     @Column(name = "active")
     private boolean active;
     
+    @Column(name = "applied", columnDefinition = "boolean default 'f'")
+    private boolean applied;
+    
+    @Column(name = "activation_code")
+    private String activationCode;
+    
     @Column(name = "online", columnDefinition = "boolean default 'f'")
     private boolean online;
     
@@ -75,14 +81,23 @@ public class User implements UserDetails {
         setEmail((Objects.nonNull(email) && email.isEmpty()) ? null : email);
         setActive(true);
         setOnline(false);
+        setApplied(false);
         setPassword(password);
         roles.add(Roles.LOCKED);
     }
     
     public void apply() {
         
-        roles.remove(Roles.LOCKED);
-        roles.add(Roles.USER);
+        setApplied(true);
+        unlock();
+    }
+    
+    public void unlock() {
+    
+        if(Objects.isNull(activationCode) && applied) {
+            roles.remove(Roles.LOCKED);
+            roles.add(Roles.USER);
+        }
     }
     
     public void appointmentAdmin() {
@@ -149,5 +164,16 @@ public class User implements UserDetails {
     public boolean online() {
         
         return online;
+    }
+    
+    public void confirmEmail() {
+    
+        setActivationCode(null);
+        unlock();
+    }
+    
+    public void setActivationCode(String code) {
+        
+        activationCode = code;
     }
 }

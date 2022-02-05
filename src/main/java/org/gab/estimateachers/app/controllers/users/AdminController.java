@@ -36,7 +36,8 @@ public class AdminController {
     
     @GetMapping(value = {
             "/search/id",
-            "/search/login"
+            "/search/login",
+            "/delete"
     })
     public String plug(HttpServletRequest request) {
         
@@ -63,6 +64,14 @@ public class AdminController {
             return "redirect:/admin/allUsers";
         
         return "/users_list";
+    }
+    
+    @PostMapping("/delete")
+    public String deleteUser(@RequestParam("userId") Long userId) {
+        
+        userService.deleteById(userId);
+        
+        return "redirect:/admin/allUsers";
     }
     
     @PostMapping("/search/id")
