@@ -1,5 +1,7 @@
 package org.gab.estimateachers.app.services;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.util.Strings;
 import org.gab.estimateachers.app.repositories.system.UserRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
@@ -14,10 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Service("userService")
 public class UserService implements UserDetailsService, org.gab.estimateachers.app.services.Service<User>  {
     
@@ -55,14 +59,26 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
     
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
-        if(Objects.isNull(username))
-            throw new NullPointerException("Login is null");
+        if(Objects.isNull(username)) {
+            
+            NullPointerException exception = new NullPointerException("Login is null");
+            
+            log.warn(String.format("The null value was passed instead of the user's nickname. Exception: %s, reason: %s, stack trace: %s",
+                    exception.getMessage(), exception.getCause(), Arrays.toString(exception.getStackTrace())));
+            throw exception;
+        }
         
         User user = userRepository.findByUsername(username);
         
-        if(Objects.isNull(user))
-            throw new NullPointerException("User not found");
-        
+        if(Objects.isNull(user)) {
+    
+            NullPointerException exception = new NullPointerException("User not found");
+    
+            log.warn(String.format("The user was not found by nickname. Exception: %s, reason: %s, stack trace: %s",
+                    exception.getMessage(), exception.getCause(), Arrays.toString(exception.getStackTrace())));
+            
+            throw exception;
+        }
         return user;
     }
     
@@ -102,17 +118,6 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
     }
     public void update(Long id, String username, String password, String email, MultipartFile profilePhoto) {
         
-        User user = userRepository.getOne(id);
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
-        
-        user.setEmail(email);
-        user.lock();
-        user.setActivationCode(UUID.randomUUID().toString());
-        mailService.sendConfirmEmail(user);
-        
-        userRepository.save(user);
     }
     
     public void createAdmin(String login, String password) {

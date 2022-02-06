@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.controllers.applications;
 
+import lombok.extern.slf4j.Slf4j;
 import org.gab.estimateachers.app.services.*;
 import org.gab.estimateachers.app.utilities.ApplicationsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/applications")
@@ -90,8 +92,12 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     })
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
+      
+        String header = request.getHeader("Referer");
         
-        return "redirect:" + request.getHeader("Referer");
+        log.info("A plug has triggered in applications controller, the request has been redirected to: " + header);
+        
+        return "redirect:" + header;
     }
     
     @GetMapping("/users")
@@ -100,6 +106,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         
         model.addAttribute("applications", listUtilities.getRegistrationApplicationList());
         model.addAttribute("type", "registry");
+        
+        log.info("Logged in to the page with registration applications");
         
         return "/applications";
     }
@@ -110,6 +118,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         
         model.addAttribute("applications", listUtilities.getCreatingCardApplicationList());
         model.addAttribute("type", "card");
+    
+        log.info("Logged in to the page with applications for creating cards");
         
         return "/applications";
     }
@@ -124,6 +134,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         if(application.isViewed()) {
             
             model.addAttribute("application", application);
+            
+            log.info("The admin requested access to the application, which is already being considered");
             
             return "/application_is_viewed";
         }
@@ -143,6 +155,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         model.addAttribute("cardType", application.getCardType().toString());
         model.addAttribute("application", application);
         
+        log.info("The admin requested access to the application");
+        
         return "/processing_new_card";
     }
     
@@ -152,6 +166,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
                                 Model model) {
         
         creatingCardApplicationService.approve(applicationId);
+        
+        log.info("The admin approved application for creating cards");
         
         return "redirect:/applications/cards";
     }
@@ -166,6 +182,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         if(application.isViewed()) {
             
             model.addAttribute("application", application);
+    
+            log.info("The admin requested access to the application, which is already being considered");
             
             return "/application_is_viewed";
         }
@@ -174,6 +192,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         model.addAttribute("universities", listUtilities.getUniversitiesAbbreviationsList());
         model.addAttribute("application", application);
         model.addAttribute("student", application.getStudent());
+        
+        log.info("The admin has started viewing the application");
         
         return "/process_application_first";
     }
@@ -191,6 +211,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         model.addAttribute("university", university);
         model.addAttribute("course", course);
         
+        log.info("The admin save first step the application viewing");
+        
         return processingApplicationSecondStep(applicationId, model);
     }
     
@@ -203,6 +225,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         
         model.addAttribute("application", application);
         model.addAttribute("student", application.getStudent());
+    
+        log.info("The admin started second step the application viewing");
         
         return "/process_application_second";
     }
@@ -217,6 +241,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
                                                       Model model) {
         
         registrationApplicationService.apply(applicationId, universityId, facultyTitle, dormitoryTitle, course);
+    
+        log.info("The admin save second step the application viewing (applied application)");
         
         return "redirect:/applications/users";
     }
@@ -227,6 +253,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
                                  @RequestParam("reason") String reason) {
         
         registrationApplicationService.reject(applicationId, reason);
+    
+        log.info("The admin rejected application registration");
         
         return "redirect:/applications/users";
     }
@@ -237,6 +265,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
                              @RequestParam("reason") String reason) {
         
         creatingCardApplicationService.reject(applicationId, reason);
+    
+        log.info("The admin rejected application for creating card");
         
         return "redirect:/applications/cards";
     }
@@ -245,6 +275,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     @GetMapping("/requests")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String menuRequest() {
+        
+        log.info("The user opened the menu to create a request");
         
         return "/add_request_menu";
     }
@@ -265,9 +297,15 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         if(!remarks.isEmpty()) {
             model.addAttribute("remarks", remarks);
             model.addAttribute("text", textRequest);
+            
+            log.info("Failed attempt to create a request");
         }
-        else
+        else {
+            
             requestService.create(user, dateSending, textRequest, type, files);
+            
+            log.info("Success attempt to create a request");
+        }
         
         return "/add_request_menu";
     }
@@ -279,6 +317,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         model.addAttribute("applications", listUtilities.getCardRequestList());
         model.addAttribute("type", "request");
         
+        log.info("The admin went to the list of requests for changing cards");
+        
         return "/applications";
     }
     
@@ -288,6 +328,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     
         model.addAttribute("applications", listUtilities.getServiceRequestList());
         model.addAttribute("type", "request");
+        
+        log.info("The admin went to the list of requests for service work");
         
         return "/applications";
     }
@@ -302,12 +344,16 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
             
             model.addAttribute("application", request);
     
+            log.info("The admin has requested access to a query that is already being viewed");
+            
             return "/application_is_viewed";
         }
         request.setViewed(true);
         requestService.save(request);
         model.addAttribute("request", request);
         model.addAttribute("numbers", listUtilities.getNumbers(request.getPhotos()));
+        
+        log.info("The admin has requested");
         
         return "/request";
     }
@@ -321,6 +367,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         RequestType type = request.getRequestType();
         requestService.apply(request);
     
+        log.info("Request being applied");
+        
         return switch (type) {
             case CHANGING_CARDS -> "redirect:/applications/requests/cards";
             case OPERATIONS_SERVICE -> "redirect:/applications/requests/service";
@@ -335,6 +383,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         
         RequestType type = requestService.findById(requestId).getRequestType();
         requestService.reject(requestId, reason);
+    
+        log.info("Request being rejected");
         
         return switch (type) {
             case CHANGING_CARDS -> "redirect:/applications/requests/cards";
@@ -343,8 +393,6 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @Recover
-    @PostMapping("/error")
-    @GetMapping("/error")
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
     public ModelAndView error(Exception exception) {
@@ -353,6 +401,8 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         model.addObject("Error",
                 String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
         );
+        
+        log.warn(String.format("Exception: %s, reason: %s", exception.getMessage(), exception.getCause()));
         
         return model;
     }

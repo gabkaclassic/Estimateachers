@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -11,21 +12,20 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     
+    private static final int PASSWORD_STRENGTH = 8;
     @Autowired
     @Qualifier("userService")
     private UserDetailsService userService;
@@ -59,6 +59,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .maximumSessions(3)
                 .maxSessionsPreventsLogin(true);
+        
+        log.info("Configured sessions, permissions, protocols");
     }
     
     @Bean
@@ -69,11 +71,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         firewall.setAllowBackSlash(true);
         firewall.setAllowUrlEncodedDoubleSlash(true);
 
+        log.info("Created bean firewall");
+        
         return firewall;
     }
     
     @Bean
     public static ServletListenerRegistrationBean httpSessionEventPublisher() {
+        
+        log.info("Created bean from http-session event publisher");
         
         return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
     }
@@ -83,6 +89,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         super.configure(web);
         web.httpFirewall(allowSlashInUrl());
+        
+        log.info("Configured web security");
     }
 
     @Override
@@ -90,11 +98,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth
                 .userDetailsService(userService)
                 .passwordEncoder(passwordEncoder);
+        
+        log.info("Configured authentication manager");
     }
     
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         
-        return new BCryptPasswordEncoder(8);
+        log.info("Created bean password encoder");
+        
+        return new BCryptPasswordEncoder(PASSWORD_STRENGTH);
     }
 }

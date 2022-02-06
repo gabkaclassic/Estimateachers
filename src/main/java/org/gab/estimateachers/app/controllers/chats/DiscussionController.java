@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.controllers.chats;
 
+import lombok.extern.slf4j.Slf4j;
 import org.gab.estimateachers.app.services.CommentService;
 import org.gab.estimateachers.app.services.DiscussionService;
 import org.gab.estimateachers.entities.system.discussions.Comment;
@@ -24,6 +25,7 @@ import java.util.Objects;
 
 import static javax.servlet.RequestDispatcher.ERROR_MESSAGE;
 
+@Slf4j
 @Controller
 @RequestMapping("/discussions")
 public class DiscussionController extends org.gab.estimateachers.app.controllers.Controller {
@@ -56,8 +58,12 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     })
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
-        
-        return "redirect:" + request.getHeader("Referer");
+    
+        String header = request.getHeader("Referer");
+    
+        log.info("A plug has triggered in discussions controller, the request has been redirected to: " + header);
+    
+        return "redirect:" + header;
     }
     
     @GetMapping("/get/{discussionId}")
@@ -70,6 +76,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
         model.addAttribute("discussion", discussion);
         model.addAttribute("comments", commentService.findByDiscussionId(discussionId));
         model.addAttribute("isAdmin", user.isAdmin());
+    
+        log.info(String.format("Open discussion (ID: %s)", discussionId.toString()));
         
         return "/discussion";
     }
@@ -85,6 +93,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
         model.addAttribute("comments", commentService.findByDiscussionIdOrderByRatingAsc(discussionId));
         model.addAttribute("isAdmin", user.isAdmin());
         
+        log.info("Requested sorting of comments by rating");
+        
         return "/discussion";
     }
     
@@ -98,6 +108,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
         model.addAttribute("discussion", discussion);
         model.addAttribute("comments", commentService.findByDiscussionIdOrderByRatingDesc(discussionId));
         model.addAttribute("isAdmin", user.isAdmin());
+    
+        log.info("Requested sorting of comments by rating");
         
         return "/discussion";
     }
@@ -110,6 +122,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
                               @RequestParam("discussionId") Long discussionId) {
         
         commentService.create(text, dateSending, discussionId, user);
+        
+        log.info(String.format("A comment was published (discussion ID: %s)", discussionId.toString()));
         
         return "redirect:/discussions/get/" + discussionId;
     }
@@ -129,6 +143,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
         model.addAttribute("text", text);
         model.addAttribute("isAdmin", user.isAdmin());
         
+        log.info(String.format("A search was made for the content of the comment (discussion ID: %s)", discussionId.toString()));
+        
         return "/discussion";
     }
     
@@ -146,6 +162,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
                 commentService.findByDiscussionId(discussionId));
         model.addAttribute("username", username);
         model.addAttribute("isAdmin", user.isAdmin());
+    
+        log.info(String.format("A search was made for the author of the comment (discussion ID: %s)", discussionId.toString()));
         
         return "/discussion";
     }
@@ -158,6 +176,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
         
         commentService.like(commentId, user);
     
+        log.info(String.format("The comment was liked (comment ID: %s, liker ID: %s)", commentId.toString(), user.getId().toString()));
+        
         return "redirect:/discussions/get/" + discussionId;
     }
     
@@ -169,12 +189,12 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
         
         commentService.dislike(commentId, user);
     
+        log.info(String.format("The comment was disliked (comment ID: %s, disliker ID: %s)", commentId.toString(), user.getId().toString()));
+        
         return "redirect:/discussions/get/" + discussionId;
     }
     
     @Recover
-    @PostMapping("/error")
-    @GetMapping("/error")
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
     public ModelAndView error(Exception exception) {
@@ -183,6 +203,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
         model.addObject("Error",
                 String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
         );
+    
+        log.warn(String.format("Exception: %s, reason: %s", exception.getMessage(), exception.getCause()));
         
         return model;
     }

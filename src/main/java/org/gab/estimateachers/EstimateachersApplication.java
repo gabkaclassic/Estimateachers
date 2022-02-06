@@ -16,8 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableJpaRepositories("org.gab.estimateachers.app.repositories")
 @EntityScan(basePackages = {"org.gab.estimateachers.entities"})
 @PropertySources({
-        @PropertySource("classpath:application.properties"),
-        @PropertySource("classpath:log4j.properties")
+        @PropertySource("classpath:application.properties")
 })
 @ComponentScans(
         @ComponentScan("org.gab.estimateachers")

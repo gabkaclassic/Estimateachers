@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.utilities;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -7,9 +8,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @Component("filesUtilities")
 public class FilesUtilities {
     
@@ -49,7 +52,8 @@ public class FilesUtilities {
                 file1.createNewFile();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn(String.format("Exception transfer file. Exception: %s, reason: %s, stack trace: %s",
+                    e.getMessage(), e.getCause(), Arrays.toString(e.getStackTrace())));
         }
     
         return filename;
