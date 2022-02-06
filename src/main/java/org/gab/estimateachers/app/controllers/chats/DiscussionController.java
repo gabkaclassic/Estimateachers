@@ -7,6 +7,9 @@ import org.gab.estimateachers.entities.system.discussions.Discussion;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +21,7 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping("/discussions")
-public class DiscussionController {
+public class DiscussionController extends org.gab.estimateachers.app.controllers.Controller {
     
     @Autowired
     @Qualifier("discussionService")
@@ -35,12 +38,14 @@ public class DiscussionController {
             "/comment/search/text",
             "/comment/search/author"
     })
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
         
         return "redirect:" + request.getHeader("Referer");
     }
     
     @GetMapping("/get/{discussionId}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String chatList(@AuthenticationPrincipal User user,
                            @PathVariable("discussionId") Long discussionId,
                            Model model) {
@@ -54,6 +59,7 @@ public class DiscussionController {
     }
     
     @GetMapping("/sorted/asc/{discussionId}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String chatListOrderAsc(@AuthenticationPrincipal User user,
                            @PathVariable("discussionId") Long discussionId,
                            Model model) {
@@ -67,6 +73,7 @@ public class DiscussionController {
     }
     
     @GetMapping("/sorted/desc/{discussionId}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String chatListOrderDesc(@AuthenticationPrincipal User user,
                                    @PathVariable("discussionId") Long discussionId,
                                    Model model) {
@@ -80,6 +87,7 @@ public class DiscussionController {
     }
     
     @PostMapping("/comment/send")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String sendComment(@AuthenticationPrincipal User user,
                               @RequestParam("text") String text,
                               @RequestParam("date") String dateSending,
@@ -91,6 +99,7 @@ public class DiscussionController {
     }
     
     @PostMapping("/comment/search/text")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String searchByText(@AuthenticationPrincipal User user,
                                @RequestParam("text") String text,
                                @RequestParam("discussionId") Long discussionId,
@@ -108,6 +117,7 @@ public class DiscussionController {
     }
     
     @PostMapping("/comment/search/author")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String searchByAuthor(@AuthenticationPrincipal User user,
                                  @RequestParam("username") String username,
                                  @RequestParam("discussionId") Long discussionId,
@@ -125,6 +135,7 @@ public class DiscussionController {
     }
     
     @PostMapping("/comment/like")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String likeComment(@AuthenticationPrincipal User user,
                               @RequestParam("commentId") Long commentId,
                               @RequestParam("discussionId") Long discussionId) {
@@ -135,6 +146,7 @@ public class DiscussionController {
     }
     
     @PostMapping("/comment/dislike")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String dislikeComment(@AuthenticationPrincipal User user,
                                  @RequestParam("commentId") Long commentId,
                                  @RequestParam("discussionId") Long discussionId) {

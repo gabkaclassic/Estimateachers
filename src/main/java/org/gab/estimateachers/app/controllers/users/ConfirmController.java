@@ -4,6 +4,9 @@ import org.gab.estimateachers.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/confirm")
-public class ConfirmController {
+public class ConfirmController extends org.gab.estimateachers.app.controllers.Controller {
     
     private static final String SUCCESS_CONFIRM_EMAIL_TEXT = """
             You have successfully confirmed your email address,
@@ -33,6 +36,7 @@ public class ConfirmController {
     private UserService userService;
     
     @GetMapping("/{activationCode}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String confirmEmail(@PathVariable("activationCode") String activationCode,
                                Model model) {
         
@@ -47,4 +51,5 @@ public class ConfirmController {
         
         return "/confirm_result";
     }
+    
 }

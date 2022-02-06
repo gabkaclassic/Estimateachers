@@ -6,6 +6,9 @@ import org.gab.estimateachers.app.utilities.UsersUtilities;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +23,7 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasAuthority('ADMIN')")
-public class AdminController {
+public class AdminController extends org.gab.estimateachers.app.controllers.Controller {
     
     @Autowired
     @Qualifier("usersUtilities")
@@ -39,12 +42,14 @@ public class AdminController {
             "/search/login",
             "/delete"
     })
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
         
         return "redirect:" + request.getHeader("Referer");
     }
     
     @GetMapping("/allUsers")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String showAllUsers(Model model) {
         
         model.addAttribute("users", listUtilities.getUsersList());
@@ -53,6 +58,7 @@ public class AdminController {
     }
     
     @PostMapping("/search/login")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String findUserByLogin(@RequestParam(value = "username", required = false) String login,
                                   Model model) {
         
@@ -67,6 +73,7 @@ public class AdminController {
     }
     
     @PostMapping("/delete")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String deleteUser(@RequestParam("userId") Long userId) {
         
         userService.deleteById(userId);
@@ -74,7 +81,9 @@ public class AdminController {
         return "redirect:/admin/allUsers";
     }
     
+    
     @PostMapping("/search/id")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String findById(@RequestParam(value = "id", required = false) Long id,
                                   Model model) {
     
@@ -90,12 +99,14 @@ public class AdminController {
     }
     
     @GetMapping("/add")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String createNewAdmin() {
         
         return "/add_admin";
     }
     
     @PostMapping("/add")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String saveAdmin(@RequestParam("username") String login,
                             @RequestParam("password") String password,
                             Model model) {
