@@ -21,8 +21,8 @@
     </build>
 
     <properties>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
+        <maven.compiler.source>15.0.6</maven.compiler.source>
+        <maven.compiler.target>15.0.6</maven.compiler.target>
         <springboot.version>2.5.3</springboot.version>
         <spring.security.version>5.5.1</spring.security.version>
     </properties>
