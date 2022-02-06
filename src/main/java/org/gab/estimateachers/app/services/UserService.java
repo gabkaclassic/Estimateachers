@@ -16,11 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service("userService")
 public class UserService implements UserDetailsService, org.gab.estimateachers.app.services.Service<User>  {
     
     @Autowired
+    @Qualifier("userRepository")
     private UserRepository userRepository;
     
     @Autowired
@@ -29,6 +31,10 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    @Qualifier("mailService")
+    private MailService mailService;
     
     public List<User> findAll() {
        
@@ -86,7 +92,11 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         
-        user.setEmail(email); //TO DO
+        user.setEmail(email);
+        user.setEmail(email);
+        user.lock();
+        user.setActivationCode(UUID.randomUUID().toString());
+        mailService.sendConfirmEmail(user);
         
         userRepository.save(user);
     }
@@ -97,7 +107,10 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         user.setPassword(passwordEncoder.encode(password));
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
         
-        user.setEmail(email); //TO DO
+        user.setEmail(email);
+        user.lock();
+        user.setActivationCode(UUID.randomUUID().toString());
+        mailService.sendConfirmEmail(user);
         
         userRepository.save(user);
     }

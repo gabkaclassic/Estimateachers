@@ -225,7 +225,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     
             log.info("Error forbidden or user is null");
             
-            return "/error_forbidden";
+            return "/error";
         }
         User user = userService.findById(userId);
         model.addAttribute("user", (currentUser.getId().equals(userId)) ?
@@ -237,7 +237,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
             model.addAttribute("lockedRole", user.isLocked());
         }
         
-        model.addAttribute("delete", (currentUser.isAdmin() && user.getId().equals(currentUser.getId())));
+        model.addAttribute("delete", (currentUser.isAdmin() && !user.equals(currentUser)));
         
         return "/user_edit";
     }

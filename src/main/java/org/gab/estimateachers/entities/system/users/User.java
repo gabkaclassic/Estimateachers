@@ -129,6 +129,7 @@ public class User implements UserDetails {
     public void lock() {
         
         roles.add(Roles.LOCKED);
+        roles.remove(Roles.USER);
         roles.remove(Roles.ADMIN);
     }
     
