@@ -12,6 +12,7 @@ import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -21,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -32,6 +34,17 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/users")
 public class UsersController extends org.gab.estimateachers.app.controllers.Controller {
+    
+    @Value("${spring.mail.username}")
+    private String supportEmail;
+    
+    protected final String ERROR_MESSAGE = """
+            Error occurred: %s
+            Reason: %s
+            Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
+            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
+            Thank you for helping our service develop. Please go to the start page of the service.
+            """;
     
     @Value("${captcha.secret}")
     private String secret;
@@ -274,5 +287,20 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
         log.trace("Successful process edit profile");
         
         return "/homepage";
+    }
+    
+    @Recover
+    @PostMapping("/error")
+    @GetMapping("/error")
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
+    public ModelAndView error(Exception exception) {
+        
+        ModelAndView model = new ModelAndView("Error");
+        model.addObject("Error",
+                String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
+        );
+        
+        return model;
     }
 }
