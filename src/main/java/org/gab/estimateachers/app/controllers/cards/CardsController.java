@@ -9,12 +9,18 @@ import org.gab.estimateachers.entities.client.CardType;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -24,7 +30,18 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("/cards")
-public class CardsController {
+public class CardsController extends org.gab.estimateachers.app.controllers.Controller {
+    
+    @Value("${spring.mail.username}")
+    private String supportEmail;
+    
+    protected final String ERROR_MESSAGE = """
+            Error occurred: %s
+            Reason: %s
+            Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
+            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
+            Thank you for helping our service develop. Please go to the start page of the service.
+            """;
     
     @Autowired
     @Qualifier("dormitoryService")
@@ -77,12 +94,14 @@ public class CardsController {
             "/estimation/university"
             
     })
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
         
         return "redirect:" + request.getHeader("Referer");
     }
     
     @GetMapping("/list/{cardType}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String cardsList(@AuthenticationPrincipal User user,
                             @PathVariable("cardType") String cardType,
                             Model model) {
@@ -95,6 +114,7 @@ public class CardsController {
     }
     
     @PostMapping("/search/title")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String findByTitle(@AuthenticationPrincipal User user,
                               @RequestParam(value = "title", required = false) String title,
                               @RequestParam(value = "cardType") String cardType,
@@ -121,6 +141,7 @@ public class CardsController {
     }
     
     @PostMapping("/estimation/university")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String estimationUniversity(@AuthenticationPrincipal User user,
                                        @RequestParam(value = "priceRating", required = false) Integer priceRating,
                                        @RequestParam(value = "complexityRating", required = false) Integer complexityRating,
@@ -134,6 +155,7 @@ public class CardsController {
     }
     
     @PostMapping("/estimation/faculty")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String estimationFaculty(@AuthenticationPrincipal User user,
                                        @RequestParam(value = "priceRating", required = false) Integer priceRating,
                                        @RequestParam(value = "educationRating", required = false) Integer educationRating,
@@ -146,6 +168,7 @@ public class CardsController {
     }
     
     @PostMapping("/estimation/dormitory")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String estimationDormitory(@AuthenticationPrincipal User user,
                                     @RequestParam(value = "cleaningRating", required = false) Integer cleaningRating,
                                     @RequestParam(value = "roommatesRating", required = false) Integer roommatesRating,
@@ -159,6 +182,7 @@ public class CardsController {
     }
     
     @PostMapping("/estimation/teacher")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String estimationTeacher(@AuthenticationPrincipal User user,
                                     @RequestParam(value = "freebiesRating", required = false) Integer freebiesRating,
                                     @RequestParam(value = "exactingRating", required = false) Integer exactingRating,
@@ -172,6 +196,7 @@ public class CardsController {
     }
     
     @GetMapping("/add")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String createCard(Model model) {
         
         model.addAttribute("universities", listUtilities.getUniversitiesAbbreviationsList());
@@ -182,6 +207,7 @@ public class CardsController {
     }
     
     @PostMapping("/add/university")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String addUniversity(@AuthenticationPrincipal User user,
                                 @RequestParam("title") String universityTitle,
                                 @RequestParam(value = "bachelor", required = false) Boolean bachelor,
@@ -215,6 +241,7 @@ public class CardsController {
     }
     
     @PostMapping("/add/dormitory")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String addDormitory(@AuthenticationPrincipal User user,
                                @RequestParam("title") String dormitoryTitle,
                                @RequestParam("university") String universityAbbreviation,
@@ -248,6 +275,7 @@ public class CardsController {
     }
     
     @PostMapping("/add/faculty")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String addFaculty(@AuthenticationPrincipal User user,
                              @RequestParam("title") String facultyTitle,
                              @RequestParam("university") String universityAbbreviation,
@@ -282,6 +310,7 @@ public class CardsController {
     }
     
     @PostMapping("/add/teacher")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String addTeacher(@AuthenticationPrincipal User user,
                              @RequestParam("firstName") String firstname,
                              @RequestParam("lastName") String lastname,
@@ -317,6 +346,7 @@ public class CardsController {
     }
     
     @GetMapping("/get")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String getCard(@AuthenticationPrincipal User user,
                                  @RequestParam("id") Long cardId,
                                  @RequestParam("cardType") String cardType,
@@ -345,6 +375,7 @@ public class CardsController {
     
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/edit")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String editCard(@AuthenticationPrincipal User user,
                            @RequestParam("title") String cardTitle,
                            @RequestParam("type") String cardType,
@@ -366,6 +397,7 @@ public class CardsController {
     }
     
     @GetMapping("/collection")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String userCollectionCards(@AuthenticationPrincipal User user,
                                       Model model) {
         
@@ -378,6 +410,7 @@ public class CardsController {
     }
     
     @PostMapping("/collection/add")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String collectionAdd(@AuthenticationPrincipal User user,
                                 @RequestParam("cardId") Long cardId,
                                 @RequestParam("cardType") String cardType,
@@ -396,6 +429,7 @@ public class CardsController {
     
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/delete")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String deleteCard(@AuthenticationPrincipal User user,
                              @RequestParam("id") Long cardId,
                              @RequestParam("type") String cardType,
@@ -410,5 +444,20 @@ public class CardsController {
         }
         
         return cardsList(user, cardType, model);
+    }
+    
+    @Recover
+    @PostMapping("/error")
+    @GetMapping("/error")
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
+    public ModelAndView error(Exception exception) {
+        
+        ModelAndView model = new ModelAndView("Error");
+        model.addObject("Error",
+                String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
+        );
+        
+        return model;
     }
 }

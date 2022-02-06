@@ -8,7 +8,9 @@ import javax.persistence.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Data
@@ -43,11 +45,11 @@ public class Comment {
     )
     private Discussion discussion;
     
-    @ManyToMany(fetch = FetchType.LAZY)
-    List<User> likers;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<User> likers;
     
-    @ManyToMany(fetch = FetchType.LAZY)
-    List<User> dislikers;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<User> dislikers;
     
     public Comment() {
         

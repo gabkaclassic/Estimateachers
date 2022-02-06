@@ -21,6 +21,7 @@ public class MailService {
     
     @Value("${spring.mail.username}")
     private String from;
+    
     private static final String SUCCESS_REGISTRATION = """
     Dear %s, (%s) your application has been successfully reviewed by the administrators
     (on %s).

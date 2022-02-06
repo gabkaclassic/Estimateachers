@@ -92,6 +92,22 @@ public class User implements UserDetails {
         unlock();
     }
     
+    public boolean equals(Object other) {
+        
+        if(Objects.nonNull(other) && other instanceof User) {
+            
+            User user = (User)other;
+            return user.getId().equals(getId());
+        }
+        
+        return false;
+    }
+    
+    public int hashCode() {
+        
+        return getId().intValue();
+    }
+    
     public void unlock() {
     
         if(Objects.isNull(activationCode) && applied) {

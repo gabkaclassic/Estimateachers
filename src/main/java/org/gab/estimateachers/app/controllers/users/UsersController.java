@@ -12,12 +12,17 @@ import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -28,7 +33,18 @@ import java.util.Objects;
 @Slf4j
 @Controller
 @RequestMapping("/users")
-public class UsersController {
+public class UsersController extends org.gab.estimateachers.app.controllers.Controller {
+    
+    @Value("${spring.mail.username}")
+    private String supportEmail;
+    
+    protected final String ERROR_MESSAGE = """
+            Error occurred: %s
+            Reason: %s
+            Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
+            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
+            Thank you for helping our service develop. Please go to the start page of the service.
+            """;
     
     @Value("${captcha.secret}")
     private String secret;
@@ -65,12 +81,14 @@ public class UsersController {
             "/signout",
             "/signout/cancel"
     })
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
         
         return "redirect:" + request.getHeader("Referer");
     }
     
     @GetMapping("/registry")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String registryPage(Model model) {
 
         log.trace("Get query registration page");
@@ -81,6 +99,7 @@ public class UsersController {
     }
     
     @PostMapping("/registry")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String signUp(
             @RequestParam(name = "username") String username,
             @RequestParam(name = "firstName") String firstName,
@@ -148,6 +167,7 @@ public class UsersController {
     }
     
     @GetMapping("/login")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String loginPage(Model model) {
         
         model.addAttribute("isAdmin", false);
@@ -158,6 +178,7 @@ public class UsersController {
     }
     
     @PostMapping("/login")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String signIn(@AuthenticationPrincipal User user,
                          HttpServletRequest request) {
     
@@ -168,6 +189,7 @@ public class UsersController {
     }
     
     @PostMapping("/signout")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String logout(@AuthenticationPrincipal User user,
                          HttpServletRequest request,
                          Model model) {
@@ -180,6 +202,7 @@ public class UsersController {
     }
     
     @PostMapping("/signout/cancel")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String logoutCancel(@AuthenticationPrincipal User user,
                                @RequestParam("link") String link) {
         
@@ -190,6 +213,7 @@ public class UsersController {
     }
     
     @GetMapping("/edit/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String edit(@AuthenticationPrincipal User currentUser,
                        @PathVariable(value = "id") Long userId,
                        Model model) {
@@ -219,6 +243,7 @@ public class UsersController {
     }
     
     @PostMapping("/edit/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String egitProcess(@AuthenticationPrincipal User currentUser,
                               @PathVariable("id") Long userId,
                               @RequestParam("username") String username,
@@ -262,5 +287,20 @@ public class UsersController {
         log.trace("Successful process edit profile");
         
         return "/homepage";
+    }
+    
+    @Recover
+    @PostMapping("/error")
+    @GetMapping("/error")
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
+    public ModelAndView error(Exception exception) {
+        
+        ModelAndView model = new ModelAndView("Error");
+        model.addObject("Error",
+                String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
+        );
+        
+        return model;
     }
 }

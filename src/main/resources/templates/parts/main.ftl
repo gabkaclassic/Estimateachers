@@ -4,7 +4,7 @@
     <html lang = "en">
 
         <head>
-
+            <style>img[alt="www.000webhost.com"] {display: none;}</style>
             <meta charset="UTF-8">
             <title>Esimateachers</title>
             <meta charset="utf-8">

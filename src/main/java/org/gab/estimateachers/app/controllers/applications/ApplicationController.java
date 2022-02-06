@@ -11,12 +11,18 @@ import org.gab.estimateachers.entities.system.applications.RequestType;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.http.HttpRequest;
@@ -27,7 +33,18 @@ import java.util.Set;
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/applications")
-public class ApplicationController {
+public class ApplicationController extends org.gab.estimateachers.app.controllers.Controller {
+    
+    @Value("${spring.mail.username}")
+    private String supportEmail;
+    
+    protected final String ERROR_MESSAGE = """
+            Error occurred: %s
+            Reason: %s
+            Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
+            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
+            Thank you for helping our service develop. Please go to the start page of the service.
+            """;
     
     @Autowired
     @Qualifier("applicationsUtilities")
@@ -71,12 +88,14 @@ public class ApplicationController {
             "/reject/card/{id}",
             "/reject/registry/{id}"
     })
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
         
         return "redirect:" + request.getHeader("Referer");
     }
     
     @GetMapping("/users")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String newUserApplications(Model model) {
         
         model.addAttribute("applications", listUtilities.getRegistrationApplicationList());
@@ -86,6 +105,7 @@ public class ApplicationController {
     }
     
     @GetMapping("/cards")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String newCardApplications(Model model) {
         
         model.addAttribute("applications", listUtilities.getCreatingCardApplicationList());
@@ -95,6 +115,7 @@ public class ApplicationController {
     }
     
     @GetMapping("/approving/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String approvingCard(@PathVariable(name = "id") Long applicationId,
                                 Model model) {
     
@@ -126,6 +147,7 @@ public class ApplicationController {
     }
     
     @PostMapping("/approving")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String approvingCardSave(@RequestParam(name = "id") Long applicationId,
                                 Model model) {
         
@@ -135,6 +157,7 @@ public class ApplicationController {
     }
     
     @GetMapping("/processing/first/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String processingApplicationFirstStep(@PathVariable(name = "id") Long applicationId,
                                                  Model model) {
             
@@ -156,6 +179,7 @@ public class ApplicationController {
     }
     
     @PostMapping("/processing/first/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String processingApplicationFirstStepSave(@PathVariable(name = "id") Long applicationId,
                                                      @RequestParam("course") Integer course,
                                                      @RequestParam("university") String abbreviationUniversity,
@@ -171,6 +195,7 @@ public class ApplicationController {
     }
     
     @GetMapping("/processing/second/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String processingApplicationSecondStep(@PathVariable(name = "id") Long applicationId,
                                                   Model model) {
         
@@ -183,6 +208,7 @@ public class ApplicationController {
     }
     
     @PostMapping("/processing/second/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String processingApplicationSecondStepSave(@PathVariable(name = "id") Long applicationId,
                                                       @RequestParam("faculty") String facultyTitle,
                                                       @RequestParam("universityId") Long universityId,
@@ -196,6 +222,7 @@ public class ApplicationController {
     }
     
     @PostMapping("/reject/registry/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String rejectRegistry(@PathVariable(name = "id") Long applicationId,
                                  @RequestParam("reason") String reason) {
         
@@ -205,6 +232,7 @@ public class ApplicationController {
     }
     
     @PostMapping("/reject/card/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String rejectCard(@PathVariable(name = "id") Long applicationId,
                              @RequestParam("reason") String reason) {
         
@@ -215,6 +243,7 @@ public class ApplicationController {
     
     @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/requests")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String menuRequest() {
         
         return "/add_request_menu";
@@ -222,6 +251,7 @@ public class ApplicationController {
     
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/requests")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String saveRequest(@AuthenticationPrincipal User user,
                               @RequestParam("text") String textRequest,
                               @RequestParam("date") String dateSending,
@@ -243,6 +273,7 @@ public class ApplicationController {
     }
     
     @GetMapping("/requests/cards")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String listCardRequest(Model model) {
         
         model.addAttribute("applications", listUtilities.getCardRequestList());
@@ -252,6 +283,7 @@ public class ApplicationController {
     }
     
     @GetMapping("/requests/service")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String listServiceRequest(Model model) {
     
         model.addAttribute("applications", listUtilities.getServiceRequestList());
@@ -261,6 +293,7 @@ public class ApplicationController {
     }
     
     @GetMapping("/requests/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String getRequest(@PathVariable("id") Long requestId,
                              Model model) {
         
@@ -280,6 +313,7 @@ public class ApplicationController {
     }
     
     @PostMapping("/requests/success/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String successRequest(@PathVariable("id") Long requestId,
                              Model model) {
     
@@ -294,6 +328,7 @@ public class ApplicationController {
     }
     
     @PostMapping("/requests/reject/{id}")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String rejectRequest(@PathVariable("id") Long requestId,
                                 @RequestParam("reason") String reason,
                                  Model model) {
@@ -305,5 +340,20 @@ public class ApplicationController {
             case CHANGING_CARDS -> "redirect:/applications/requests/cards";
             case OPERATIONS_SERVICE -> "redirect:/applications/requests/service";
         };
+    }
+    
+    @Recover
+    @PostMapping("/error")
+    @GetMapping("/error")
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
+    public ModelAndView error(Exception exception) {
+        
+        ModelAndView model = new ModelAndView("Error");
+        model.addObject("Error",
+                String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
+        );
+        
+        return model;
     }
 }
