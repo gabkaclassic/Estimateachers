@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -187,6 +186,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
             
             return "/application_is_viewed";
         }
+        
         application.setViewed(true);
         registrationApplicationService.save(application);
         model.addAttribute("universities", listUtilities.getUniversitiesAbbreviationsList());
@@ -295,6 +295,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
         applicationsUtilities.checkRequestData(textRequest, type, remarks);
         
         if(!remarks.isEmpty()) {
+            
             model.addAttribute("remarks", remarks);
             model.addAttribute("text", textRequest);
             
@@ -340,6 +341,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
                              Model model) {
         
         Request request = requestService.findById(requestId);
+        
         if(request.isViewed()) {
             
             model.addAttribute("application", request);
@@ -348,6 +350,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
             
             return "/application_is_viewed";
         }
+        
         request.setViewed(true);
         requestService.save(request);
         model.addAttribute("request", request);
@@ -361,7 +364,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     @PostMapping("/requests/success/{id}")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String successRequest(@PathVariable("id") Long requestId,
-                             Model model) {
+                                 Model model) {
     
         Request request = requestService.findById(requestId);
         RequestType type = request.getRequestType();
@@ -379,7 +382,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String rejectRequest(@PathVariable("id") Long requestId,
                                 @RequestParam("reason") String reason,
-                                 Model model) {
+                                Model model) {
         
         RequestType type = requestService.findById(requestId).getRequestType();
         requestService.reject(requestId, reason);
@@ -398,6 +401,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     public ModelAndView error(Exception exception) {
         
         ModelAndView model = new ModelAndView("Error");
+        
         model.addObject("Error",
                 String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
         );

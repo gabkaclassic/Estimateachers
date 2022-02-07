@@ -52,6 +52,7 @@ public class DormitoryService implements CardService<Dormitory>  {
             dormitory.addPhoto(filesUtilities.registrationFile(null, RegistrationType.BUILDING));
         else
             files.stream().map(f -> filesUtilities.registrationFile(f, RegistrationType.BUILDING)).forEach(dormitory::addPhoto);
+        
         dormitory.setApproved(approved);
         save(dormitory);
         return dormitory;
@@ -115,8 +116,7 @@ public class DormitoryService implements CardService<Dormitory>  {
     }
     
     public void estimation(Long dormitoryId, User user, Integer cleaningRating, Integer roommatesRating, Integer capacityRating) {
-    
-    
+        
         cleaningRating = Objects.isNull(cleaningRating) ? 0 : cleaningRating;
         roommatesRating = Objects.isNull(roommatesRating) ? 0 : roommatesRating;
         capacityRating = Objects.isNull(capacityRating) ? 0 : capacityRating;

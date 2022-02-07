@@ -1,8 +1,5 @@
 package org.gab.estimateachers.app.utilities;
 
-import org.gab.estimateachers.app.repositories.client.DormitoryRepository;
-import org.gab.estimateachers.app.repositories.client.FacultyRepository;
-import org.gab.estimateachers.app.repositories.client.UniversityRepository;
 import org.gab.estimateachers.app.services.*;
 import org.gab.estimateachers.entities.client.*;
 import org.gab.estimateachers.entities.system.applications.CreatingCardApplication;
@@ -91,16 +88,6 @@ public class ListsUtilities {
                 .stream()
                 .filter(Dormitory::getApproved)
                 .map(Dormitory::getTitle)
-                .sorted()
-                .collect(Collectors.toList());
-    }
-    
-    public List<String> getFacultiesTitlesList(University university) {
-        
-        return universityService.findById(university.getId()).getFaculties()
-                .stream()
-                .filter(Faculty::getApproved)
-                .map(Faculty::getTitle)
                 .sorted()
                 .collect(Collectors.toList());
     }
@@ -203,7 +190,6 @@ public class ListsUtilities {
                 list.addAll(facultyService.findByTitlePattern(title));
                 list.addAll(teacherService.findByTitlePattern(title));
             }
-            default -> {}
         }
     
         model.addAttribute("listName", getCardListName(cardType));

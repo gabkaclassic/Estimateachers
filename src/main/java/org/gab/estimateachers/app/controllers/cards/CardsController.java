@@ -169,10 +169,10 @@ public class CardsController extends org.gab.estimateachers.app.controllers.Cont
     @PostMapping("/estimation/faculty")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String estimationFaculty(@AuthenticationPrincipal User user,
-                                       @RequestParam(value = "priceRating", required = false) Integer priceRating,
-                                       @RequestParam(value = "educationRating", required = false) Integer educationRating,
-                                       @RequestParam("cardId") Long facultyId,
-                                       Model model) {
+                                    @RequestParam(value = "priceRating", required = false) Integer priceRating,
+                                    @RequestParam(value = "educationRating", required = false) Integer educationRating,
+                                    @RequestParam("cardId") Long facultyId,
+                                    Model model) {
         
         facultyService.estimation(facultyId, user, priceRating, educationRating);
     
@@ -184,11 +184,11 @@ public class CardsController extends org.gab.estimateachers.app.controllers.Cont
     @PostMapping("/estimation/dormitory")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String estimationDormitory(@AuthenticationPrincipal User user,
-                                    @RequestParam(value = "cleaningRating", required = false) Integer cleaningRating,
-                                    @RequestParam(value = "roommatesRating", required = false) Integer roommatesRating,
-                                    @RequestParam(value = "capacityRating", required = false) Integer capacityRating,
-                                    @RequestParam("cardId") Long dormitoryId,
-                                    Model model) {
+                                      @RequestParam(value = "cleaningRating", required = false) Integer cleaningRating,
+                                      @RequestParam(value = "roommatesRating", required = false) Integer roommatesRating,
+                                      @RequestParam(value = "capacityRating", required = false) Integer capacityRating,
+                                      @RequestParam("cardId") Long dormitoryId,
+                                      Model model) {
         
         dormitoryService.estimation(dormitoryId, user, cleaningRating, roommatesRating, capacityRating);
     
@@ -380,9 +380,9 @@ public class CardsController extends org.gab.estimateachers.app.controllers.Cont
     @GetMapping("/get")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String getCard(@AuthenticationPrincipal User user,
-                                 @RequestParam("id") Long cardId,
-                                 @RequestParam("cardType") String cardType,
-                                 Model model) {
+                          @RequestParam("id") Long cardId,
+                          @RequestParam("cardType") String cardType,
+                          Model model) {
     
         Card card;
         Set<Long> collection = listUtilities.getCardsId(user, cardType);
@@ -397,6 +397,7 @@ public class CardsController extends org.gab.estimateachers.app.controllers.Cont
     
         if (Objects.nonNull(card))
             model.addAttribute("numbers", listUtilities.getNumbers(card.getPhotos()));
+        
         model.addAttribute("user", user);
         model.addAttribute("estimated", Objects.nonNull(card) && card.containsAssessor(user));
         model.addAttribute("isAdmin", Objects.nonNull(user) && user.isAdmin());
@@ -457,6 +458,7 @@ public class CardsController extends org.gab.estimateachers.app.controllers.Cont
                                 Model model) {
         
         inCollection = Objects.nonNull(inCollection) && inCollection;
+        
         if(inCollection)
             cardCollectionService.remove(user, cardId, cardType);
         else
@@ -495,6 +497,7 @@ public class CardsController extends org.gab.estimateachers.app.controllers.Cont
     public ModelAndView error(Exception exception) {
         
         ModelAndView model = new ModelAndView("Error");
+        
         model.addObject("Error",
                 String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
         );

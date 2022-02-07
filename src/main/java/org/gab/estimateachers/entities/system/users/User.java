@@ -3,12 +3,14 @@ package org.gab.estimateachers.entities.system.users;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.gab.estimateachers.entities.client.Student;
-import org.gab.estimateachers.entities.system.discussions.Comment;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.gab.estimateachers.app.configuration.CaptchaResponseDTO;
 import org.gab.estimateachers.app.services.StudentService;
 import org.gab.estimateachers.app.services.UserService;
-import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.app.utilities.UsersUtilities;
 import org.gab.estimateachers.entities.system.users.Genders;
@@ -42,7 +41,8 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
             Error occurred: %s
             Reason: %s
             Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
-            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
+            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s
+            
             Thank you for helping our service develop. Please go to the start page of the service.
             """;
     
@@ -100,21 +100,21 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     
     @PostMapping("/registry")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
-    public String signUp(
-            @RequestParam(name = "username") String username,
-            @RequestParam(name = "firstName") String firstName,
-            @RequestParam(name = "lastName") String lastName,
-            @RequestParam(name = "patronymic", required = false) String patronymic,
-            @RequestParam(name = "email") String email,
-            @RequestParam(name = "password") String password,
-            @RequestParam(name = "genders") String genderName,
-            @RequestParam(name = "profilePhoto") MultipartFile profilePhoto,
-            @RequestParam(name = "cardPhoto") MultipartFile cardPhoto,
-            @RequestParam(name = "date") String date,
-            @RequestParam(name = "g-recaptcha-response") String response,
-            Model model
-    ) {
+    public String signUp(@RequestParam(name = "username") String username,
+                         @RequestParam(name = "firstName") String firstName,
+                         @RequestParam(name = "lastName") String lastName,
+                         @RequestParam(name = "patronymic", required = false) String patronymic,
+                         @RequestParam(name = "email") String email,
+                         @RequestParam(name = "password") String password,
+                         @RequestParam(name = "genders") String genderName,
+                         @RequestParam(name = "profilePhoto") MultipartFile profilePhoto,
+                         @RequestParam(name = "cardPhoto") MultipartFile cardPhoto,
+                         @RequestParam(name = "date") String date,
+                         @RequestParam(name = "g-recaptcha-response") String response,
+                         Model model) {
+        
         response = response.substring(0, response.length()-1);
+        
         List<String> remarks = new ArrayList<>();
         String templateUrl = String.format(url, secret, response);
         CaptchaResponseDTO responseDTO = restTemplate.postForObject(templateUrl, Collections.emptyList(), CaptchaResponseDTO.class);
@@ -305,6 +305,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     public ModelAndView error(Exception exception) {
         
         ModelAndView model = new ModelAndView("Error");
+        
         model.addObject("Error",
                 String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
         );

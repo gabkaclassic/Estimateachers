@@ -19,6 +19,8 @@ import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+import java.util.Arrays;
+
 @Slf4j
 @Configuration
 @EnableWebSecurity
@@ -26,6 +28,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     
     private static final int PASSWORD_STRENGTH = 8;
+    
     @Autowired
     @Qualifier("userService")
     private UserDetailsService userService;
@@ -40,25 +43,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/users/registry", "/static/**", "/img/**", "/cards/list/**", "/confirm/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/users/login")
-                .permitAll()
+                .formLogin().loginPage("/users/login").permitAll()
                 .and()
                 .rememberMe()
                 .and()
-                .logout()
-                .logoutUrl("/users/logout")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
+                .logout().logoutUrl("/users/logout").invalidateHttpSession(true).deleteCookies("JSESSIONID").permitAll()
                 .and()
-                .csrf()
+                .csrf().and().cors()
                 .and()
-                .cors()
-                .and()
-                .sessionManagement()
-                .maximumSessions(3)
-                .maxSessionsPreventsLogin(true);
+                .sessionManagement().maximumSessions(3).maxSessionsPreventsLogin(true);
         
         log.info("Configured sessions, permissions, protocols");
     }
@@ -77,27 +70,41 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     
     @Bean
-    public static ServletListenerRegistrationBean httpSessionEventPublisher() {
+    public static ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
         
         log.info("Created bean from http-session event publisher");
         
-        return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
+        return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher());
     }
     
     @Override
     public void configure(WebSecurity web) throws Exception {
 
-        super.configure(web);
-        web.httpFirewall(allowSlashInUrl());
+        try{
+            super.configure(web);
+            web.httpFirewall(allowSlashInUrl());
+        }
+        catch (Exception exception) {
         
+            log.warn(String.format("Failed web security configure. Exception: %s, reason: %s, stack trace: %s",
+                    exception.getMessage(), exception.getCause(), Arrays.toString(exception.getStackTrace())));
+        }
         log.info("Configured web security");
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(userService)
-                .passwordEncoder(passwordEncoder);
+        
+        try {
+            auth
+                    .userDetailsService(userService)
+                    .passwordEncoder(passwordEncoder);
+        }
+        catch (Exception exception) {
+            
+            log.warn(String.format("Failed authentication manager configure. Exception: %s, reason: %s, stack trace: %s",
+                    exception.getMessage(), exception.getCause(), Arrays.toString(exception.getStackTrace())));
+        }
         
         log.info("Configured authentication manager");
     }

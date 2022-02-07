@@ -1,7 +1,6 @@
 package org.gab.estimateachers.app.utilities;
 
 import org.gab.estimateachers.app.services.CardService;
-import org.gab.estimateachers.app.services.Service;
 import org.gab.estimateachers.entities.client.Card;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,6 @@ public class CardsUtilities {
     
         if(remarks.isEmpty() && service.existsByTitle(title))
             remarks.add("This title already exists");
-        
         
         return isCorrectTitle;
     }

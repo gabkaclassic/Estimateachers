@@ -1,9 +1,7 @@
 package org.gab.estimateachers.app.repositories.system;
 
-import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.CardType;
 import org.gab.estimateachers.entities.system.users.CardCollection;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

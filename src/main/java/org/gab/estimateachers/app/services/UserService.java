@@ -1,7 +1,6 @@
 package org.gab.estimateachers.app.services;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.util.Strings;
 import org.gab.estimateachers.app.repositories.system.UserRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
@@ -92,10 +91,10 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         userRepository.saveAndFlush(user);
     }
     
-    public List<User> findByLogin(String login) {
-        
-        return List.of(userRepository.findByUsername(login));
-    }
+//    public List<User> findByLogin(String login) {
+//
+//        return List.of(userRepository.findByUsername(login));
+//    }
     
     public List<User> findByLoginPattern(String pattern) {
         
@@ -117,7 +116,19 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         userRepository.save(user);
     }
     public void update(Long id, String username, String password, String email, MultipartFile profilePhoto) {
+    
+        User user = userRepository.getOne(id);
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+    
+        user.setEmail(email);
+        user.setEmail(email);
+        user.lock();
+        user.setActivationCode(UUID.randomUUID().toString());
+        user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
+        mailService.sendConfirmEmail(user);
         
+        userRepository.save(user);
     }
     
     public void createAdmin(String login, String password) {

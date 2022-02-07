@@ -1,15 +1,10 @@
 package org.gab.estimateachers.entities.client;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.gab.estimateachers.entities.system.estimations.Estimation;
-import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
 import org.gab.estimateachers.entities.system.estimations.TeacherEstimation;
-import org.gab.estimateachers.entities.system.estimations.UniversityEstimation;
 import org.gab.estimateachers.entities.system.users.User;
-import org.junit.gen5.commons.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.HashSet;

@@ -37,7 +37,6 @@ public class CardCollectionService {
     @Qualifier("facultyService")
     private FacultyService facultyService;
     
-    
     public List<Card> findCollectionByUser(User user) {
         
         List<CardCollection> collection = cardCollectionRepository.findCollectionByUser(user.getId());
@@ -54,7 +53,6 @@ public class CardCollectionService {
                 case FACULTY -> facultiesId.add(c.getCardId());
                 case TEACHER -> teachersId.add(c.getCardId());
                 case DORMITORY -> dormitoriesId.add(c.getCardId());
-                default -> {}
             }
         }
         
@@ -82,7 +80,6 @@ public class CardCollectionService {
                 case FACULTY -> facultiesId.add(c.getCardId());
                 case TEACHER -> teachersId.add(c.getCardId());
                 case DORMITORY -> dormitoriesId.add(c.getCardId());
-                default -> {}
             }
         }
         
@@ -102,6 +99,7 @@ public class CardCollectionService {
     public void create(User user, Long cardId, String cardType) {
         
         CardCollection collection = new CardCollection(user.getId(), cardId, cardType);
+        
         cardCollectionRepository.save(collection);
     }
     

@@ -1,19 +1,20 @@
 package org.gab.estimateachers.app.configuration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 @Slf4j
-public class RedirectInterceptor extends HandlerInterceptorAdapter {
+public class RedirectInterceptor implements AsyncHandlerInterceptor {
     
-    public void postHandle(HttpServletRequest request,
-                           HttpServletResponse response,
-                           Object handler,
+    public void postHandle(@NonNull HttpServletRequest request,
+                           @NonNull HttpServletResponse response,
+                           @NonNull Object handler,
                            ModelAndView modelAndView) {
         
         if(Objects.nonNull(modelAndView)) {

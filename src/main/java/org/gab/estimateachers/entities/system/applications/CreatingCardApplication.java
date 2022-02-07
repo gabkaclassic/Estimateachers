@@ -2,8 +2,8 @@ package org.gab.estimateachers.entities.system.applications;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.gab.estimateachers.entities.client.Student;
 import org.gab.estimateachers.entities.client.CardType;
+import org.gab.estimateachers.entities.client.Student;
 
 import javax.persistence.*;
 

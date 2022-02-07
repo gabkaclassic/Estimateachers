@@ -23,8 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 
-import static javax.servlet.RequestDispatcher.ERROR_MESSAGE;
-
 @Slf4j
 @Controller
 @RequestMapping("/discussions")
@@ -37,7 +35,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
             Error occurred: %s
             Reason: %s
             Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
-            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
+            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s
+            
             Thank you for helping our service develop. Please go to the start page of the service.
             """;
     
@@ -85,8 +84,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     @GetMapping("/sorted/asc/{discussionId}")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String chatListOrderAsc(@AuthenticationPrincipal User user,
-                           @PathVariable("discussionId") Long discussionId,
-                           Model model) {
+                                   @PathVariable("discussionId") Long discussionId,
+                                   Model model) {
         
         Discussion discussion = discussionService.findById(discussionId);
         model.addAttribute("discussion", discussion);
@@ -101,8 +100,8 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     @GetMapping("/sorted/desc/{discussionId}")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String chatListOrderDesc(@AuthenticationPrincipal User user,
-                                   @PathVariable("discussionId") Long discussionId,
-                                   Model model) {
+                                    @PathVariable("discussionId") Long discussionId,
+                                    Model model) {
         
         Discussion discussion = discussionService.findById(discussionId);
         model.addAttribute("discussion", discussion);
@@ -200,6 +199,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     public ModelAndView error(Exception exception) {
         
         ModelAndView model = new ModelAndView("Error");
+        
         model.addObject("Error",
                 String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
         );

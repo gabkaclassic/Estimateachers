@@ -7,7 +7,6 @@ import org.gab.estimateachers.entities.system.users.User;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.List;
 
 @Data
 @NoArgsConstructor

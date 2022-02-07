@@ -38,7 +38,8 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
             Error occurred: %s
             Reason: %s
             Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
-            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
+            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s
+            
             Thank you for helping our service develop. Please go to the start page of the service.
             """;
     
@@ -71,7 +72,8 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     
     @GetMapping("/allUsers")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
-    public String showAllUsers(@AuthenticationPrincipal User admin, Model model) {
+    public String showAllUsers(@AuthenticationPrincipal User admin,
+                               Model model) {
         
         model.addAttribute("users", listUtilities.getUsersList());
         
@@ -100,7 +102,8 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     
     @PostMapping("/delete")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
-    public String deleteUser(@AuthenticationPrincipal User admin, @RequestParam("userId") Long userId) {
+    public String deleteUser(@AuthenticationPrincipal User admin,
+                             @RequestParam("userId") Long userId) {
         
         userService.deleteById(userId);
     
@@ -114,7 +117,7 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String findById(@AuthenticationPrincipal User admin,
                            @RequestParam(value = "id", required = false) Long id,
-                                  Model model) {
+                           Model model) {
     
         if(Objects.nonNull(id)) {
             User user = userService.findById(id);
@@ -171,6 +174,7 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     public ModelAndView error(Exception exception) {
         
         ModelAndView model = new ModelAndView("Error");
+        
         model.addObject("Error",
                 String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
         );

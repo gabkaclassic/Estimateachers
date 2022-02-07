@@ -119,6 +119,7 @@ public class FacultyService implements CardService<Faculty> {
             faculty.addPhoto(filesUtilities.registrationFile(null, RegistrationType.OTHER));
         else
             files.stream().map(f -> filesUtilities.registrationFile(f, RegistrationType.OTHER)).forEach(faculty::addPhoto);
+        
         faculty.setApproved(approved);
         save(faculty);
         universityService.save(university);

@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
 
-public abstract class ApplicationService<T extends Application, R extends ApplicationRepository<T>> implements org.gab.estimateachers.app.services.Service<T> {
+public abstract class ApplicationService<T extends Application, R extends ApplicationRepository<T>>
+        implements org.gab.estimateachers.app.services.Service<T> {
     
     protected R applicationRepository;
     

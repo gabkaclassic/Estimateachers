@@ -10,8 +10,7 @@ import java.util.List;
 public interface CreatingCardApplicationRepository extends ApplicationRepository<CreatingCardApplication> {
     
     @Query(
-            value = "select * from creating_card_applications where viewed = 'f'",
-            nativeQuery = true
+            value = "select cca from CreatingCardApplication cca where cca.viewed = 'f'"
     )
     List<CreatingCardApplication> findAllNotViewed();
 }
