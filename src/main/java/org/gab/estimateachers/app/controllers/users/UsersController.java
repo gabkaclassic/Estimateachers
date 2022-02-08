@@ -192,12 +192,25 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
         return "redirect:"+ request.getHeader("Referer");
     }
     
+    @GetMapping("/online")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    public String userOnline(@AuthenticationPrincipal User user,
+                         HttpServletRequest request) {
+    
+        user = userService.findById(user.getId());
+        user.setOnline(true);
+        userService.save(user);
+        
+        return "redirect:/";
+    }
+    
     @PostMapping("/signout")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String logout(@AuthenticationPrincipal User user,
                          HttpServletRequest request,
                          Model model) {
         
+        user = userService.findById(user.getId());
         user.setOnline(false);
         userService.save(user);
         model.addAttribute("link", request.getHeader("Referer"));
@@ -211,7 +224,8 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String logoutCancel(@AuthenticationPrincipal User user,
                                @RequestParam("link") String link) {
-        
+    
+        user = userService.findById(user.getId());
         user.setOnline(true);
         userService.save(user);
     

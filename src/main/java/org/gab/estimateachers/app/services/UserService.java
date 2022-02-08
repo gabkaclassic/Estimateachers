@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service("userService")
-public class UserService implements UserDetailsService, org.gab.estimateachers.app.services.Service<User>  {
+public class UserService implements UserDetailsService  {
     
     @Autowired
     @Qualifier("userRepository")
@@ -91,11 +91,6 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         userRepository.saveAndFlush(user);
     }
     
-//    public List<User> findByLogin(String login) {
-//
-//        return List.of(userRepository.findByUsername(login));
-//    }
-    
     public List<User> findByLoginPattern(String pattern) {
         
         return userRepository.findByUsernamePattern(pattern);
@@ -107,11 +102,13 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         
+        if(!user.isAdmin() && Objects.nonNull(user.getEmail()) && Objects.nonNull(email) && !user.getEmail().equals(email)) {
+            user.lock();
+            user.setActivationCode(UUID.randomUUID().toString());
+            mailService.sendConfirmEmail(user);
+        }
+    
         user.setEmail(email);
-        user.setEmail(email);
-        user.lock();
-        user.setActivationCode(UUID.randomUUID().toString());
-        mailService.sendConfirmEmail(user);
         
         userRepository.save(user);
     }
@@ -122,13 +119,15 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         user.setPassword(passwordEncoder.encode(password));
     
         user.setEmail(email);
-        user.setEmail(email);
-        user.lock();
-        user.setActivationCode(UUID.randomUUID().toString());
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
-        mailService.sendConfirmEmail(user);
         
-        userRepository.save(user);
+        if(!user.isAdmin() && Objects.nonNull(user.getEmail()) && Objects.nonNull(email) && !user.getEmail().equals(email)) {
+            user.lock();
+            user.setActivationCode(UUID.randomUUID().toString());
+            mailService.sendConfirmEmail(user);
+        }
+        
+        userRepository.saveAndFlush(user);
     }
     
     public void createAdmin(String login, String password) {

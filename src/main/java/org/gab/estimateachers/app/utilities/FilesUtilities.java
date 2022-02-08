@@ -78,9 +78,8 @@ public class FilesUtilities {
                 return uploadPath
                         .concat(defaultFilename);
             else
-                return uploadPath
-                        .concat(UUID.randomUUID().toString())
-                        .concat(Objects.requireNonNull(file.getOriginalFilename()));
+                return uploadPath.concat("\\")
+                        .concat(UUID.randomUUID().toString()).concat(Objects.requireNonNull(file.getOriginalFilename()));
         }
     }
 }

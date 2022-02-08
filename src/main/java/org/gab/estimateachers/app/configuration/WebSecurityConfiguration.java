@@ -43,7 +43,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/users/registry", "/static/**", "/img/**", "/cards/list/**", "/confirm/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/users/login").permitAll()
+                .formLogin().loginPage("/users/login").permitAll().defaultSuccessUrl("/users/online").failureUrl("/users/online")
                 .and()
                 .rememberMe()
                 .and()
