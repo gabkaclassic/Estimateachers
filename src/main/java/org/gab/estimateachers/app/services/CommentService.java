@@ -89,5 +89,4 @@ public class CommentService implements Service<Comment> {
         
         return commentRepository.findByDiscussionIdOrderByRatingAsc(discussionId);
     }
-    
 }

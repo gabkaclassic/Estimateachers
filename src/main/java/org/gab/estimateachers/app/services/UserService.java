@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.gab.estimateachers.app.repositories.system.UserRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
@@ -14,13 +15,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
+@Slf4j
 @Service("userService")
-public class UserService implements UserDetailsService, org.gab.estimateachers.app.services.Service<User>  {
+public class UserService implements UserDetailsService  {
     
     @Autowired
+    @Qualifier("userRepository")
     private UserRepository userRepository;
     
     @Autowired
@@ -29,6 +34,10 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    @Qualifier("mailService")
+    private MailService mailService;
     
     public List<User> findAll() {
        
@@ -49,14 +58,26 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
     
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
-        if(Objects.isNull(username))
-            throw new NullPointerException("Login is null");
+        if(Objects.isNull(username)) {
+            
+            NullPointerException exception = new NullPointerException("Login is null");
+            
+            log.warn(String.format("The null value was passed instead of the user's nickname. Exception: %s, reason: %s, stack trace: %s",
+                    exception.getMessage(), exception.getCause(), Arrays.toString(exception.getStackTrace())));
+            throw exception;
+        }
         
         User user = userRepository.findByUsername(username);
         
-        if(Objects.isNull(user))
-            throw new NullPointerException("User not found");
-        
+        if(Objects.isNull(user)) {
+    
+            NullPointerException exception = new NullPointerException("User not found");
+    
+            log.warn(String.format("The user was not found by nickname. Exception: %s, reason: %s, stack trace: %s",
+                    exception.getMessage(), exception.getCause(), Arrays.toString(exception.getStackTrace())));
+            
+            throw exception;
+        }
         return user;
     }
     
@@ -70,11 +91,6 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         userRepository.saveAndFlush(user);
     }
     
-    public List<User> findByLogin(String login) {
-        
-        return List.of(userRepository.findByUsername(login));
-    }
-    
     public List<User> findByLoginPattern(String pattern) {
         
         return userRepository.findByUsernamePattern(pattern);
@@ -86,20 +102,32 @@ public class UserService implements UserDetailsService, org.gab.estimateachers.a
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         
-        user.setEmail(email); //TO DO
+        if(!user.isAdmin() && Objects.nonNull(user.getEmail()) && Objects.nonNull(email) && !user.getEmail().equals(email)) {
+            user.lock();
+            user.setActivationCode(UUID.randomUUID().toString());
+            mailService.sendConfirmEmail(user);
+        }
+    
+        user.setEmail(email);
         
         userRepository.save(user);
     }
     public void update(Long id, String username, String password, String email, MultipartFile profilePhoto) {
-        
+    
         User user = userRepository.getOne(id);
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
+    
+        user.setEmail(email);
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
         
-        user.setEmail(email); //TO DO
+        if(!user.isAdmin() && Objects.nonNull(user.getEmail()) && Objects.nonNull(email) && !user.getEmail().equals(email)) {
+            user.lock();
+            user.setActivationCode(UUID.randomUUID().toString());
+            mailService.sendConfirmEmail(user);
+        }
         
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
     
     public void createAdmin(String login, String password) {

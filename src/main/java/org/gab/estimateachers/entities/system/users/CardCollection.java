@@ -50,4 +50,3 @@ public class CardCollection {
         setCardType(CardType.valueOf(cardType));
     }
 }
-

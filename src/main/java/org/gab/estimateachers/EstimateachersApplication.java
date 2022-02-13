@@ -9,15 +9,13 @@ import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Slf4j
 @SpringBootApplication
 @EnableJpaRepositories("org.gab.estimateachers.app.repositories")
 @EntityScan(basePackages = {"org.gab.estimateachers.entities"})
 @PropertySources({
-        @PropertySource("classpath:application.properties"),
-        @PropertySource("classpath:log4j.properties")
+        @PropertySource("classpath:application.properties")
 })
 @ComponentScans(
         @ComponentScan("org.gab.estimateachers")

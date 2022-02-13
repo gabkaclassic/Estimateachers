@@ -6,4 +6,6 @@
 *.png
 *.sh
 *.txt
+*.log
+*.ini
 /src/main/resources/db/migration/V2__Add_admin.sql

@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.controllers.users;
 
+import lombok.extern.slf4j.Slf4j;
 import org.gab.estimateachers.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+@Slf4j
 @Controller
 @RequestMapping("/confirm")
 public class ConfirmController extends org.gab.estimateachers.app.controllers.Controller {
@@ -24,7 +26,8 @@ public class ConfirmController extends org.gab.estimateachers.app.controllers.Co
             Error occurred: %s
             Reason: %s
             Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
-            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
+            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s
+         
             Thank you for helping our service develop. Please go to the start page of the service.
             """;
     
@@ -54,26 +57,31 @@ public class ConfirmController extends org.gab.estimateachers.app.controllers.Co
         if(userService.confirmEmail(activationCode)) {
             model.addAttribute("status", "success");
             model.addAttribute("text", SUCCESS_CONFIRM_EMAIL_TEXT);
+    
+            log.info("The user has successful verified the mail");
         }
         else {
             model.addAttribute("status", "danger");
             model.addAttribute("text", FAIL_CONFIRM_EMAIL_TEXT + adminEmail);
+            
+            log.info("The user has failed verified the mail");
         }
         
         return "/confirm_result";
     }
     
     @Recover
-    @PostMapping("/error")
-    @GetMapping("/error")
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
     public ModelAndView error(Exception exception) {
         
         ModelAndView model = new ModelAndView("Error");
+        
         model.addObject("Error",
                 String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
         );
+    
+        log.warn(String.format("Exception: %s, reason: %s", exception.getMessage(), exception.getCause()));
         
         return model;
     }

@@ -22,5 +22,4 @@ public class ApplicationsUtilities {
         if(Objects.isNull(type))
             remarks.add("Select type of your request");
     }
-    
 }

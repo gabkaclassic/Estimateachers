@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.gab.estimateachers.app.configuration.CaptchaResponseDTO;
 import org.gab.estimateachers.app.services.StudentService;
 import org.gab.estimateachers.app.services.UserService;
-import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.app.utilities.UsersUtilities;
 import org.gab.estimateachers.entities.system.users.Genders;
@@ -42,7 +41,8 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
             Error occurred: %s
             Reason: %s
             Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
-            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
+            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s
+            
             Thank you for helping our service develop. Please go to the start page of the service.
             """;
     
@@ -72,10 +72,6 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     @Qualifier("usersUtilities")
     private UsersUtilities usersUtilities;
     
-    @Autowired
-    @Qualifier("filesUtilities")
-    private FilesUtilities filesUtilities;
-    
     @GetMapping(value = {
             "/logout",
             "/signout",
@@ -83,47 +79,51 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     })
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
-        
-        return "redirect:" + request.getHeader("Referer");
+    
+        String header = request.getHeader("Referer");
+    
+        log.info("A plug has triggered in users controller, the request has been redirected to: " + header);
+    
+        return "redirect:" + header;
     }
     
     @GetMapping("/registry")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String registryPage(Model model) {
-
-        log.trace("Get query registration page");
         
         model.addAttribute("genders", listUtilities.getGendersList());
-     
+    
+        log.info("Get query registration page");
+        
         return "/registry";
     }
     
     @PostMapping("/registry")
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
-    public String signUp(
-            @RequestParam(name = "username") String username,
-            @RequestParam(name = "firstName") String firstName,
-            @RequestParam(name = "lastName") String lastName,
-            @RequestParam(name = "patronymic", required = false) String patronymic,
-            @RequestParam(name = "email") String email,
-            @RequestParam(name = "password") String password,
-            @RequestParam(name = "genders") String genderName,
-            @RequestParam(name = "profilePhoto") MultipartFile profilePhoto,
-            @RequestParam(name = "cardPhoto") MultipartFile cardPhoto,
-            @RequestParam(name = "date") String date,
-            @RequestParam(name = "g-recaptcha-response") String response,
-            Model model
-    ) {
+    public String signUp(@RequestParam(name = "username") String username,
+                         @RequestParam(name = "firstName") String firstName,
+                         @RequestParam(name = "lastName") String lastName,
+                         @RequestParam(name = "patronymic", required = false) String patronymic,
+                         @RequestParam(name = "email") String email,
+                         @RequestParam(name = "password") String password,
+                         @RequestParam(name = "genders") String genderName,
+                         @RequestParam(name = "profilePhoto") MultipartFile profilePhoto,
+                         @RequestParam(name = "cardPhoto") MultipartFile cardPhoto,
+                         @RequestParam(name = "date") String date,
+                         @RequestParam(name = "g-recaptcha-response") String response,
+                         Model model) {
+        
         response = response.substring(0, response.length()-1);
+        
         List<String> remarks = new ArrayList<>();
         String templateUrl = String.format(url, secret, response);
         CaptchaResponseDTO responseDTO = restTemplate.postForObject(templateUrl, Collections.emptyList(), CaptchaResponseDTO.class);
         
-        if(Objects.nonNull(responseDTO) && !responseDTO.isSuccess())
+        if(Objects.nonNull(responseDTO) && !responseDTO.isSuccess()) {
+            
             remarks.addAll(responseDTO.getErrorCodes());
-        
-        log.trace("User registration process");
-        
+            log.info("Failed passage of Google reCaptcha");
+        }
         
         boolean isCorrectData = usersUtilities.checkUserDataFromRegistration(
                 firstName,
@@ -146,6 +146,8 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
             model.addAttribute("patronymic", patronymic);
             model.addAttribute("password", password);
             model.addAttribute("email", email);
+    
+            log.info("Failed user registration process");
             
             return registryPage(model);
         }
@@ -161,7 +163,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
                 userService.createUser(username, password, email)
         );
         
-        log.trace("Successful process registration");
+        log.info("Successful process registration");
         
         return "redirect:/users/login";
     }
@@ -185,7 +187,21 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
         user.setOnline(true);
         userService.save(user);
         
+        log.info("Successful authorization process");
+        
         return "redirect:"+ request.getHeader("Referer");
+    }
+    
+    @GetMapping("/online")
+    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    public String userOnline(@AuthenticationPrincipal User user,
+                         HttpServletRequest request) {
+    
+        user = userService.findById(user.getId());
+        user.setOnline(true);
+        userService.save(user);
+        
+        return "redirect:/";
     }
     
     @PostMapping("/signout")
@@ -194,9 +210,12 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
                          HttpServletRequest request,
                          Model model) {
         
+        user = userService.findById(user.getId());
         user.setOnline(false);
         userService.save(user);
         model.addAttribute("link", request.getHeader("Referer"));
+    
+        log.info("Successful logout process (first step)");
         
         return "/logout_process";
     }
@@ -205,9 +224,12 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String logoutCancel(@AuthenticationPrincipal User user,
                                @RequestParam("link") String link) {
-        
+    
+        user = userService.findById(user.getId());
         user.setOnline(true);
         userService.save(user);
+    
+        log.info("Successful logout process (second step)");
         
         return "redirect:" + link;
     }
@@ -216,16 +238,15 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String edit(@AuthenticationPrincipal User currentUser,
                        @PathVariable(value = "id") Long userId,
-                       Model model) {
-        
-        log.trace("Get query edit profile page");
+                       Model model) throws Exception {
         
         if(Objects.isNull(currentUser)
                 || (!currentUser.isAdmin() && !currentUser.getId().equals(userId))) {
     
-            log.info("Error forbidden or user is null");
+            log.info(String.format("Failed profile change request (profile ID: %s, user ID: %s)",
+                    userId.toString(), currentUser.getId().toString()));
             
-            return "/error_forbidden";
+            throw new Exception("Error forbidden or user is null");
         }
         User user = userService.findById(userId);
         model.addAttribute("user", (currentUser.getId().equals(userId)) ?
@@ -237,7 +258,10 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
             model.addAttribute("lockedRole", user.isLocked());
         }
         
-        model.addAttribute("delete", (currentUser.isAdmin() && user.getId().equals(currentUser.getId())));
+        model.addAttribute("delete", (currentUser.isAdmin() && !user.equals(currentUser)));
+    
+        log.info(String.format("Successful profile change request (profile ID: %s, user ID: %s)",
+                userId.toString(), currentUser.getId().toString()));
         
         return "/user_edit";
     }
@@ -253,9 +277,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
                               @RequestParam(value = "userRole", required = false) Boolean userRole,
                               @RequestParam(value = "adminRole", required = false) Boolean adminRole,
                               @RequestParam(value = "lockedRole", required = false) Boolean lockedRole,
-                              Model model) {
-        
-        log.trace("User edit profile process");
+                              Model model) throws Exception {
         
         List<String> remarks = new ArrayList<>();
         User user = userService.findById(userId);
@@ -272,9 +294,10 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
         
         if(!remarks.isEmpty()) {
             
-            log.info("Incorrect data: ".concat(String.join("; ", remarks)));
-            
             model.addAttribute("remarks", remarks);
+    
+            log.info(String.format("Failed profile change process (profile ID: %s, user ID: %s)",
+                    userId.toString(), currentUser.getId().toString()));
             
             return edit(user, userId, model);
         }
@@ -283,23 +306,25 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
             userService.update(userId, username, password, email, profilePhoto);
         else
             userService.update(userId, username, password, email);
-        
-        log.trace("Successful process edit profile");
+    
+        log.info(String.format("Successful profile change process (profile ID: %s, user ID: %s)",
+                userId.toString(), currentUser.getId().toString()));
         
         return "/homepage";
     }
     
     @Recover
-    @PostMapping("/error")
-    @GetMapping("/error")
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
     public ModelAndView error(Exception exception) {
         
         ModelAndView model = new ModelAndView("Error");
+        
         model.addObject("Error",
                 String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
         );
+    
+        log.warn(String.format("Exception: %s, reason: %s", exception.getMessage(), exception.getCause()));
         
         return model;
     }

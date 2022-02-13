@@ -4,7 +4,10 @@ import org.gab.estimateachers.app.repositories.client.TeacherRepository;
 import org.gab.estimateachers.app.repositories.system.TeacherEstimationRepository;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
-import org.gab.estimateachers.entities.client.*;
+import org.gab.estimateachers.entities.client.Card;
+import org.gab.estimateachers.entities.client.Faculty;
+import org.gab.estimateachers.entities.client.Teacher;
+import org.gab.estimateachers.entities.client.University;
 import org.gab.estimateachers.entities.system.estimations.TeacherEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +23,15 @@ public class TeacherService implements CardService<Teacher> {
     
     @Autowired
     @Qualifier("teacherRepository")
-    TeacherRepository teacherRepository;
+    private TeacherRepository teacherRepository;
     
     @Autowired
     @Qualifier("universityService")
-    UniversityService universityService;
+    private UniversityService universityService;
     
     @Autowired
     @Qualifier("facultyService")
-    FacultyService facultyService;
+    private FacultyService facultyService;
     
     @Autowired
     @Qualifier("filesUtilities")

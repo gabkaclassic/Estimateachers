@@ -7,9 +7,8 @@ import org.gab.estimateachers.entities.system.users.User;
 import javax.persistence.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -96,7 +95,8 @@ public class Comment {
         try {
             this.date = dateFormat.parse(date);
         } catch (ParseException e) {
-            log.warn("Incorrect parsing date: ".concat(date), e);
+            log.warn(String.format("Incorrect parsing date: exception. Exception: %s, reason: %s, stack trace: %s",
+                    e.getMessage(), e.getCause(), Arrays.toString(e.getStackTrace())));
         }
     }
     

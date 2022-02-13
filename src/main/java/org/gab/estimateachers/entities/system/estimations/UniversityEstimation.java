@@ -4,7 +4,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.gab.estimateachers.entities.system.users.User;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "university_estimations")

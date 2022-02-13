@@ -1,7 +1,7 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.system.CreatingCardApplicationRepository;
-import org.gab.estimateachers.entities.client.*;
+import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.CardType;
 import org.gab.estimateachers.entities.system.applications.CreatingCardApplication;
 import org.gab.estimateachers.entities.system.users.User;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service("creatingCardApplicationService")
-public class CreatingCardApplicationService extends ApplicationService<CreatingCardApplication, CreatingCardApplicationRepository> {
-    
+public class CreatingCardApplicationService extends ApplicationService<CreatingCardApplication,
+        CreatingCardApplicationRepository> {
     
     @Autowired
     @Qualifier("teacherService")

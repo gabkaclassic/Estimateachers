@@ -49,15 +49,15 @@ public class UsersUtilities {
     
     public boolean checkNames(String firstName, String lastName, String patronymic, List<String> remarks) {
         
-        boolean isCorrectNames = (!StringUtils.isEmpty(firstName)
+        boolean isCorrectNames = (Objects.nonNull(firstName) && !firstName.isEmpty()
                 && ((firstName = firstName.substring(0, 1).toUpperCase(Locale.ROOT).concat(firstName.substring(1)).trim()))
                 .length() >= MIN_LENGTH_LOGIN && firstName.length() <= MAX_LENGTH_LOGIN)
                 && NAME_PATTERN.matcher(firstName).matches()
-                && (!StringUtils.isEmpty(lastName)
+                && (Objects.nonNull(lastName) && !lastName.isEmpty()
                 && ((lastName = lastName.substring(0, 1).toUpperCase(Locale.ROOT).concat(lastName.substring(1)).trim()))
                 .length() >= MIN_LENGTH_LOGIN && lastName.length() <= MAX_LENGTH_LOGIN)
                 && NAME_PATTERN.matcher(lastName).matches()
-                && ((StringUtils.isEmpty(patronymic)
+                && ((Objects.nonNull(patronymic) && !patronymic.isEmpty()
                 || ((patronymic = patronymic.substring(0, 1).toUpperCase(Locale.ROOT).concat(patronymic.substring(1)).trim())
                 .length() >= MIN_LENGTH_LOGIN && patronymic.length() <= MAX_LENGTH_LOGIN)
                 && NAME_PATTERN.matcher(patronymic).matches()));

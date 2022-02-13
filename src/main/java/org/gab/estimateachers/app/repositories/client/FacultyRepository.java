@@ -1,7 +1,5 @@
 package org.gab.estimateachers.app.repositories.client;
 
-import org.gab.estimateachers.entities.client.Card;
-import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.client.University;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +8,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -49,6 +46,7 @@ public interface FacultyRepository extends CrudRepository<Faculty, Long>,
             value = "select f from Faculty f where f.id in :list"
     )
     List<Faculty> findByListId(@Param("list") Set<Long> facultiesId);
+    
     @Query(
             value = "select f from Faculty f where f.id in :list and lower(f.title) like lower(concat('%', :title, '%')) order by title"
     )

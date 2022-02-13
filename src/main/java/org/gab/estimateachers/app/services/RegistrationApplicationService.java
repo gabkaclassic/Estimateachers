@@ -49,9 +49,8 @@ public class RegistrationApplicationService extends ApplicationService<Registrat
     
         studentService.save(student);
         applicationRepository.delete(application);
+        mailService.notifyAccessRegistration(student.getAccount());
     }
-    
-    public void apply(Long requestId) {}
     
     public List<RegistrationApplication> findAllNotViewed() {
         

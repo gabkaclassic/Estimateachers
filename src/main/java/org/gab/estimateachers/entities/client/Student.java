@@ -1,6 +1,5 @@
 package org.gab.estimateachers.entities.client;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

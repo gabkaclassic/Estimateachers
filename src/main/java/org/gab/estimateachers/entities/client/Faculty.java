@@ -1,6 +1,8 @@
 package org.gab.estimateachers.entities.client;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.lang.NonNull;

@@ -24,7 +24,7 @@ public class UniversityService implements CardService<University> {
     
     @Autowired
     @Qualifier("universityRepository")
-    private UniversityRepository<Card, Long> universityRepository;
+    private UniversityRepository<Long> universityRepository;
     
     @Autowired
     @Qualifier("universityEstimationRepository")
@@ -39,13 +39,19 @@ public class UniversityService implements CardService<University> {
         universityRepository.save(university);
     }
     
-    public University create(String universityTitle, Boolean bachelor, Boolean magistracy, Boolean specialty, Set<MultipartFile> files, boolean approved) {
+    public University create(String universityTitle,
+                             Boolean bachelor,
+                             Boolean magistracy,
+                             Boolean specialty,
+                             Set<MultipartFile> files,
+                             boolean approved) {
         
         University university = new University(universityTitle, bachelor, magistracy, specialty);
         if(Objects.isNull(files) || files.isEmpty())
             university.addPhoto(filesUtilities.registrationFile(null, RegistrationType.BUILDING));
         else
             files.stream().map(f -> filesUtilities.registrationFile(f, RegistrationType.BUILDING)).forEach(university::addPhoto);
+        
         university.setApproved(approved);
         save(university);
         

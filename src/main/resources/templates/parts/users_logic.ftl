@@ -119,11 +119,13 @@
         <button type = "submit" class="btn btn-primary mt-3"> <#if edit> &#9998; <#elseif registry> &#9745; </#if> ${textButton}</button>
     </form>
     <#if delete??>
-        <form method = "post" action = "/admin/delete">
-            <input type="hidden" name = "userId" value = ${user.id} />
-            <@security.token />
-            <button class="btn btn-danger" type="submit"> &#10006; Delete</button>
-        </form>
+        <#if delete>
+            <form method = "post" action = "/admin/delete">
+                <input type="hidden" name = "userId" value = ${user.id} />
+                <@security.token />
+                <button class="btn btn-danger" type="submit"> &#10006; Delete</button>
+            </form>
+        </#if>
     </#if>
 </div>
 

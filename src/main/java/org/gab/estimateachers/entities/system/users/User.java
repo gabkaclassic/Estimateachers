@@ -3,18 +3,26 @@ package org.gab.estimateachers.entities.system.users;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.gab.estimateachers.entities.client.Student;
-import org.gab.estimateachers.entities.system.discussions.Comment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+    
+    @Value("${upload.filename.default.people}")
+    private static String upload;
+    
+    @Value("${upload.path}")
+    private static String defaultFilename;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,7 +83,14 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Roles> roles = new HashSet<>();
     
+    public User() {
+        
+        setFilename(upload + defaultFilename);
+    }
+    
     public User(String username, String password, String email) {
+        
+        this();
         
         setUsername(username);
         setEmail((Objects.nonNull(email) && email.isEmpty()) ? null : email);
@@ -129,6 +144,7 @@ public class User implements UserDetails {
     public void lock() {
         
         roles.add(Roles.LOCKED);
+        roles.remove(Roles.USER);
         roles.remove(Roles.ADMIN);
     }
     

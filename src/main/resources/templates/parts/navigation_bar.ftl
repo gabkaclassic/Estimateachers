@@ -16,9 +16,6 @@
                     <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
                 <li>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                        Cards
-                    </button>
                     <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
@@ -52,9 +49,6 @@
                     <div class="collapse navbar-collapse" id="navbarNavDarkDropdownApplications">
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
-                                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown2" aria-controls="navbarNavDarkDropdown2" aria-expanded="false" aria-label="Toggle navigation">
-                                    Applications
-                                </button>
                                 <div class="collapse navbar-collapse" id="navbarNavDarkDropdown2">
                                     <ul class="navbar-nav">
                                         <li class="nav-item dropdown">

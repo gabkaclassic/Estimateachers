@@ -3,14 +3,10 @@ package org.gab.estimateachers.entities.client;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.gab.estimateachers.entities.system.estimations.DormitoryEstimation;
-import org.gab.estimateachers.entities.system.estimations.Estimation;
-import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data

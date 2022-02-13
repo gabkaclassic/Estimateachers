@@ -4,7 +4,6 @@ import lombok.Data;
 import org.gab.estimateachers.entities.system.users.User;
 
 import javax.persistence.*;
-import java.util.List;
 
 @MappedSuperclass
 @Data
