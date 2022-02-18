@@ -1,6 +1,7 @@
 package org.gab.estimateachers.app.controllers.applications;
 
 import lombok.extern.slf4j.Slf4j;
+import org.gab.estimateachers.app.controllers.Errors.ControllerException;
 import org.gab.estimateachers.app.services.*;
 import org.gab.estimateachers.app.utilities.ApplicationsUtilities;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
@@ -34,18 +35,7 @@ import java.util.Set;
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/applications")
-public class ApplicationController extends org.gab.estimateachers.app.controllers.Controller {
-    
-    @Value("${spring.mail.username}")
-    private String supportEmail;
-    
-    protected final String ERROR_MESSAGE = """
-            Error occurred: %s
-            Reason: %s
-            Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
-            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s \n
-            Thank you for helping our service develop. Please go to the start page of the service.
-            """;
+public class ApplicationController {
     
     @Autowired
     @Qualifier("applicationsUtilities")
@@ -89,7 +79,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
             "/reject/card/{id}",
             "/reject/registry/{id}"
     })
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
       
         String header = request.getHeader("Referer");
@@ -100,7 +90,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @GetMapping("/users")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String newUserApplications(Model model) {
         
         model.addAttribute("applications", listUtilities.getRegistrationApplicationList());
@@ -112,7 +102,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @GetMapping("/cards")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String newCardApplications(Model model) {
         
         model.addAttribute("applications", listUtilities.getCreatingCardApplicationList());
@@ -124,7 +114,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @GetMapping("/approving/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String approvingCard(@PathVariable(name = "id") Long applicationId,
                                 Model model) {
     
@@ -160,7 +150,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @PostMapping("/approving")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String approvingCardSave(@RequestParam(name = "id") Long applicationId,
                                 Model model) {
         
@@ -172,7 +162,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @GetMapping("/processing/first/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String processingApplicationFirstStep(@PathVariable(name = "id") Long applicationId,
                                                  Model model) {
             
@@ -199,7 +189,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @PostMapping("/processing/first/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String processingApplicationFirstStepSave(@PathVariable(name = "id") Long applicationId,
                                                      @RequestParam("course") Integer course,
                                                      @RequestParam("university") String abbreviationUniversity,
@@ -217,7 +207,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @GetMapping("/processing/second/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String processingApplicationSecondStep(@PathVariable(name = "id") Long applicationId,
                                                   Model model) {
         
@@ -232,7 +222,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @PostMapping("/processing/second/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String processingApplicationSecondStepSave(@PathVariable(name = "id") Long applicationId,
                                                       @RequestParam("faculty") String facultyTitle,
                                                       @RequestParam("universityId") Long universityId,
@@ -248,7 +238,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @PostMapping("/reject/registry/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String rejectRegistry(@PathVariable(name = "id") Long applicationId,
                                  @RequestParam("reason") String reason) {
         
@@ -260,7 +250,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @PostMapping("/reject/card/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String rejectCard(@PathVariable(name = "id") Long applicationId,
                              @RequestParam("reason") String reason) {
         
@@ -273,7 +263,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     
     @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/requests")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String menuRequest() {
         
         log.info("The user opened the menu to create a request");
@@ -283,7 +273,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/requests")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String saveRequest(@AuthenticationPrincipal User user,
                               @RequestParam("text") String textRequest,
                               @RequestParam("date") String dateSending,
@@ -312,7 +302,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @GetMapping("/requests/cards")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String listCardRequest(Model model) {
         
         model.addAttribute("applications", listUtilities.getCardRequestList());
@@ -324,7 +314,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @GetMapping("/requests/service")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String listServiceRequest(Model model) {
     
         model.addAttribute("applications", listUtilities.getServiceRequestList());
@@ -336,7 +326,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @GetMapping("/requests/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String getRequest(@PathVariable("id") Long requestId,
                              Model model) {
         
@@ -362,7 +352,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @PostMapping("/requests/success/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String successRequest(@PathVariable("id") Long requestId,
                                  Model model) {
     
@@ -379,7 +369,7 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
     }
     
     @PostMapping("/requests/reject/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String rejectRequest(@PathVariable("id") Long requestId,
                                 @RequestParam("reason") String reason,
                                 Model model) {
@@ -393,21 +383,5 @@ public class ApplicationController extends org.gab.estimateachers.app.controller
             case CHANGING_CARDS -> "redirect:/applications/requests/cards";
             case OPERATIONS_SERVICE -> "redirect:/applications/requests/service";
         };
-    }
-    
-    @Recover
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
-    public ModelAndView error(Exception exception) {
-        
-        ModelAndView model = new ModelAndView("Error");
-        
-        model.addObject("Error",
-                String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
-        );
-        
-        log.warn(String.format("Exception: %s, reason: %s", exception.getMessage(), exception.getCause()));
-        
-        return model;
     }
 }

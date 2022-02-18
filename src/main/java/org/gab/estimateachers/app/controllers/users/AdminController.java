@@ -1,6 +1,7 @@
 package org.gab.estimateachers.app.controllers.users;
 
 import lombok.extern.slf4j.Slf4j;
+import org.gab.estimateachers.app.controllers.Errors.ControllerException;
 import org.gab.estimateachers.app.services.UserService;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
 import org.gab.estimateachers.app.utilities.UsersUtilities;
@@ -29,19 +30,7 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasAuthority('ADMIN')")
-public class AdminController extends org.gab.estimateachers.app.controllers.Controller {
-    
-    @Value("${spring.mail.username}")
-    private String supportEmail;
-    
-    protected final String ERROR_MESSAGE = """
-            Error occurred: %s
-            Reason: %s
-            Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
-            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s
-            
-            Thank you for helping our service develop. Please go to the start page of the service.
-            """;
+public class AdminController {
     
     @Autowired
     @Qualifier("usersUtilities")
@@ -60,7 +49,7 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
             "/search/login",
             "/delete"
     })
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
     
         String header = request.getHeader("Referer");
@@ -71,7 +60,7 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @GetMapping("/allUsers")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String showAllUsers(@AuthenticationPrincipal User admin,
                                Model model) {
         
@@ -83,7 +72,7 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @PostMapping("/search/login")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String findUserByLogin(@AuthenticationPrincipal User admin,
                                   @RequestParam(value = "username", required = false) String login,
                                   Model model) {
@@ -101,7 +90,7 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @PostMapping("/delete")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String deleteUser(@AuthenticationPrincipal User admin,
                              @RequestParam("userId") Long userId) {
         
@@ -114,7 +103,7 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     
     
     @PostMapping("/search/id")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String findById(@AuthenticationPrincipal User admin,
                            @RequestParam(value = "id", required = false) Long id,
                            Model model) {
@@ -133,7 +122,7 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @GetMapping("/add")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String createNewAdmin(@AuthenticationPrincipal User admin) {
         
         log.info(String.format("Admin with ID (%s) opened the panel to create a new administrator", admin.getId().toString()));
@@ -142,7 +131,7 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @PostMapping("/add")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String saveAdmin(@AuthenticationPrincipal User admin,
                             @RequestParam("username") String login,
                             @RequestParam("password") String password,
@@ -166,21 +155,5 @@ public class AdminController extends org.gab.estimateachers.app.controllers.Cont
         log.info(String.format("Admin with ID (%s) successful created a new administrator", admin.getId().toString()));
         
         return "/add_admin";
-    }
-    
-    @Recover
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
-    public ModelAndView error(Exception exception) {
-        
-        ModelAndView model = new ModelAndView("Error");
-        
-        model.addObject("Error",
-                String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
-        );
-    
-        log.warn(String.format("Exception: %s, reason: %s", exception.getMessage(), exception.getCause()));
-        
-        return model;
     }
 }

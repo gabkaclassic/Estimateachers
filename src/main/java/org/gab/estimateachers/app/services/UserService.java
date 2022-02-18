@@ -1,5 +1,6 @@
 package org.gab.estimateachers.app.services;
 
+import io.sentry.spring.tracing.SentrySpan;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.gab.estimateachers.app.repositories.system.UserRepository;
@@ -81,6 +82,7 @@ public class UserService implements UserDetailsService  {
         return user;
     }
     
+    @SentrySpan
     public User findById(Long id) {
         
         return userRepository.findById(id).orElse(null);
