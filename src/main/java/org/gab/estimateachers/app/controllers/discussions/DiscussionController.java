@@ -1,6 +1,7 @@
-package org.gab.estimateachers.app.controllers.chats;
+package org.gab.estimateachers.app.controllers.discussions;
 
 import lombok.extern.slf4j.Slf4j;
+import org.gab.estimateachers.app.controllers.Errors.ControllerException;
 import org.gab.estimateachers.app.services.CommentService;
 import org.gab.estimateachers.app.services.DiscussionService;
 import org.gab.estimateachers.entities.system.discussions.Comment;
@@ -26,19 +27,7 @@ import java.util.Objects;
 @Slf4j
 @Controller
 @RequestMapping("/discussions")
-public class DiscussionController extends org.gab.estimateachers.app.controllers.Controller {
-    
-    @Value("${spring.mail.username}")
-    private String supportEmail;
-    
-    protected final String ERROR_MESSAGE = """
-            Error occurred: %s
-            Reason: %s
-            Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
-            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s
-            
-            Thank you for helping our service develop. Please go to the start page of the service.
-            """;
+public class DiscussionController {
     
     @Autowired
     @Qualifier("discussionService")
@@ -55,7 +44,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
             "/comment/search/text",
             "/comment/search/author"
     })
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
     
         String header = request.getHeader("Referer");
@@ -66,7 +55,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     }
     
     @GetMapping("/get/{discussionId}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String chatList(@AuthenticationPrincipal User user,
                            @PathVariable("discussionId") Long discussionId,
                            Model model) {
@@ -82,7 +71,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     }
     
     @GetMapping("/sorted/asc/{discussionId}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String chatListOrderAsc(@AuthenticationPrincipal User user,
                                    @PathVariable("discussionId") Long discussionId,
                                    Model model) {
@@ -98,7 +87,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     }
     
     @GetMapping("/sorted/desc/{discussionId}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String chatListOrderDesc(@AuthenticationPrincipal User user,
                                     @PathVariable("discussionId") Long discussionId,
                                     Model model) {
@@ -114,7 +103,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     }
     
     @PostMapping("/comment/send")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String sendComment(@AuthenticationPrincipal User user,
                               @RequestParam("text") String text,
                               @RequestParam("date") String dateSending,
@@ -128,7 +117,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     }
     
     @PostMapping("/comment/search/text")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String searchByText(@AuthenticationPrincipal User user,
                                @RequestParam("text") String text,
                                @RequestParam("discussionId") Long discussionId,
@@ -148,7 +137,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     }
     
     @PostMapping("/comment/search/author")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String searchByAuthor(@AuthenticationPrincipal User user,
                                  @RequestParam("username") String username,
                                  @RequestParam("discussionId") Long discussionId,
@@ -168,7 +157,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     }
     
     @PostMapping("/comment/like")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String likeComment(@AuthenticationPrincipal User user,
                               @RequestParam("commentId") Long commentId,
                               @RequestParam("discussionId") Long discussionId) {
@@ -181,7 +170,7 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
     }
     
     @PostMapping("/comment/dislike")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String dislikeComment(@AuthenticationPrincipal User user,
                                  @RequestParam("commentId") Long commentId,
                                  @RequestParam("discussionId") Long discussionId) {
@@ -191,21 +180,5 @@ public class DiscussionController extends org.gab.estimateachers.app.controllers
         log.info(String.format("The comment was disliked (comment ID: %s, disliker ID: %s)", commentId.toString(), user.getId().toString()));
         
         return "redirect:/discussions/get/" + discussionId;
-    }
-    
-    @Recover
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
-    public ModelAndView error(Exception exception) {
-        
-        ModelAndView model = new ModelAndView("Error");
-        
-        model.addObject("Error",
-                String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
-        );
-    
-        log.warn(String.format("Exception: %s, reason: %s", exception.getMessage(), exception.getCause()));
-        
-        return model;
     }
 }

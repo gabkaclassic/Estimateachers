@@ -2,6 +2,7 @@ package org.gab.estimateachers.app.controllers.users;
 
 import lombok.extern.slf4j.Slf4j;
 import org.gab.estimateachers.app.configuration.CaptchaResponseDTO;
+import org.gab.estimateachers.app.controllers.Errors.ControllerException;
 import org.gab.estimateachers.app.services.StudentService;
 import org.gab.estimateachers.app.services.UserService;
 import org.gab.estimateachers.app.utilities.ListsUtilities;
@@ -24,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,19 +35,7 @@ import java.util.Objects;
 @Slf4j
 @Controller
 @RequestMapping("/users")
-public class UsersController extends org.gab.estimateachers.app.controllers.Controller {
-    
-    @Value("${spring.mail.username}")
-    private String supportEmail;
-    
-    protected final String ERROR_MESSAGE = """
-            Error occurred: %s
-            Reason: %s
-            Error occurred. To prevent this from happening again, please help our service: send this message in the form of a screenshot/copied text,
-            along with the current time and, if possible, the actions that you performed before this error occurred, to our employee at the email address: %s
-            
-            Thank you for helping our service develop. Please go to the start page of the service.
-            """;
+public class UsersController {
     
     @Value("${captcha.secret}")
     private String secret;
@@ -77,7 +68,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
             "/signout",
             "/signout/cancel"
     })
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String plug(HttpServletRequest request) {
     
         String header = request.getHeader("Referer");
@@ -88,7 +79,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @GetMapping("/registry")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String registryPage(Model model) {
         
         model.addAttribute("genders", listUtilities.getGendersList());
@@ -99,7 +90,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @PostMapping("/registry")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String signUp(@RequestParam(name = "username") String username,
                          @RequestParam(name = "firstName") String firstName,
                          @RequestParam(name = "lastName") String lastName,
@@ -168,51 +159,42 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
         return "redirect:/users/login";
     }
     
-    @GetMapping("/login")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
-    public String loginPage(Model model) {
+    @GetMapping("/online")
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    public String userOnline(@AuthenticationPrincipal User user, Model model,
+                         HttpServletRequest request) {
+    
+        if(Objects.nonNull(user)) {
+            user = userService.findById(user.getId());
+            user.setOnline(true);
+            userService.save(user);
+            return "redirect:/";
+        }
         
-        model.addAttribute("isAdmin", false);
-        
-        log.trace("Get query login page");
+        model.addAttribute("remarks", List.of("User not found"));
         
         return "/login";
     }
     
-    @PostMapping("/login")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
-    public String signIn(@AuthenticationPrincipal User user,
-                         HttpServletRequest request) {
-    
-        user.setOnline(true);
-        userService.save(user);
+    @PostMapping("/online")
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    public String userOnlinePost() {
         
-        log.info("Successful authorization process");
-        
-        return "redirect:"+ request.getHeader("Referer");
-    }
-    
-    @GetMapping("/online")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
-    public String userOnline(@AuthenticationPrincipal User user,
-                         HttpServletRequest request) {
-    
-        user = userService.findById(user.getId());
-        user.setOnline(true);
-        userService.save(user);
-        
-        return "redirect:/";
+        return "redirect:/users/login";
     }
     
     @PostMapping("/signout")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String logout(@AuthenticationPrincipal User user,
                          HttpServletRequest request,
                          Model model) {
         
-        user = userService.findById(user.getId());
-        user.setOnline(false);
-        userService.save(user);
+        if(Objects.nonNull(user)) {
+            user = userService.findById(user.getId());
+            user.setOnline(false);
+            userService.save(user);
+        }
+        
         model.addAttribute("link", request.getHeader("Referer"));
     
         log.info("Successful logout process (first step)");
@@ -221,13 +203,15 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @PostMapping("/signout/cancel")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String logoutCancel(@AuthenticationPrincipal User user,
                                @RequestParam("link") String link) {
     
-        user = userService.findById(user.getId());
-        user.setOnline(true);
-        userService.save(user);
+        if(Objects.nonNull(user)) {
+            user = userService.findById(user.getId());
+            user.setOnline(true);
+            userService.save(user);
+        }
     
         log.info("Successful logout process (second step)");
         
@@ -235,18 +219,22 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @GetMapping("/edit/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String edit(@AuthenticationPrincipal User currentUser,
                        @PathVariable(value = "id") Long userId,
-                       Model model) throws Exception {
+                       Model model) throws ControllerException {
         
         if(Objects.isNull(currentUser)
                 || (!currentUser.isAdmin() && !currentUser.getId().equals(userId))) {
     
             log.info(String.format("Failed profile change request (profile ID: %s, user ID: %s)",
                     userId.toString(), currentUser.getId().toString()));
-            
-            throw new Exception("Error forbidden or user is null");
+    
+            RuntimeException runtimeException = new RuntimeException("Error forbidden or user is null");
+            throw new ControllerException(runtimeException.getMessage(),
+                    HttpStatus.BAD_REQUEST,
+                    ZonedDateTime.now(ZoneId.systemDefault())
+            );
         }
         User user = userService.findById(userId);
         model.addAttribute("user", (currentUser.getId().equals(userId)) ?
@@ -267,7 +255,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
     }
     
     @PostMapping("/edit/{id}")
-    @Retryable(maxAttempts = 5, value = Exception.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
+    @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String egitProcess(@AuthenticationPrincipal User currentUser,
                               @PathVariable("id") Long userId,
                               @RequestParam("username") String username,
@@ -277,7 +265,7 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
                               @RequestParam(value = "userRole", required = false) Boolean userRole,
                               @RequestParam(value = "adminRole", required = false) Boolean adminRole,
                               @RequestParam(value = "lockedRole", required = false) Boolean lockedRole,
-                              Model model) throws Exception {
+                              Model model) throws ControllerException {
         
         List<String> remarks = new ArrayList<>();
         User user = userService.findById(userId);
@@ -311,21 +299,5 @@ public class UsersController extends org.gab.estimateachers.app.controllers.Cont
                 userId.toString(), currentUser.getId().toString()));
         
         return "/homepage";
-    }
-    
-    @Recover
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "An error on the server side or a click on an invalid link")
-    public ModelAndView error(Exception exception) {
-        
-        ModelAndView model = new ModelAndView("Error");
-        
-        model.addObject("Error",
-                String.format(ERROR_MESSAGE, exception.getMessage(), exception.getCause(), supportEmail)
-        );
-    
-        log.warn(String.format("Exception: %s, reason: %s", exception.getMessage(), exception.getCause()));
-        
-        return model;
     }
 }
