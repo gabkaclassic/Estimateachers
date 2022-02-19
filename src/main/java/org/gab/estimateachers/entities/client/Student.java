@@ -17,43 +17,35 @@ import java.util.Set;
         name = "students",
         uniqueConstraints = @UniqueConstraint(name = "unique_account", columnNames = "account_id")
 )
+@Getter
+@Setter
 public class Student {
     
     private static final String FORMAT_TITLE = "%s %c.%c";
     
-    @Getter
-    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     
-    @Getter
-    @Setter
     @Column(
             name = "first_name",
             nullable = false
     )
     private String firstName;
     
-    @Getter
-    @Setter
     @Column(
             name = "last_name",
             nullable = false
     )
     private String lastName;
     
-    @Getter
-    @Setter
     @Column(
             name = "patronymic",
             nullable = false
     )
     private String patronymic;
     
-    @Getter
-    @Setter
     @Column(
             name = "gender",
             nullable = false
@@ -61,24 +53,18 @@ public class Student {
     @Enumerated(EnumType.STRING)
     private Genders gender;
     
-    @Getter
-    @Setter
     @Column(
             name = "course",
             nullable = false
     )
     private Integer course = 1;
     
-    @Getter
-    @Setter
     @OneToOne(
             cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER
     )
     private User account;
     
-    @Getter
-    @Setter
     @ManyToOne(
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
@@ -90,8 +76,6 @@ public class Student {
     )
     private University university;
     
-    @Getter
-    @Setter
     @ManyToOne(
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
@@ -103,16 +87,12 @@ public class Student {
     )
     private Faculty faculty;
     
-    @Getter
-    @Setter
     @OneToMany(
             cascade = CascadeType.REFRESH,
             fetch = FetchType.LAZY
     )
     private Set<Teacher> teachers = new HashSet<>();
     
-    @Getter
-    @Setter
     @ManyToOne(
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY

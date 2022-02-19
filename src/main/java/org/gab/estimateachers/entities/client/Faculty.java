@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
         name = "faculties",
         uniqueConstraints = @UniqueConstraint(columnNames = {"title"})
 )
+@Getter
+@Setter
 public class Faculty extends Card {
     
     @ManyToOne(
@@ -32,8 +34,6 @@ public class Faculty extends Card {
             joinColumns = {@JoinColumn(name = "faculty_id")},
             inverseJoinColumns = {@JoinColumn(name = "university_id")}
     )
-    @Getter
-    @Setter
     private University university;
 
     @ManyToMany(
@@ -45,8 +45,6 @@ public class Faculty extends Card {
             joinColumns = {@JoinColumn(name = "faculty_id")},
             inverseJoinColumns = {@JoinColumn(name = "teacher_id")}
     )
-    @Getter
-    @Setter
     private Set<Teacher> teachers;
     
     @OneToMany

@@ -13,25 +13,21 @@ import java.util.Set;
 
 @NoArgsConstructor
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class Card {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @Getter
-    @Setter
     protected Long id;
     
-    @Getter
-    @Setter
     @Column(
             name = "title",
             nullable = false
     )
     protected String title;
     
-    @Getter
-    @Setter
     @Column(
             name = "card_type",
             nullable = false
@@ -43,20 +39,14 @@ public abstract class Card {
             name = "approved",
             columnDefinition = "boolean default 'f'"
     )
-    @Getter
-    @Setter
     protected Boolean approved;
     
     @ElementCollection(
             targetClass = String.class,
             fetch = FetchType.LAZY
     )
-    @Getter
-    @Setter
     protected Set<String> photos;
     
-    @Getter
-    @Setter
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "discussion_id")
     protected Discussion discussion;

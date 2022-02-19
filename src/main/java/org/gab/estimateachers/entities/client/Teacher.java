@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Entity
 @Table(name = "teachers")
+@Getter
+@Setter
 public class Teacher extends Card {
     
     private static final String FORMAT_TITLE = "%s %c.%c";
@@ -24,32 +26,24 @@ public class Teacher extends Card {
             name = "first_name",
             nullable = false
     )
-    @Getter
-    @Setter
     private String firstName;
     
     @Column(
             name = "last_name",
             nullable = false
     )
-    @Getter
-    @Setter
     private String lastName;
     
     @Column(
             name = "patronymic",
             nullable = false
     )
-    @Getter
-    @Setter
     private String patronymic;
     
     @ElementCollection(
             targetClass = String.class,
             fetch = FetchType.LAZY
     )
-    @Getter
-    @Setter
     private Set<String> excuses = new HashSet<>();
     
     @ManyToMany(
@@ -57,8 +51,6 @@ public class Teacher extends Card {
             fetch = FetchType.LAZY,
             mappedBy = "teachers"
     )
-    @Getter
-    @Setter
     private Set<Faculty> faculties = new HashSet<>();
     
     @ManyToMany(
@@ -66,8 +58,6 @@ public class Teacher extends Card {
             cascade = CascadeType.PERSIST,
             mappedBy = "teachers"
     )
-    @Getter
-    @Setter
     private Set<University> universities = new HashSet<>();
     
     @OneToMany
