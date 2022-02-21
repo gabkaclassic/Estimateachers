@@ -27,7 +27,6 @@ public class EstimateachersApplication {
     
     public static void main(String[] args) {
         
-        
         EstimateachersApplication app = new EstimateachersApplication();
 
         app.start(args);
