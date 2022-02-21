@@ -29,8 +29,8 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
     private UserRepository userRepository;
     
     @Autowired
-    @Qualifier("applicationRepository")
-    private ApplicationRepository<RegistrationApplication> applicationRepository;
+    @Qualifier("registrationApplicationService")
+    private RegistrationApplicationService registrationApplicationService;
     
     @Autowired
     @Qualifier("filesUtilities")
@@ -88,7 +88,7 @@ public class StudentService implements org.gab.estimateachers.app.services.Servi
                 date,
                 filesUtilities.registrationFile(cardPhoto, RegistrationType.OTHER)
         );
-        
-        applicationRepository.save(application);
+    
+        registrationApplicationService.save(application);
     }
 }

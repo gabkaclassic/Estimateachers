@@ -2,6 +2,7 @@ package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.DormitoryRepository;
 import org.gab.estimateachers.app.repositories.system.DormitoryEstimationRepository;
+import org.gab.estimateachers.app.utilities.AWSUtilities;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Card;
@@ -35,6 +36,10 @@ public class DormitoryService implements CardService<Dormitory>  {
     @Qualifier("dormitoryEstimationRepository")
     private DormitoryEstimationRepository dormitoryEstimationRepository;
     
+    @Autowired
+    @Qualifier("awsUtilities")
+    private AWSUtilities awsUtilities;
+    
     public Dormitory findById(Long id) {
         
         return dormitoryRepository.getOne(id);
@@ -55,6 +60,7 @@ public class DormitoryService implements CardService<Dormitory>  {
         
         dormitory.setApproved(approved);
         save(dormitory);
+        
         return dormitory;
     }
     
@@ -72,42 +78,55 @@ public class DormitoryService implements CardService<Dormitory>  {
     public List<Card> findByTitlePattern(String pattern) {
         
         return dormitoryRepository.findByTitlePattern(pattern)
-                .stream()
+                .stream().peek(d -> awsUtilities.loadFiles(d.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public Collection<? extends Card> findByListId(Set<Long> dormitoriesId) {
         
-        return dormitoryRepository.findByListId(dormitoriesId);
+        return dormitoryRepository.findByListId(dormitoriesId).stream()
+                .peek(d-> awsUtilities.loadFiles(d.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public Collection<? extends Card> findByListIdAndPattern(Set<Long> dormitoriesId, String pattern) {
         
-        return dormitoryRepository.findByListIdAndPattern(dormitoriesId, pattern);
+        return dormitoryRepository.findByListIdAndPattern(dormitoriesId, pattern).stream()
+                .peek(d-> awsUtilities.loadFiles(d.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public List<Card> findAllApproved() {
         
         return dormitoryRepository.findAllApproved()
-                .stream()
+                .stream().peek(d-> awsUtilities.loadFiles(d.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public List<Dormitory> findAll() {
         
-        return dormitoryRepository.findAll();
+        return dormitoryRepository.findAll().stream()
+                .peek(d-> awsUtilities.loadFiles(d.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public void deleteById(Long id) {
         
-        dormitoryRepository.deleteById(id);
+        Dormitory dormitory = dormitoryRepository.getOne(id);
+        
+        awsUtilities.deleteFiles(dormitory.getPhotos());
+        dormitoryRepository.delete(dormitory);
     }
     
     public Dormitory findByTitle(String title) {
+    
+        Dormitory dormitory = dormitoryRepository.findByTitle(title);
+    
+        awsUtilities.loadFiles(dormitory.getPhotos());
         
-        return dormitoryRepository.findByTitle(title);
+        return dormitory;
     }
     
     public boolean existsByTitle(String title) {

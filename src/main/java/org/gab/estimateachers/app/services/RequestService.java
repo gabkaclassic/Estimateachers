@@ -1,6 +1,7 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.system.RequestRepository;
+import org.gab.estimateachers.app.utilities.AWSUtilities;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.system.applications.Request;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("requestService")
 public class RequestService extends ApplicationService<Request, RequestRepository> {
@@ -20,6 +22,10 @@ public class RequestService extends ApplicationService<Request, RequestRepositor
     @Autowired
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
+    
+    @Autowired
+    @Qualifier("awsUtilities")
+    private AWSUtilities awsUtilities;
     
     @Autowired
     @Qualifier("requestRepository")
@@ -33,15 +39,19 @@ public class RequestService extends ApplicationService<Request, RequestRepositor
         mailService.applyRequest(request.getStudent()
                 .getAccount());
     
+        awsUtilities.deleteFiles(request.getPhotos());
+        
         applicationRepository.delete(request);
     }
     
     public void reject(Long requestId, String reason) {
         
         Request request = findById(requestId);
-        mailService.rejectRequest(request.getStudent().getAccount(), reason);
         
-        deleteById(requestId);
+        mailService.rejectRequest(request.getStudent().getAccount(), reason);
+        awsUtilities.deleteFiles(request.getPhotos());
+        
+        applicationRepository.delete(request);
     }
     
     public void create(User user, String date, String textRequest, String type, Set<MultipartFile> files) {
@@ -63,11 +73,15 @@ public class RequestService extends ApplicationService<Request, RequestRepositor
     
     public List<Request> findAllCard() {
         
-        return applicationRepository.findAllType(RequestType.CHANGING_CARDS.toString());
+        return applicationRepository.findAllType(RequestType.CHANGING_CARDS.toString()).stream()
+                .peek(a -> awsUtilities.loadFiles(a.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public List<Request> findAllService() {
         
-        return applicationRepository.findAllType(RequestType.OPERATIONS_SERVICE.toString());
+        return applicationRepository.findAllType(RequestType.OPERATIONS_SERVICE.toString()).stream()
+                .peek(a -> awsUtilities.loadFiles(a.getPhotos()))
+                .collect(Collectors.toList());
     }
 }

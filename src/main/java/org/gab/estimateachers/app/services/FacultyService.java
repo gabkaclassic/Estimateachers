@@ -2,6 +2,7 @@ package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.FacultyRepository;
 import org.gab.estimateachers.app.repositories.system.FacultyEstimationRepository;
+import org.gab.estimateachers.app.utilities.AWSUtilities;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Card;
@@ -41,12 +42,20 @@ public class FacultyService implements CardService<Faculty> {
     private FilesUtilities filesUtilities;
     
     @Autowired
+    @Qualifier("awsUtilities")
+    private AWSUtilities awsUtilities;
+    
+    @Autowired
     @Qualifier("facultyEstimationRepository")
     private FacultyEstimationRepository facultyEstimationRepository;
     
     public Faculty findById(Long id) {
+    
+        Faculty faculty = facultyRepository.getOne(id);
+    
+        awsUtilities.loadFiles(faculty.getPhotos());
         
-        return facultyRepository.getOne(id);
+        return faculty;
     }
     
     public void save(Faculty faculty) {
@@ -56,30 +65,42 @@ public class FacultyService implements CardService<Faculty> {
     
     public List<Card> findAllApproved() {
         
-        return facultyRepository.findAllApproved()
-                .stream()
+        return facultyRepository.findAllApproved().stream()
+                .peek(f -> awsUtilities.loadFiles(f.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public List<Faculty> findAll() {
         
-        return facultyRepository.findAll();
+        return facultyRepository.findAll().stream()
+                .peek(f -> awsUtilities.loadFiles(f.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public void deleteById(Long id) {
+    
+        Faculty faculty = facultyRepository.getOne(id);
+    
+        awsUtilities.loadFiles(faculty.getPhotos());
         
-        facultyRepository.deleteById(id);
+        facultyRepository.delete(faculty);
     }
     
     public Faculty findByTitleAndUniversity(String title, University university) {
+    
+        Faculty faculty = facultyRepository.findByTitleAndUniversity(title, university);
+    
+        awsUtilities.loadFiles(faculty.getPhotos());
         
-        return facultyRepository.findByTitleAndUniversity(title, university);
+        return faculty;
     }
     
     public List<Faculty> findByTitles(Set<String> facultiesTitles) {
         
-        return facultyRepository.findAllByTitle(facultiesTitles);
+        return facultyRepository.findAllByTitle(facultiesTitles).stream()
+                .peek(f -> awsUtilities.loadFiles(f.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public void edit(Long id, String title, Set<MultipartFile> files) {
@@ -95,20 +116,24 @@ public class FacultyService implements CardService<Faculty> {
     
     public List<Card> findByTitlePattern(String pattern) {
         
-        return facultyRepository.findByTitlePattern(pattern)
-                .stream()
+        return facultyRepository.findByTitlePattern(pattern).stream()
+                .peek(f -> awsUtilities.loadFiles(f.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public Collection<? extends Card> findByListId(Set<Long> facultiesId) {
         
-        return facultyRepository.findByListId(facultiesId);
+        return facultyRepository.findByListId(facultiesId).stream()
+                .peek(f -> awsUtilities.loadFiles(f.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public Collection<? extends Card> findByListIdAndPattern(Set<Long> facultiesId, String pattern) {
         
-        return facultyRepository.findByListIdAndPattern(facultiesId, pattern);
+        return facultyRepository.findByListIdAndPattern(facultiesId, pattern).stream()
+                .peek(f -> awsUtilities.loadFiles(f.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public Faculty create(String facultyTitle, University university, Set<String> teachersTitles, Set<MultipartFile> files, boolean approved) {

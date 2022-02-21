@@ -4,6 +4,7 @@ import io.sentry.spring.tracing.SentrySpan;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.gab.estimateachers.app.repositories.system.UserRepository;
+import org.gab.estimateachers.app.utilities.AWSUtilities;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.system.users.User;
@@ -16,10 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service("userService")
@@ -40,14 +43,29 @@ public class UserService implements UserDetailsService  {
     @Qualifier("mailService")
     private MailService mailService;
     
+    @Autowired
+    @Qualifier("awsUtilities")
+    private AWSUtilities awsUtilities;
+    
     public List<User> findAll() {
        
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        
+        awsUtilities.loadFiles(
+                users.stream()
+                        .map(User::getFilename)
+                        .collect(Collectors.toList())
+        );
+        
+        return users;
     }
     
     public void deleteById(Long id) {
         
-        userRepository.deleteById(id);
+        User user = userRepository.getOne(id);
+        
+        awsUtilities.deleteFiles(List.of(user.getFilename()));
+        userRepository.delete(user);
     }
     
     public User createUser(String username, String password, String email) {
@@ -79,13 +97,19 @@ public class UserService implements UserDetailsService  {
             
             throw exception;
         }
+    
+        awsUtilities.loadFiles(List.of(user.getFilename()));
+        
         return user;
     }
     
     @SentrySpan
     public User findById(Long id) {
         
-        return userRepository.findById(id).orElse(null);
+        User user = userRepository.getOne(id);
+        awsUtilities.loadFiles(List.of(user.getFilename()));
+        
+        return user;
     }
     
     public void save(User user) {
@@ -94,8 +118,16 @@ public class UserService implements UserDetailsService  {
     }
     
     public List<User> findByLoginPattern(String pattern) {
+    
+        List<User> users = userRepository.findByUsernamePattern(pattern);
+    
+        awsUtilities.loadFiles(
+                users.stream()
+                        .map(User::getFilename)
+                        .collect(Collectors.toList())
+        );
         
-        return userRepository.findByUsernamePattern(pattern);
+        return users;
     }
     
     public void update(Long id, String username, String password, String email) {
@@ -121,6 +153,7 @@ public class UserService implements UserDetailsService  {
         user.setPassword(passwordEncoder.encode(password));
     
         user.setEmail(email);
+        
         user.setFilename(filesUtilities.registrationFile(profilePhoto, RegistrationType.PEOPLE));
         
         if(!user.isAdmin() && Objects.nonNull(user.getEmail()) && Objects.nonNull(email) && !user.getEmail().equals(email)) {

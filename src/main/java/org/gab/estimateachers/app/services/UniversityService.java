@@ -2,6 +2,7 @@ package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.UniversityRepository;
 import org.gab.estimateachers.app.repositories.system.UniversityEstimationRepository;
+import org.gab.estimateachers.app.utilities.AWSUtilities;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Card;
@@ -34,6 +35,10 @@ public class UniversityService implements CardService<University> {
     @Qualifier("filesUtilities")
     private FilesUtilities filesUtilities;
     
+    @Autowired
+    @Qualifier("awsUtilities")
+    private AWSUtilities awsUtilities;
+    
     public void save(University university) {
         
         universityRepository.save(university);
@@ -60,20 +65,25 @@ public class UniversityService implements CardService<University> {
     
     public List<Card> findAllApproved() {
         
-        return universityRepository.findAllApproved()
-                .stream()
+        return universityRepository.findAllApproved().stream()
+                .peek(u -> awsUtilities.loadFiles(u.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public List<University> findAll() {
         
-        return universityRepository.findAll();
+        return universityRepository.findAll().stream()
+                .peek(u -> awsUtilities.loadFiles(u.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public void deleteById(Long id) {
         
-        universityRepository.deleteById(id);
+        University university = universityRepository.getOne(id);
+        awsUtilities.deleteFiles(university.getPhotos());
+        
+        universityRepository.delete(university);
     }
     
     public boolean existsByTitle(String title) {
@@ -94,51 +104,65 @@ public class UniversityService implements CardService<University> {
     
     public List<Card> findByTitlePattern(String pattern) {
         
-        return universityRepository.findByTitlePattern(pattern)
-                .stream()
+        return universityRepository.findByTitlePattern(pattern).stream()
+                .peek(u -> awsUtilities.loadFiles(u.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public Collection<? extends Card> findByListId(Set<Long> universitiesId) {
         
-        return universityRepository.findByListId(universitiesId);
+        return universityRepository.findByListId(universitiesId).stream()
+                .peek(u -> awsUtilities.loadFiles(u.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public Collection<? extends Card> findByListIdAndPattern(Set<Long> universitiesId, String pattern) {
         
-        return universityRepository.findByListIdAndPattern(universitiesId, pattern);
+        return universityRepository.findByListIdAndPattern(universitiesId, pattern).stream()
+                .peek(u -> awsUtilities.loadFiles(u.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public List<Card> findByAbbreviationPattern(String pattern) {
         
-        return universityRepository.findByAbbreviationPattern(pattern)
-                .stream()
+        return universityRepository.findByAbbreviationPattern(pattern).stream()
+                .peek(u -> awsUtilities.loadFiles(u.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public List<Card> findByPattern(String pattern) {
         
-        return universityRepository.findByPattern(pattern)
-                .stream()
+        return universityRepository.findByPattern(pattern).stream()
+                .peek(u -> awsUtilities.loadFiles(u.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public University findByAbbreviation(String abbreviation) {
         
-        return universityRepository.findByAbbreviation(abbreviation);
+        University university = universityRepository.findByAbbreviation(abbreviation);
+        
+        awsUtilities.loadFiles(university.getPhotos());
+        
+        return university;
     }
     
     public List<University> findByAbbreviations(Set<String> abbreviations) {
        
-        return universityRepository.findAllByAbbreviation(abbreviations);
+        return universityRepository.findAllByAbbreviation(abbreviations).stream()
+                .peek(u -> awsUtilities.loadFiles(u.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public University findById(Long id) {
         
-        return universityRepository.getOne(id);
+        University university = universityRepository.getOne(id);
+    
+        awsUtilities.loadFiles(university.getPhotos());
+    
+        return university;
     }
     
     public void saveAll(List<University> universities) {

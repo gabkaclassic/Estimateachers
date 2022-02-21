@@ -1,6 +1,8 @@
 package org.gab.estimateachers.app.utilities;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,9 +30,16 @@ public class FilesUtilities {
     @Value("${upload.path}")
     private String uploadPath;
     
+    @Autowired
+    @Qualifier("awsUtilities")
+    private AWSUtilities awsUtilities;
+    
+    private String separator;
+    
     @PostConstruct
     public void createDirectories() {
-        
+    
+        separator = System.getProperty("file.separator");
         createDirectory("classpath:".concat(uploadPath));
     }
     
@@ -43,20 +52,23 @@ public class FilesUtilities {
         };
         
         String filename = getFilename(file, defaultFilename);
-        
+        File file1 = new File(filename);
         try {
             if(Objects.nonNull(file))
-                file.transferTo(new File(filename));
+                file.transferTo((file1 = new File(filename)));
             else {
-                File file1 = new File(filename);
+                
                 file1.createNewFile();
             }
         } catch (IOException e) {
             log.warn(String.format("Exception transfer file. Exception: %s, reason: %s, stack trace: %s",
                     e.getMessage(), e.getCause(), Arrays.toString(e.getStackTrace())));
         }
-    
-        return filename;
+        
+        awsUtilities.saveFile(file1);
+        file1.deleteOnExit();
+        
+        return file1.getName();
     }
     
     private void createDirectory(String uploadPath) {
@@ -78,7 +90,7 @@ public class FilesUtilities {
                 return uploadPath
                         .concat(defaultFilename);
             else
-                return uploadPath.concat("\\")
+                return uploadPath.concat(separator)
                         .concat(UUID.randomUUID().toString()).concat(Objects.requireNonNull(file.getOriginalFilename()));
         }
     }

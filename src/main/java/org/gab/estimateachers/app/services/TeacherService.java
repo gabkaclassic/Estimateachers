@@ -2,6 +2,7 @@ package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.client.TeacherRepository;
 import org.gab.estimateachers.app.repositories.system.TeacherEstimationRepository;
+import org.gab.estimateachers.app.utilities.AWSUtilities;
 import org.gab.estimateachers.app.utilities.FilesUtilities;
 import org.gab.estimateachers.app.utilities.RegistrationType;
 import org.gab.estimateachers.entities.client.Card;
@@ -38,12 +39,20 @@ public class TeacherService implements CardService<Teacher> {
     private FilesUtilities filesUtilities;
     
     @Autowired
+    @Qualifier("awsUtilities")
+    private AWSUtilities awsUtilities;
+    
+    @Autowired
     @Qualifier("teacherEstimationRepository")
     private TeacherEstimationRepository teacherEstimationRepository;
     
     public Teacher findById(Long id) {
-        
-        return teacherRepository.getOne(id);
+    
+        Teacher teacher = teacherRepository.getOne(id);
+    
+        awsUtilities.loadFiles(teacher.getPhotos());
+    
+        return teacher;
     }
     
     public void save(Teacher teacher) {
@@ -53,20 +62,26 @@ public class TeacherService implements CardService<Teacher> {
     
     public List<Card> findAllApproved() {
         
-        return teacherRepository.findAllApproved()
-                .stream()
+        return teacherRepository.findAllApproved().stream()
+                .peek(t -> awsUtilities.loadFiles(t.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public List<Teacher> findAll() {
         
-        return teacherRepository.findAll();
+        return teacherRepository.findAll().stream()
+                .peek(t -> awsUtilities.loadFiles(t.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public void deleteById(Long id) {
         
-        teacherRepository.deleteById(id);
+        Teacher teacher = teacherRepository.getOne(id);
+    
+        awsUtilities.loadFiles(teacher.getPhotos());
+        
+        teacherRepository.delete(teacher);
     }
     
     public boolean existsByTitle(String title) {
@@ -130,20 +145,24 @@ public class TeacherService implements CardService<Teacher> {
     
     public List<Card> findByTitlePattern(String pattern) {
         
-        return teacherRepository.findByTitlePattern(pattern)
-                .stream()
+        return teacherRepository.findByTitlePattern(pattern).stream()
+                .peek(t -> awsUtilities.loadFiles(t.getPhotos()))
                 .map(Card.class::cast)
                 .collect(Collectors.toList());
     }
     
     public Collection<? extends Card> findByListId(Set<Long> teachersId) {
         
-        return teacherRepository.findByListId(teachersId);
+        return teacherRepository.findByListId(teachersId).stream()
+                .peek(t -> awsUtilities.loadFiles(t.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public Collection<? extends Card> findByListIdAndPattern(Set<Long> teachersId, String pattern) {
         
-        return teacherRepository.findByListIdAndPattern(teachersId, pattern);
+        return teacherRepository.findByListIdAndPattern(teachersId, pattern).stream()
+                .peek(t -> awsUtilities.loadFiles(t.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public List<String> getTitles() {
@@ -153,7 +172,9 @@ public class TeacherService implements CardService<Teacher> {
     
     public List<Teacher> findByTitles(Set<String> teachersTitles) {
         
-        return teacherRepository.findByTitles(teachersTitles);
+        return teacherRepository.findByTitles(teachersTitles).stream()
+                .peek(t -> awsUtilities.loadFiles(t.getPhotos()))
+                .collect(Collectors.toList());
     }
     
     public void estimation(Long teacherId, User user, Integer freebiesRating, Integer exactingRating, Integer severityRating) {

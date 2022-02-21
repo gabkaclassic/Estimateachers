@@ -45,6 +45,7 @@ public abstract class Card {
             targetClass = String.class,
             fetch = FetchType.LAZY
     )
+    @Getter
     protected Set<String> photos;
     
     @OneToOne(fetch = FetchType.EAGER)

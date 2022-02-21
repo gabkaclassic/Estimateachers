@@ -1,6 +1,7 @@
 package org.gab.estimateachers.app.services;
 
 import org.gab.estimateachers.app.repositories.system.RegistrationApplicationRepository;
+import org.gab.estimateachers.app.utilities.AWSUtilities;
 import org.gab.estimateachers.entities.client.Dormitory;
 import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.client.Student;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service("registrationApplicationService")
 public class RegistrationApplicationService extends ApplicationService<RegistrationApplication, RegistrationApplicationRepository> {
@@ -23,6 +25,10 @@ public class RegistrationApplicationService extends ApplicationService<Registrat
     @Autowired
     @Qualifier("studentService")
     private StudentService studentService;
+    
+    @Autowired
+    @Qualifier("awsUtilities")
+    private AWSUtilities awsUtilities;
     
     @Autowired
     @Qualifier("registrationApplicationRepository")
@@ -48,13 +54,21 @@ public class RegistrationApplicationService extends ApplicationService<Registrat
         faculty.getTeachers().forEach(student::addTeacher);
     
         studentService.save(student);
+        
+        awsUtilities.deleteFiles(List.of(application.getFilename()));
         applicationRepository.delete(application);
         mailService.notifyAccessRegistration(student.getAccount());
     }
     
     public List<RegistrationApplication> findAllNotViewed() {
         
-        return applicationRepository.findAllNotViewed();
+        List<RegistrationApplication> applications = applicationRepository.findAllNotViewed();
+        
+        awsUtilities.loadFiles(applications.stream()
+                .map(RegistrationApplication::getFilename)
+                .collect(Collectors.toList()));
+        
+        return applications;
     }
     
     public void reject(Long applicationId, String reason) {
@@ -63,6 +77,8 @@ public class RegistrationApplicationService extends ApplicationService<Registrat
         mailService.notifyRejectRegistration(application.getStudent().getAccount(), reason);
         userService.deleteById(application.getStudent().getAccount().getId());
         studentService.deleteById(application.getStudent().getId());
-        deleteById(applicationId);
+        
+        awsUtilities.deleteFiles(List.of(application.getFilename()));
+        applicationRepository.delete(application);
     }
 }

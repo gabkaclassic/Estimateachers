@@ -1,6 +1,7 @@
 package org.gab.estimateachers.entities.system.applications;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.gab.estimateachers.entities.client.Student;
 
@@ -18,6 +19,7 @@ public class RegistrationApplication extends Application {
             name = "card_photo",
             nullable = false
     )
+    @Getter
     private String filename;
     
     public RegistrationApplication(Student student, String date, String photo) {
