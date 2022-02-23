@@ -36,6 +36,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+    @Bean("passwordEncoder")
+    public PasswordEncoder getPasswordEncoder() {
+        
+        log.info("Created bean password encoder");
+        
+        return new BCryptPasswordEncoder(PASSWORD_STRENGTH);
+    }
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.
@@ -107,13 +115,5 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         }
         
         log.info("Configured authentication manager");
-    }
-    
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        
-        log.info("Created bean password encoder");
-        
-        return new BCryptPasswordEncoder(PASSWORD_STRENGTH);
     }
 }
