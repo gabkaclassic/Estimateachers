@@ -1,8 +1,8 @@
 <#include "auth.ftl">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Estimateachers</a>
+        <a class="navbar-brand mb-4" href="/">Estimateachers</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon">
                  <a class="navbar-brand" href="#">
@@ -43,7 +43,7 @@
                         <a class="nav-link active" aria-current="page" href="/admin/add">Add admin</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/admin/allUsers">All users</a>
+                        <a class="nav-link active ml-4" aria-current="page" href="/admin/allUsers">All users</a>
                     </li>
                 <li>
                     <div class="collapse navbar-collapse" id="navbarNavDarkDropdownApplications">
@@ -69,10 +69,10 @@
                 </#if>
                 <#if known>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/users/edit/${user.id}">Edit profile</a>
+                        <a class="nav-link active mr-5" aria-current="page" href="/users/edit/${user.id}">Edit profile</a>
                     </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="/admin/applications/users" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+                            <a class="nav-link dropdown-toggle ml-2" href="/admin/applications/users" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="true">
                                 Requests
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown3">
@@ -96,9 +96,15 @@
                     </li>
                 </#if>
         </ul>
-            <div class="navbar-text">
+        <style>
+        .right {
+            position: absolute;
+            right: 0;
+        }
+        </style>
+            <div class="navbar-text right">
                 <#if user??>
-                    <a class="nav-link active" aria-current="page" href="/users/edit/${user.id}">${username}</a>
+                    <a class="nav-link active" aria-current="page" href="/users/edit/${user.id}"><b>${username}</b></a>
               <#else>
                     ${username}
                 </#if>

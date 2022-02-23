@@ -134,7 +134,7 @@
 <#macro logout>
 
     <form  action = "/users/signout" method = "post">
-        <input type = "submit" value = "Sign out" class="btn btn-dark">
+        <input type = "submit" value = "Sign out" class="btn btn-dark mt-3">
         <@security.token />
     </form>
 

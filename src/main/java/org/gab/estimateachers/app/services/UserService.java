@@ -98,7 +98,8 @@ public class UserService implements UserDetailsService  {
             throw exception;
         }
     
-        awsUtilities.loadFiles(List.of(user.getFilename()));
+        if(Objects.nonNull(user.getFilename()))
+            awsUtilities.loadFiles(List.of(user.getFilename()));
         
         return user;
     }
@@ -107,7 +108,8 @@ public class UserService implements UserDetailsService  {
     public User findById(Long id) {
         
         User user = userRepository.getOne(id);
-        awsUtilities.loadFiles(List.of(user.getFilename()));
+        if(Objects.nonNull(user.getFilename()))
+            awsUtilities.loadFiles(List.of(user.getFilename()));
         
         return user;
     }
