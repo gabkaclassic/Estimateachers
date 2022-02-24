@@ -1,6 +1,6 @@
 <#include "auth.ftl">
 
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand mb-4" href="/">Estimateachers</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

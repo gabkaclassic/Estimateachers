@@ -65,8 +65,8 @@ public class UniversityService implements CardService<University> {
         Discussion discussion = new Discussion(university);
         university.setApproved(approved);
         university.setDiscussion(discussion);
-        save(university);
         discussionService.save(discussion);
+        save(university);
         
         return university;
     }

@@ -153,8 +153,8 @@ public class FacultyService implements CardService<Faculty> {
         faculty.setApproved(approved);
         Discussion discussion = new Discussion(faculty);
         faculty.setDiscussion(discussion);
-        save(faculty);
         discussionService.save(discussion);
+        save(faculty);
         universityService.save(university);
         List<Teacher> teachers = teacherService.findByTitles(teachersTitles);
         teachers.stream().peek(t -> t.addFaculty(faculty)).forEach(teacherService::save);

@@ -116,8 +116,9 @@ public class TeacherService implements CardService<Teacher> {
             files.stream().map(f -> filesUtilities.registrationFile(f, RegistrationType.PEOPLE)).forEach(teacher::addPhoto);
     
         Discussion discussion = new Discussion(teacher);
-        save(teacher);
+        teacher.setDiscussion(discussion);
         discussionService.save(discussion);
+        save(teacher);
         faculties.forEach(f -> f.addTeacher(teacher));
         facultyService.saveAll(faculties);
         universities.forEach(f -> f.addTeacher(teacher));

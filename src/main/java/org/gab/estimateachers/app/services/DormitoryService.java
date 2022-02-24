@@ -65,8 +65,9 @@ public class DormitoryService implements CardService<Dormitory>  {
         
         Discussion discussion = new Discussion(dormitory);
         dormitory.setApproved(approved);
-        save(dormitory);
+        dormitory.setDiscussion(discussion);
         discussionService.save(discussion);
+        save(dormitory);
         
         return dormitory;
     }

@@ -41,7 +41,7 @@
                             </div>
                             <@date.date />
                             <@security.token />
-                            <button type = "submit" class="btn btn-primary">Add university</button>
+                            <button type = "submit" class="btn btn-primary mt-2">Add university</button>
                         </form>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                             </div>
                             <@date.date />
                             <@security.token />
-                            <button type = "submit" class="btn btn-primary">Add faculty</button>
+                            <button type = "submit" class="btn btn-primary mt-2">Add faculty</button>
                         </form>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                             </div>
                             <@date.date />
                             <@security.token />
-                            <button type = "submit" class="btn btn-primary">Add dormitory</button>
+                            <button type = "submit" class="btn btn-primary mt-2">Add dormitory</button>
                         </form>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
                                 </div>
                                 <@date.date />
                                 <@security.token />
-                                <button type = "submit" class="btn btn-primary">Add teacher</button>
+                                <button type = "submit" class="btn btn-primary mt-2">Add teacher</button>
                             </form>
                         </div>
                 </div>

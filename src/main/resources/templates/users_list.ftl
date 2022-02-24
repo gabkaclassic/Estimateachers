@@ -50,13 +50,6 @@
               </#list>
             </#if>
         </div>
-<div class="col mr-5 mt-5">
-    <form class="d-flex sticky-top mt-5" method="post" action="/admin/search/id">
-        <input class="form-control me-2" value="${id!''}" name="id" type="search" placeholder="ID" aria-label="Search">
-        <button class="btn btn-outline-primary" type="submit">Search</button>
-        <@security.token />
-    </form>
-</div>
     </div>
 
 </@main.page>
