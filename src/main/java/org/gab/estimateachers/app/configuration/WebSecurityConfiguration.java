@@ -30,20 +30,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final int PASSWORD_STRENGTH = 8;
     
     @Autowired
-    @Qualifier("userService")
-    private UserDetailsService userService;
-    
-    @Autowired
-    @Qualifier("encoder")
+    @Qualifier("passwordEncoder")
     private PasswordEncoder passwordEncoder;
     
-    @Bean("encoder")
+    @Bean("passwordEncoder")
     public PasswordEncoder getPasswordEncoder() {
         
         log.info("Created bean password encoder");
         
         return new BCryptPasswordEncoder(PASSWORD_STRENGTH);
     }
+    
+    @Autowired
+    @Qualifier("userService")
+    private UserDetailsService userService;
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
