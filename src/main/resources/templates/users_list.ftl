@@ -3,8 +3,23 @@
 <#import "parts/security.ftl" as security>
 
 <@main.page>
-    <div class="row">
-      <h2><span>All users:</span></h2>
+    <div class="row mt-5">
+        <div class="col w-50">
+
+            <h2><span>All users:</span></h2>
+        </div>
+        <div class="col-3 w-80 ml-12 mt-5">
+            <form class="d-flex w-20" style="position: fixed; top: 150px; right: 450px;" method="post" action="/admin/search/login">
+                <input class="form-control me-2" value="${username!''}" name="username" type="search" placeholder="Username" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+                <@security.token />
+            </form>
+            <form class="d-flex" style="position: fixed; top: 150px; right: 100px;" method="post" action="/admin/search/id">
+                <input class="form-control me-2" value="${id!''}" name="id" type="search" placeholder="ID" aria-label="Search">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+                <@security.token />
+            </form>
+        </div>
     </div>
     <div class="row mt-3">
         <div class="col">
@@ -35,24 +50,13 @@
               </#list>
             </#if>
         </div>
-        <div class="col">
-            <div class="row sticky-top">
-            <div class="col">
-                <form class="d-flex w-5" method="post" action="/admin/search/login">
-                    <input class="form-control me-2" value="${username!''}" name="username" type="search" placeholder="Username" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                    <@security.token />
-                </form>
-            </div>
-            <div class="col">
-                <form class="d-flex w-75" method="post" action="/admin/search/id">
-                    <input class="form-control me-2" value="${id!''}" name="id" type="search" placeholder="ID" aria-label="Search">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
-                    <@security.token />
-                </form>
-            </div>
-            </div>
-        </div>
+<div class="col mr-5 mt-5">
+    <form class="d-flex sticky-top mt-5" method="post" action="/admin/search/id">
+        <input class="form-control me-2" value="${id!''}" name="id" type="search" placeholder="ID" aria-label="Search">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+        <@security.token />
+    </form>
+</div>
     </div>
 
 </@main.page>

@@ -9,6 +9,7 @@ import org.gab.estimateachers.entities.client.Card;
 import org.gab.estimateachers.entities.client.Faculty;
 import org.gab.estimateachers.entities.client.Teacher;
 import org.gab.estimateachers.entities.client.University;
+import org.gab.estimateachers.entities.system.discussions.Discussion;
 import org.gab.estimateachers.entities.system.estimations.FacultyEstimation;
 import org.gab.estimateachers.entities.system.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,10 @@ public class FacultyService implements CardService<Faculty> {
     @Autowired
     @Qualifier("awsUtilities")
     private AWSUtilities awsUtilities;
+    
+    @Autowired
+    @Qualifier("discussionService")
+    private DiscussionService discussionService;
     
     @Autowired
     @Qualifier("facultyEstimationRepository")
@@ -146,7 +151,10 @@ public class FacultyService implements CardService<Faculty> {
             files.stream().map(f -> filesUtilities.registrationFile(f, RegistrationType.OTHER)).forEach(faculty::addPhoto);
         
         faculty.setApproved(approved);
+        Discussion discussion = new Discussion(faculty);
+        faculty.setDiscussion(discussion);
         save(faculty);
+        discussionService.save(discussion);
         universityService.save(university);
         List<Teacher> teachers = teacherService.findByTitles(teachersTitles);
         teachers.stream().peek(t -> t.addFaculty(faculty)).forEach(teacherService::save);

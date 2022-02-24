@@ -11,7 +11,7 @@
             </span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav nav-fill w-100 mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
@@ -43,7 +43,7 @@
                         <a class="nav-link active" aria-current="page" href="/admin/add">Add admin</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active ml-4" aria-current="page" href="/admin/allUsers">All users</a>
+                        <a class="nav-link active" aria-current="page" href="/admin/allUsers">All users</a>
                     </li>
                 <li>
                     <div class="collapse navbar-collapse" id="navbarNavDarkDropdownApplications">
@@ -69,10 +69,10 @@
                 </#if>
                 <#if known>
                     <li class="nav-item">
-                        <a class="nav-link active mr-5" aria-current="page" href="/users/edit/${user.id}">Edit profile</a>
+                        <a class="nav-link active" aria-current="page" href="/users/edit/${user.id}">Edit profile</a>
                     </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle ml-2" href="/admin/applications/users" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+                            <a class="nav-link dropdown-toggle" href="/admin/applications/users" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="true">
                                 Requests
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown3">
@@ -84,30 +84,26 @@
                                 </#if>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <@ul.logout />
+                        </li>
+                    <#else>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/users/login">Sign in</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/users/registry">Sign up</a>
+                        </li>
+                    </#if>
                     <li class="nav-item">
-                        <@ul.logout />
+                        <div class="navbar-text">
+                            <#if user??>
+                                <a class="nav-link active" aria-current="page" href="/users/edit/${user.id}"><b>${username}</b></a>
+                          <#else>
+                                ${username}
+                            </#if>
                     </li>
-                <#else>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/users/login">Sign in</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/users/registry">Sign up</a>
-                    </li>
-                </#if>
-        </ul>
-        <style>
-        .right {
-            position: absolute;
-            right: 0;
-        }
-        </style>
-            <div class="navbar-text right">
-                <#if user??>
-                    <a class="nav-link active" aria-current="page" href="/users/edit/${user.id}"><b>${username}</b></a>
-              <#else>
-                    ${username}
-                </#if>
+                </ul>
             </div>
         </div>
     </div>

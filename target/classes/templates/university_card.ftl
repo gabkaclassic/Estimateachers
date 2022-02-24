@@ -68,16 +68,14 @@
         <#if !estimated && !isAdmin>
             <a class="btn btn-primary mt-2" data-bs-toggle="modal" href="#estimationModal" role="button">Estimate this card</a>
         </#if>
-        <form method = "get" action = "/discussions/get">
-            <input type="hidden" name = "discussionId" value = "${university.discussion.id}" />
-            <@security.token />
+        <form class="mt-2" method = "get" action = "/discussions/get/${university.discussion.id}">
             <button class="btn btn-secondary" type="submit">To discussion...</button>
         </form>
 </div>
 <div class="row mt-3">
     <div class="col-4">
         <h5>Faculties:</h5>
-        <@cl.links cards=university.faculties" />
+        <@cl.links cards=university.faculties />
     </div>
 </div>
 <div class="row mt-3">

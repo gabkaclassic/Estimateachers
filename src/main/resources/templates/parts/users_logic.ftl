@@ -6,8 +6,8 @@
 <div class="row mt-2">
     <form id="form" method = "post" enctype = "multipart/form-data">
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Login: </label>
             <div class="col-sm-6">
+                <label for="username" class="col-form-label">Login: </label>
                 <input type = "text" name = "username" id = "username" value="${username!''}" placeholder = "Your login" class="form-control" />
                 <#if registry>
                     <div id="loginHelpBlock" class="form-text">
@@ -17,8 +17,8 @@
             </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Password: </label>
             <div class="col-sm-6">
+                <label for="password" class="col-form-label">Password: </label>
                 <input type = "password" name = "password" value="${password!''}" id = "password" placeholder = "Your password" class="form-control"/>
             </div>
             <#if registry || edit>
@@ -29,8 +29,8 @@
         </div>
         <#if registry>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">First name: </label>
                 <div class="col-sm-4">
+                    <label for="firstName" class="col-form-label">First name: </label>
                     <input type = "text" id = "firstName" value="${firstname!''}" name = "firstName" placeholder = "Your first name" class="form-control"/>
                     <div id="firstNameHelpBlock" class="form-text">
                         The first name must consist of 2-32 letters
@@ -38,8 +38,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Last name: </label>
                 <div class="col-sm-4">
+                    <label for="lastName" class="col-form-label">Last name: </label>
                     <input type = "text" id = "lastName" value="${lastname!''}" name = "lastName" placeholder = "Your last name" class="form-control"/>
                     <div id="lastNameHelpBlock" class="form-text">
                         The last name must consist of 2-32 letters
@@ -47,8 +47,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Patronymic: </label>
                 <div class="col-sm-4">
+                    <label for="patronymic" class="col-form-label">Patronymic: </label>
                     <input type = "text" id = "patronymic" value="${patronymic!''}" name = "patronymic" placeholder = "Your patronymic" class="form-control"/>
                     <div id="patronymicHelpBlock" class="form-text">
                         The patronymic must consist of 2-32 letters
@@ -56,8 +56,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Email: </label>
                 <div class="col-sm-4">
+                    <label for="email" class="col-form-label">Email: </label>
                     <input type = "email" id = "email" value="${email!''}" name="email" placeholder = "Your email address" class="form-control"/>
                 </div>
             </div>
@@ -78,8 +78,8 @@
         </#if>
         <#if edit>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">Email: </label>
                 <div class="col-sm-4">
+                    <label for="email" class="col-form-label">Email: </label>
                     <input type = "email" id = "email" value = "${(user.email!' ')}" name = "email" placeholder = "Your email address" class="form-control"/>
                 </div>
             </div>
@@ -134,7 +134,7 @@
 <#macro logout>
 
     <form  action = "/users/signout" method = "post">
-        <input type = "submit" value = "Sign out" class="btn btn-dark mt-3">
+        <input type = "submit" value = "Sign out" class="btn btn-dark mt-1">
         <@security.token />
     </form>
 

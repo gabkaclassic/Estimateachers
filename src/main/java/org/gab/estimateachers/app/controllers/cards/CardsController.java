@@ -153,7 +153,7 @@ public class CardsController {
         
         log.info(String.format("The card of university has been evaluated (ID: %s)", universityId.toString()));
         
-        return getCard(user, universityId, "university", model);
+        return getCard(user, universityId, "UNIVERSITY", model);
     }
     
     @PostMapping("/estimation/faculty")
@@ -168,7 +168,7 @@ public class CardsController {
     
         log.info(String.format("The card of faculty has been evaluated (ID: %s)", facultyId.toString()));
         
-        return getCard(user, facultyId, "faculty", model);
+        return getCard(user, facultyId, "FACULTY", model);
     }
     
     @PostMapping("/estimation/dormitory")
@@ -184,7 +184,7 @@ public class CardsController {
     
         log.info(String.format("The card of dormitory has been evaluated (ID: %s)", dormitoryId.toString()));
         
-        return getCard(user, dormitoryId, "dormitory", model);
+        return getCard(user, dormitoryId, "DORMITORY", model);
     }
     
     @PostMapping("/estimation/teacher")
@@ -200,7 +200,7 @@ public class CardsController {
         
         log.info(String.format("The card of teacher has been evaluated (ID: %s)", teacherId.toString()));
         
-        return getCard(user, teacherId, "teacher", model);
+        return getCard(user, teacherId, "TEACHER", model);
     }
     
     @GetMapping("/add")
@@ -367,10 +367,10 @@ public class CardsController {
         return createCard(model);
     }
     
-    @GetMapping("/get")
+    @GetMapping("/get/{cardId}")
     @Retryable(maxAttempts = 5, value = ControllerException.class, backoff = @Backoff(delay = 300, multiplier = 1.5))
     public String getCard(@AuthenticationPrincipal User user,
-                          @RequestParam("id") Long cardId,
+                          @PathVariable("cardId") Long cardId,
                           @RequestParam("cardType") String cardType,
                           Model model) {
     

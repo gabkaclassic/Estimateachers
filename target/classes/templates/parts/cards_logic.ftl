@@ -95,47 +95,52 @@
     <#if card??>
 
         <div class="w-75 h-10 mt-2 card" style="width: 18rem height: 15rem;">
-            <#if card.photos??>
-                <figure class="figure">
-                    <@images number=card.id photos=card.photos size=card.photos?size />
-                </figure>
-            <#else>
-                :)
-            </#if>
+
             <div class="card-body">
-                <h5 class="card-title">${card.title}</h5>
-                <p class="card-text">
-                    <#if isAdmin>
-                        <p>№${card.id}</p>
+                <div class="row">
+                    <div class="col">
+                        <h5 class="card-title">${card.title}</h5>
+                        <p class="card-text">
+                            <#if isAdmin>
+                                <p>№${card.id}</p>
+                            </#if>
+                            <p>Rating: ${(card.totalRating)!'-'}/5</p>
+                        </p>
+                        <div class="col">
+                            <form method = "get" action = "/cards/get/${card.id}">
+                                <input type="hidden" name = "cardType" value = "${card.getCardType()}" />
+                                <button class="btn btn-primary" type="submit">To consider...</button>
+                            </form>
+                        </div>
+                        <div class="col">
+                            <form method = "get" action = "/discussions/get/${card.discussion.id}">
+                                <button class="btn btn-secondary" type="submit">To discussion...</button>
+                            </form>
+                        </div>
+                        <div class="col">
+                            <#if isAdmin>
+                                <form method = "post" action = "/cards/delete">
+                                    <input type="hidden" name = "type" value = "${card.getCardType()}" />
+                                    <input type="hidden" name = "id" value = ${card.id} />
+                                    <@security.token />
+                                    <button class="btn btn-danger" type="submit">Delete</button>
+                                </form>
+                            </#if>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <#if card.photos??>
+                        <figure class="figure">
+                            <@images number=card.id photos=card.photos size=card.photos?size />
+                        </figure>
+                        <#else>
+                        :)
                     </#if>
-                    <p>Rating: ${(card.totalRating)!'-'}/5</p>
-                </p>
-                <div class="col">
-                    <form method = "get" action = "/cards/get">
-                        <input type="hidden" name = "cardType" value = "${card.getCardType()}" />
-                        <input type="hidden" name = "id" value = ${card.id} />
-                        <@security.token />
-                        <button class="btn btn-primary" type="submit">To consider...</button>
-                    </form>
-                </div>
-                <div class="col">
-                    <form method = "get" action = "/discussions/get/${card.discussion.id}">
-                        <button class="btn btn-secondary" type="submit">To discussion...</button>
-                    </form>
-                </div>
-                <div class="col">
-                    <#if isAdmin>
-                        <form method = "post" action = "/cards/delete">
-                            <input type="hidden" name = "type" value = "${card.getCardType()}" />
-                            <input type="hidden" name = "id" value = ${card.id} />
-                            <@security.token />
-                            <button class="btn btn-danger" type="submit">Delete</button>
-                        </form>
-                    </#if>
+                    </div>
                 </div>
             </div>
         </div>
-</#if>
+    </#if>
 
 </#macro>
 

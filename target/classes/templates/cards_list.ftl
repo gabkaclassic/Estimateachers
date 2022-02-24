@@ -4,12 +4,12 @@
 <#import "parts/cards_logic.ftl" as cl>
 
 <@main.page>
-    <div class="row">
+    <div class="row mt-5">
         <div class="col w-50">
             <h2><span>${listName}</span></h2>
         </div>
-        <div class="col-3 w-80 ml-12 mt-5 sticky-top">
-            <form class="d-flex" method="post" action="/cards/search/title">
+        <div class="col-3 w-80 ml-12 mt-5">
+            <form class="d-flex" style="position: fixed; top: 110px; right: 50px;" method="post" action="/cards/search/title">
                 <input class="form-control me-2" value="${title!''}" name="title" type="search" placeholder="Card's title" aria-label="Search">
                 <#if collection??>
                     <input type="hidden" name="cardType" value="ALL" />
