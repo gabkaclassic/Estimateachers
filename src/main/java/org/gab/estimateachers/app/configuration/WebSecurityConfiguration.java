@@ -34,9 +34,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserDetailsService userService;
     
     @Autowired
+    @Qualifier("encoder")
     private PasswordEncoder passwordEncoder;
     
-    @Bean("passwordEncoder")
+    @Bean("encoder")
     public PasswordEncoder getPasswordEncoder() {
         
         log.info("Created bean password encoder");
